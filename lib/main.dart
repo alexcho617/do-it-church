@@ -23,6 +23,7 @@ class _LoginRouteState extends State<LoginRoute> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
+        backgroundColor: Colors.deepPurple.shade50,
         body: SafeArea(
           child: Column(
             //crossAxisAlignment: CrossAxisAlignment.center,
