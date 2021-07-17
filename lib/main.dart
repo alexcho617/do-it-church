@@ -101,6 +101,21 @@ class _LoginRouteState extends State<LoginRoute> {
                       child: Text('Register'),
                     ),
                   ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            Colors.deepPurple.shade300),
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          print('Test Pressed');
+                        });
+                      },
+                      child: Text('Test'),
+                    ),
+                  ),
                 ],
               ),
             ],
