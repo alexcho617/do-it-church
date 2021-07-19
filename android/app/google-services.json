@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "803981009820",
+    "project_id": "doitchurch-92c49",
+    "storage_bucket": "doitchurch-92c49.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:803981009820:android:f29cfd913e23dde07f5e59",
+        "android_client_info": {
+          "package_name": "alexcho617.com.do_it_church"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "803981009820-ipnlsht51uu5krpi0vvncv7vdb5nb52a.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "alexcho617.com.do_it_church",
+            "certificate_hash": "32f12b2c7fdf977e850f1237cb40dda5952c22b2"
+          }
+        },
+        {
+          "client_id": "803981009820-aecb3o3lbgu4ieel196rmlsvsdan0vki.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC2rYrXaN-zb8qz9o1LtaWOC07UAb6lMWo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "803981009820-aecb3o3lbgu4ieel196rmlsvsdan0vki.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
