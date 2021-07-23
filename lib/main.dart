@@ -1,9 +1,24 @@
 import 'package:flutter/material.dart';
-import 'login_route.dart';
+import 'screens/login_route.dart';
+import 'screens/register_route.dart';
 
 void main() {
   runApp(MaterialApp(
-    title: 'Navigation Basics',
+    theme: ThemeData(
+      primaryColor: Color(0xFF89A1F8),
+      appBarTheme: AppBarTheme(
+        backgroundColor: Colors.white,
+      ),
+      textTheme: TextTheme(
+        bodyText2: TextStyle(
+          fontFamily: 'Rubik',
+          fontSize: 16,
+          letterSpacing: 1,
+          color: Color(0xFF89A1F8),
+        ),
+      ),
+    ),
+    title: 'DoItChurch Navigation',
     home: LoginRoute(),
   ));
 }
