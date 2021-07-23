@@ -12,9 +12,24 @@ class NoticeRoute extends StatefulWidget {
 class _NoticeRouteState extends State<NoticeRoute> {
   String notice1 = 'God is good, all the time.';
   String notice2 = 'All the time, God is good.';
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData(
+        primaryColor: Colors.deepPurple.shade300,
+        appBarTheme: AppBarTheme(
+          backgroundColor: Colors.deepPurple.shade300,
+        ),
+        textTheme: TextTheme(
+          bodyText2: TextStyle(
+            fontFamily: 'Rubik',
+            fontSize: 16,
+            letterSpacing: 1,
+            color: Colors.deepPurple.shade300,
+          ),
+        ),
+      ),
       home: Scaffold(
         appBar: AppBar(
           leading: IconButton(
@@ -25,7 +40,6 @@ class _NoticeRouteState extends State<NoticeRoute> {
           ),
           title: (Text('Do It Church - Notice')),
           centerTitle: true,
-          backgroundColor: Colors.deepPurple.shade300,
         ),
         body: Column(
           children: [
@@ -49,12 +63,6 @@ class _NoticeRouteState extends State<NoticeRoute> {
                 ),
                 title: Text(
                   'Notice 1',
-                  style: TextStyle(
-                    fontFamily: 'Rubik',
-                    fontSize: 16,
-                    letterSpacing: 1,
-                    color: Colors.deepPurple.shade300,
-                  ),
                 ),
               ),
             ),
@@ -67,30 +75,19 @@ class _NoticeRouteState extends State<NoticeRoute> {
                 ),
                 title: Text(
                   'Notice 2',
-                  style: TextStyle(
-                    fontFamily: 'Rubik',
-                    fontSize: 16,
-                    letterSpacing: 1,
-                    color: Colors.deepPurple.shade300,
-                  ),
                 ),
               ),
             ),
           ],
         ),
         floatingActionButton: FloatingActionButton(
-          // add new notice
           onPressed: () {
-            //pressed stuff here
-            //go to third screen
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => NewNoticeRoute()),
             );
-            //Navigator.pop(context);
           },
           child: const Icon(Icons.add_circle),
-          backgroundColor: Colors.deepPurple.shade300,
         ),
       ),
     );
