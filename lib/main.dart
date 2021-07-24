@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'screens/login_route.dart';
-import 'screens/register_route.dart';
 
 void main() {
   runApp(MaterialApp(

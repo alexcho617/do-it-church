@@ -24,6 +24,11 @@ class _LoginRouteState extends State<LoginRoute> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              //Clip Oval로 이미지 적용시켜볼것
+              // ClipOval(
+              //   child: Image.asset('images/logo.png'),
+              // ),
+              //circle avatar도 좋으나 ListTile 과 주로 함께 프로필사진 쓰는용도임
               CircleAvatar(
                 backgroundImage: AssetImage(
                     'images/logo.png'), //always add images in directory
@@ -63,13 +68,15 @@ class _LoginRouteState extends State<LoginRoute> {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 16.0, vertical: 4),
                     child: ElevatedButton(
+                      style: ButtonStyle(
+                        shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30.0))),
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(Color(0xFF89A1F8)),
+                      ),
                       child: Text(
                         '로그인',
                         style: kLogInButtonTextStyle,
-                      ),
-                      style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all<Color>(Color(0xFF89A1F8)),
                       ),
                       onPressed: () {
                         setState(() {

@@ -45,6 +45,8 @@ class _RegisterRouteState extends State<RegisterRoute> {
                     style: kElevatedButtonTextStyle,
                   ),
                   style: ButtonStyle(
+                    shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30.0))),
                     backgroundColor:
                         MaterialStateProperty.all<Color>(Color(0xFF89A1F8)),
                   ),
@@ -114,6 +116,8 @@ class _RegisterRouteState extends State<RegisterRoute> {
                     style: kElevatedButtonTextStyle,
                   ),
                   style: ButtonStyle(
+                    shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30.0))),
                     backgroundColor:
                         MaterialStateProperty.all<Color>(Color(0xFF89A1F8)),
                   ),
@@ -154,18 +158,29 @@ class _RegisterRouteState extends State<RegisterRoute> {
             ),
           ),
           SizedBox(
-            height: 50.0,
+            height: 175.0,
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: ElevatedButton(
-              child: Text(
-                '두잇처치 시작하기',
-                style: kStartButtonTextStyle,
-              ),
               style: ButtonStyle(
-                backgroundColor:
-                    MaterialStateProperty.all<Color>(Color(0xFF89A1F8)),
+                backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                side: MaterialStateProperty.all(BorderSide(
+                  color: Color(0xFF89A1F8),
+                  width: 2.0,
+                )),
+                shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30.0))),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(4.0),
+                child: Text(
+                  '두잇처치 시작하기',
+                  style: TextStyle(
+                    fontSize: 18.0,
+                    color: Color(0xFF89A1F8),
+                  ),
+                ),
               ),
               onPressed: () {
                 print(myUser.name);
