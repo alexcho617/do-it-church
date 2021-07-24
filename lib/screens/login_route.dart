@@ -1,8 +1,8 @@
 import 'package:do_it_church/constants.dart';
 import 'package:do_it_church/screens/register_route.dart';
-import 'package:do_it_church/screens/notice_route.dart';
 import 'package:do_it_church/screens/find_id.dart';
 import 'package:flutter/material.dart';
+import 'notice_list.dart';
 
 //LOG IN SCREEN///////////////////////////////
 class LoginRoute extends StatefulWidget {
@@ -87,7 +87,7 @@ class _LoginRouteState extends State<LoginRoute> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => NoticeRoute()),
+                              builder: (context) => NoticeListRoute()),
                         );
                       },
                     ),
