@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'notice_detail.dart';
 import 'package:do_it_church/components/notice.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class NoticeListRoute extends StatefulWidget {
   @override
@@ -8,6 +9,27 @@ class NoticeListRoute extends StatefulWidget {
 }
 
 class _NoticeListRouteState extends State<NoticeListRoute> {
+  final _auth = FirebaseAuth.instance;
+  //User loggedInUser; //getting error
+  void getCurrentUser() async {
+    try {
+      final user = _auth.currentUser;
+      if (user != null) {
+        User loggedInUser = user;
+        print('SUCCESS(notice_screen): Signed in As:${loggedInUser.email}');
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getCurrentUser();
+  }
+
   @override
   Widget build(BuildContext context) {
     // var mediaQuery = MediaQuery.of(context);
@@ -26,6 +48,8 @@ class _NoticeListRouteState extends State<NoticeListRoute> {
         leading: IconButton(
             icon: Icon(Icons.arrow_back_ios_rounded),
             onPressed: () {
+              _auth.signOut();
+              print('SUCCESS(notice_screen): Sign Out');
               Navigator.pop(context);
               setState(() {
                 //
