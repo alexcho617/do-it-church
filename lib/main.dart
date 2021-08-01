@@ -5,6 +5,15 @@ void main() {
   runApp(MaterialApp(
     theme: ThemeData(
       primaryColor: Color(0xFF89A1F8),
+      iconTheme: IconThemeData(
+        color: Color(0xFF89A1F8)
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          side: BorderSide(color: const Color(0xff89A1F8)),
+          primary: const Color(0xff89A1F8),
+        ),
+      ),
       appBarTheme: AppBarTheme(
         backgroundColor: Colors.white,
       ),

@@ -1,4 +1,5 @@
 import 'package:do_it_church/constants.dart';
+import 'package:do_it_church/screens/notice_home.dart';
 import 'package:do_it_church/screens/register_route.dart';
 import 'package:do_it_church/screens/find_id.dart';
 import 'package:flutter/material.dart';
@@ -87,7 +88,7 @@ class _LoginRouteState extends State<LoginRoute> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => NoticeListRoute()),
+                              builder: (context) => HomeRoute()),
                         );
                       },
                     ),
