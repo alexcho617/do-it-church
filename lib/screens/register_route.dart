@@ -5,7 +5,6 @@ import 'notice_list.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-
 //TODO: 코드 정리하고 NULL VALUE 핸들하기 (NULL AWARE OPERATOR 사용?)
 class RegisterRoute extends StatefulWidget {
   @override
@@ -15,7 +14,6 @@ class RegisterRoute extends StatefulWidget {
 class _RegisterRouteState extends State<RegisterRoute> {
   final _auth = FirebaseAuth.instance;
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
-
 
   CustomUser myUser = CustomUser();
   String name = '';
@@ -205,9 +203,12 @@ class _RegisterRouteState extends State<RegisterRoute> {
                       email: myUser.email, password: myUser.password);
 
                   //CollectionReference member = FirebaseFirestore.instance.collection('member');
-                  firestore.collection('member').doc("user")
-                      .set({ 'email': myUser.email, 'name': myUser.name, 'password': myUser.password, 'phone_num': myUser.phoneNumber});
-
+                  firestore.collection('member').add({
+                    'email': myUser.email,
+                    'name': myUser.name,
+                    'password': myUser.password,
+                    'phone_num': myUser.phoneNumber
+                  });
 
                   if (newUser != null) {
                     print('login success');
