@@ -1,3 +1,3 @@
 # do_it_church
 
-Flutter applicatoin for church sunday school management.
+Flutter application for church sunday school management.

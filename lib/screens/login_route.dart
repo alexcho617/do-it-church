@@ -4,6 +4,7 @@ import 'package:do_it_church/screens/register_route.dart';
 import 'package:do_it_church/screens/find_id.dart';
 import 'package:flutter/material.dart';
 import 'notice_list.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 //LOG IN SCREEN///////////////////////////////
 class LoginRoute extends StatefulWidget {
@@ -14,7 +15,8 @@ class LoginRoute extends StatefulWidget {
 }
 
 class _LoginRouteState extends State<LoginRoute> {
-  String userName = '';
+  final _auth = FirebaseAuth.instance;
+  String userEmail = '';
   String passWord = '';
 
   @override
@@ -30,10 +32,13 @@ class _LoginRouteState extends State<LoginRoute> {
               //   child: Image.asset('images/logo.png'),
               // ),
               //circle avatar도 좋으나 ListTile 과 주로 함께 프로필사진 쓰는용도임
-              CircleAvatar(
-                backgroundImage: AssetImage(
-                    'images/logo.png'), //always add images in directory
-                radius: 75,
+              Hero(
+                tag: 'logo',
+                child: CircleAvatar(
+                  backgroundImage: AssetImage(
+                      'images/logo.png'), //always add images in directory
+                  radius: 75,
+                ),
               ),
               SizedBox(
                 height: 20,
@@ -46,10 +51,10 @@ class _LoginRouteState extends State<LoginRoute> {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 16.0, vertical: 4),
                     child: TextField(
-                      onChanged: (value1) => userName = value1,
+                      onChanged: (value1) => userEmail = value1,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(),
-                        labelText: '아이디',
+                        labelText: '이메일',
                       ),
                     ),
                   ),
@@ -79,17 +84,34 @@ class _LoginRouteState extends State<LoginRoute> {
                         '로그인',
                         style: kLogInButtonTextStyle,
                       ),
-                      onPressed: () {
+                      onPressed: () async {
+                        try {
+                          final newUser =
+                              await _auth.signInWithEmailAndPassword(
+                                  email: userEmail, password: passWord);
+
+                          if (newUser != null) {
+                            print('login success');
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => NoticeListRoute()),
+                            );
+                          }
+                        } catch (e) {
+                          print(e);
+                        }
                         setState(() {
                           //To change state here
                         });
-                        print('User Name = $userName');
+                        print('User Email = $userEmail');
                         print('Password = $passWord');
                         Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) => HomeRoute()),
                         );
+
                       },
                     ),
                   ),
@@ -119,7 +141,7 @@ class _LoginRouteState extends State<LoginRoute> {
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: TextButton(
                           style: TextButton.styleFrom(primary: Colors.black54),
-                          child: Text('아이디/비밀번호 찾기'),
+                          child: Text('이메일/비밀번호 찾기'),
                           onPressed: () {
                             setState(() {
                               print('find id/pw  button pressed');

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import '../components/user.dart';
 import 'package:do_it_church/constants.dart';
+import 'notice_list.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 //TODO: 코드 정리하고 NULL VALUE 핸들하기 (NULL AWARE OPERATOR 사용?)
 class RegisterRoute extends StatefulWidget {
@@ -9,8 +12,12 @@ class RegisterRoute extends StatefulWidget {
 }
 
 class _RegisterRouteState extends State<RegisterRoute> {
-  User myUser = User();
+  final _auth = FirebaseAuth.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+  CustomUser myUser = CustomUser();
   String name = '';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,7 +28,15 @@ class _RegisterRouteState extends State<RegisterRoute> {
             Navigator.pop(context);
           },
         ),
-        title: Text('회원가입'),
+        //title: Text('회원가입'),
+        title: Hero(
+          tag: 'logo',
+          child: CircleAvatar(
+            backgroundImage:
+                AssetImage('images/logo.png'), //always add images in directory
+            radius: 25,
+          ),
+        ),
       ),
       body: Column(
         children: [
@@ -32,8 +47,8 @@ class _RegisterRouteState extends State<RegisterRoute> {
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: TextField(
-                    onChanged: (textID) => myUser.id = textID,
-                    decoration: const InputDecoration(labelText: "아이디"),
+                    onChanged: (textEmail) => myUser.email = textEmail,
+                    decoration: const InputDecoration(labelText: "이메일"),
                   ),
                 ),
               ),
@@ -51,7 +66,7 @@ class _RegisterRouteState extends State<RegisterRoute> {
                         MaterialStateProperty.all<Color>(Color(0xFF89A1F8)),
                   ),
                   onPressed: () {
-                    String checkID = myUser.id;
+                    String checkID = myUser.email;
                     showDialog<void>(
                       context: context,
                       builder: (BuildContext context) {
@@ -182,13 +197,34 @@ class _RegisterRouteState extends State<RegisterRoute> {
                   ),
                 ),
               ),
-              onPressed: () {
+              onPressed: () async {
+                try {
+                  final newUser = await _auth.createUserWithEmailAndPassword(
+                      email: myUser.email, password: myUser.password);
+
+                  //CollectionReference member = FirebaseFirestore.instance.collection('member');
+                  firestore.collection('member').add({
+                    'email': myUser.email,
+                    'name': myUser.name,
+                    'password': myUser.password,
+                    'phone_num': myUser.phoneNumber
+                  });
+
+                  if (newUser != null) {
+                    print('login success');
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => NoticeListRoute()),
+                    );
+                  }
+                } catch (e) {
+                  print(e);
+                }
+                print(myUser.email);
+                print(myUser.password);
                 print(myUser.name);
                 print(myUser.phoneNumber);
-                print(myUser.id);
-                print(myUser.password);
-                Navigator.pop(context);
-
                 setState(() {
                   //To change state here
                 });
