@@ -86,7 +86,7 @@ class _NoticeListRouteState extends State<NoticeListRoute> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => NoticeDetailRoute()),
+                      builder: (context) => NoticeDetail()),
                 );
                 setState(() {});
               },

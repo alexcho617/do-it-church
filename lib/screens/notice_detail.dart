@@ -1,36 +1,57 @@
 import 'package:flutter/material.dart';
+import 'new_notice_route.dart';
 
-//single instance of notice object
-class NoticeDetailRoute extends StatefulWidget {
-  const NoticeDetailRoute({Key? key}) : super(key: key);
+class NoticeDetail extends StatefulWidget {
+  const NoticeDetail({Key? key}) : super(key: key);
 
   @override
-  NoticeDetailRouteState createState() => NoticeDetailRouteState();
+  NoticeDetailState createState() => NoticeDetailState();
 }
 
-class NoticeDetailRouteState extends State<NoticeDetailRoute> {
+class NoticeDetailState extends State<NoticeDetail> {
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title: 'notice detail',
         home: Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        title: (Text('공지목록보기')),
-      ),
-      body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: <Widget>[
-            Container(
-              color: Colors.white,
-              child: ListTile(
-                  leading: Icon(Icons.menu),
-                  title: Text(
+         appBar: AppBar(
+           backgroundColor: Colors.white,
+           title: Text('공지목록보기',
+            style: TextStyle(
+              fontSize: 15,
+              color:Colors.black,
+            ),
+           ),
+            leading: IconButton(
+               icon: Icon(Icons.arrow_back_ios_rounded),
+                color:Colors.black,
+                onPressed: () {
+                  Navigator.pop(context);
+                  setState(() {
+
+                  });
+                }),
+            leadingWidth: 20,
+            actions: [
+              IconButton(
+                 icon: Icon(
+                   Icons.create_rounded,
+                    color: Colors.blueAccent,
+                  ),
+                   onPressed: null),
+          ],
+         ),
+
+          body: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: <Widget>[
+              Container(
+               color: Colors.white,
+                child: ListTile(
+                    leading: Icon(Icons.menu),
+                    title: Text(
                     '6월 생일잔치 세부사항',
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
@@ -39,7 +60,9 @@ class NoticeDetailRouteState extends State<NoticeDetailRoute> {
                     style: TextStyle(fontSize: 10),
                   )),
             ),
+
             Container(
+
               padding: EdgeInsets.all(20),
               color: Colors.white,
               child: Text(
@@ -50,9 +73,15 @@ class NoticeDetailRouteState extends State<NoticeDetailRoute> {
                 ),
               ),
             ),
+
+
             Container(
               padding: EdgeInsets.all(4.0),
+              color: Colors.white38,
               child: OutlineButton.icon(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20)
+                  ),
                 onPressed: () {},
                 icon: Icon(
                   Icons.share,
@@ -60,9 +89,51 @@ class NoticeDetailRouteState extends State<NoticeDetailRoute> {
                 ),
                 label: Text('공유하기'),
               ),
-              margin: const EdgeInsets.only(left: 20),
+              margin: const EdgeInsets.only(left: 10),
             ),
+
+              //구분선 만들기
+              Container(
+                height:1.0,
+                width:500.0,
+                color: Colors.black38,
+              ),
+
+
+
             Container(
+                color: Colors.white38,
+              margin: EdgeInsets.all(10),
+              child:Row(
+                children: <Widget>[
+                  Flexible(
+              child:TextField(
+                decoration: InputDecoration(
+                  labelText: '댓글 작성',
+                  hintText: 'Enter your comment.',
+                  labelStyle: TextStyle(color: Colors.black),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                    borderSide: BorderSide(width: 1, color: Colors.redAccent),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                    borderSide: BorderSide(width: 1, color: Colors.black38),
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                  ),
+                ),
+                keyboardType: TextInputType.text,
+              )
+                  ),
+           ]
+            )
+            ),
+
+
+            Container(
+
               color: Colors.white38,
               child: ListTile(
                   //CircleAvatar() , use images from the images folder
@@ -77,8 +148,11 @@ class NoticeDetailRouteState extends State<NoticeDetailRoute> {
                   subtitle: Text(
                     '확인완료했습니다! 이번에도 즐겁게!',
                     style: TextStyle(fontSize: 13),
-                  )),
+                  )
+              ),
             ),
+
+
             Container(
               color: Colors.white38,
               child: ListTile(
@@ -90,30 +164,46 @@ class NoticeDetailRouteState extends State<NoticeDetailRoute> {
                       fontSize: 15,
                     ),
                   ),
-                  subtitle: Text(
-                    '확인완료했습니다ㅋㅋ 중등부도 그런 재미난 행사들을 많이 했으면 좋겠네요 ~~, 쩝..',
-                    style: TextStyle(fontSize: 13),
-                  )),
+                ),
             ),
+
+
+                Container(
+                  color: Colors.white38,
+                  child: ListTile(
+                      leading: Icon(Icons.account_circle_rounded),
+                      title: Text('고은미(사랑반)',
+                        style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15,),),
+                      subtitle: Text('확인완료했습니다! 늘 신경써주셔서 감사해요!',
+                        style: TextStyle(fontSize: 13),)
+
+                  ),
+
+                ),
+
             Container(
               color: Colors.white38,
+
               child: ListTile(
+                //CircleAvatar() , use images from the images folder
                   leading: Icon(Icons.account_circle_rounded),
                   title: Text(
-                    '고은미(사랑반)',
+                    '김말희(믿음반)',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 15,
                     ),
                   ),
                   subtitle: Text(
-                    '확인완료했습니다! 늘 신경써주셔서 감사해요!',
+                    '늘 수고가 많으세요:) 화이팅!',
                     style: TextStyle(fontSize: 13),
                   )),
             ),
+            
           ],
         ),
       ),
     ));
+
   }
 }

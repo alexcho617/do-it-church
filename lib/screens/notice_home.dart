@@ -102,7 +102,7 @@ class _HomeRouteState extends State<HomeRoute> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => NoticeDetailRoute()),
+                        builder: (context) => NoticeDetail()),
                   );
                   setState(() {});
                 },
