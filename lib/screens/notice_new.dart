@@ -9,6 +9,8 @@ class NoticeAddRoute extends StatefulWidget {
 
 class _NoticeAddRouteState extends State<NoticeAddRoute> {
   @override
+  String noticeTitle = '';
+  String noticeContents = '';
   Widget build(BuildContext context) {
     // var mediaQuery = MediaQuery.of(context);
     // final size = mediaQuery.size.width;
@@ -39,21 +41,38 @@ class _NoticeAddRouteState extends State<NoticeAddRoute> {
           TextButton(
             child: Text('완료',
             style: TextStyle(color: Colors.red),),
-              onPressed: null),
+              onPressed: () {
+                print('New Notice Title = $noticeTitle');
+                print('New Notice Contents = $noticeContents');
+                Navigator.pop(context);
+              }
+          ),
         ],
       ),
       body: Center(
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 10.0, left: 20, right: 20),
-              child: TextField(
-                autocorrect: true,
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                  hintText: '여기를 눌러 새로운 공지를 적어보세요',
-
-                ),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              child: Column(
+                children: [
+                  TextField(
+                    autocorrect: true,
+                    onChanged: (value3) => noticeTitle = value3,
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      hintText: '새로운 공지의 제목을 적어보세요',
+                    ),
+                  ),
+                  Divider(),
+                  TextField(
+                    onChanged: (value4) => noticeContents = value4,
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      hintText: '여기를 눌러 새로운 공지를 적어보세요',
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
