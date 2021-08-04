@@ -1,10 +1,4 @@
-import 'package:do_it_church/constants.dart';
-import 'package:do_it_church/screens/home.dart';
-import 'package:do_it_church/screens/register.dart';
-import 'package:do_it_church/screens/find_id.dart';
 import 'package:flutter/material.dart';
-import 'notice_list.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:do_it_church/components/loginWidget.dart';
 
 enum MobileVerificationState {
