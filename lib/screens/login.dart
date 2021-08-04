@@ -1,8 +1,12 @@
-
 import 'package:flutter/material.dart';
 import 'notice_list.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:do_it_church/components/loginWidget.dart';
+
+enum MobileVerificationState {
+  SHOW_MOBILE_FORM_STATE,
+  SHOW_OTP_FORM_STATE,
+}
 
 //LOG IN SCREEN///////////////////////////////
 class LoginRoute extends StatefulWidget {
@@ -13,6 +17,24 @@ class LoginRoute extends StatefulWidget {
 }
 
 class _LoginRouteState extends State<LoginRoute> {
+  //final currentState = MobileVerificationState.SHOW_MOBILE_FORM_STATE;
+  final currentState = MobileVerificationState.SHOW_OTP_FORM_STATE;
+
+
+  getMobileFormWidget(context){
+    return LoginWidget(
+      textInput: '핸드폰번호',
+      buttonInput: '인증코드 받기',
+    );
+  }
+
+  getOtpFormWidget(context){
+    return LoginWidget(
+      textInput: '인증코드',
+      buttonInput: '인증',
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -32,10 +54,11 @@ class _LoginRouteState extends State<LoginRoute> {
               SizedBox(
                 height: 20,
               ),
-              LoginWidget(
-                textInput: '핸드폰번호',
-                buttonInput: '인증',
-              ),
+              Container(
+                child: currentState == MobileVerificationState.SHOW_MOBILE_FORM_STATE
+                    ? getMobileFormWidget(context)
+                    : getOtpFormWidget(context),
+              )
             ],
           ),
         ),
