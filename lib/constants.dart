@@ -12,6 +12,18 @@ const kElevatedButtonTextStyle =
 const kStartButtonTextStyle =
     TextStyle(fontSize: 36.0, fontWeight: FontWeight.bold);
 
+const KNoticeTitleTextStyle =
+    TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: Colors.black);
+
+const KNoticeSubTitleTextStyle =
+    TextStyle(fontSize: 12, color: Colors.grey);
+
+const KNoticeContentTextStyle =
+    TextStyle(fontSize: 12, color: Colors.black);
+
+const KNoticeCountTextStyle =
+    TextStyle(fontSize: 12, color: Colors.grey);
+
 // constant로 정의가 안되긴 하지만 일단 여기에 써 놓음, ElevatedButton 모양, 색 처리 할 때 사용.
 var kRoundBorderButtonStyle = ButtonStyle(
   backgroundColor: MaterialStateProperty.all<Color>(Colors.white),

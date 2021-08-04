@@ -1,7 +1,9 @@
-import 'package:do_it_church/screens/notice_add.dart';
+import 'package:do_it_church/screens/notice_new.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'notice_detail.dart';
 import 'notice_list.dart';
+import 'mypage.dart';
 import 'package:do_it_church/components/notice.dart';
 
 class HomeRoute extends StatefulWidget {
@@ -35,7 +37,19 @@ class _HomeRouteState extends State<HomeRoute> {
         ),
         leadingWidth: 200,
         actions: [
-          TextButton(onPressed: null, child: Text('my'))
+          TextButton(onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => MypageRoute()),
+            );
+            setState(() {});
+          },
+              child: Row(
+                children: [
+                  Text('my'),
+                ],
+              ))
         ],
       ),
       body: Center(

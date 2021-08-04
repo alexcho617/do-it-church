@@ -1,7 +1,8 @@
-import 'package:do_it_church/screens/notice_add.dart';
+import 'package:do_it_church/constants.dart';
+import 'package:do_it_church/screens/notice_new.dart';
 import 'package:flutter/material.dart';
 import 'notice_detail.dart';
-import 'notice_add.dart';
+import 'notice_new.dart';
 import 'package:do_it_church/components/notice.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -121,11 +122,7 @@ class _NoticeListRouteState extends State<NoticeListRoute> {
                                   children: [
                                     Text(
                                       '6월 생일잔치 세부사항',
-                                      style: TextStyle(
-                                        fontSize: 17,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.black,
-                                      ),
+                                      style: KNoticeTitleTextStyle,
                                     ),
                                     SizedBox(
                                       height: 18,
@@ -145,7 +142,7 @@ class _NoticeListRouteState extends State<NoticeListRoute> {
                                     Text(
                                       //날짜 + 작성자 서버에서 받아서 변수로 출력
                                       '2021년 6월 30일, 박강두 전도사',
-                                      style: TextStyle(fontSize: 12, color: Colors.grey),
+                                      style: KNoticeSubTitleTextStyle,
                                     ),
                                   ],
                                 ),
@@ -156,7 +153,7 @@ class _NoticeListRouteState extends State<NoticeListRoute> {
                                           top: 15, bottom: 20),
                                       child: Text('6월 생일자: 김세희, 박효인, 최다운\n준비팀: 고은혜T, 고은미T, 박현동T\n'
                                           '준비 열심히 해서 재밌게 진행해봅시다! 각 반의 ',
-                                      style: TextStyle(fontSize: 12, color: Colors.black),),
+                                      style: KNoticeContentTextStyle),
                                     )
                                   ],
                                 ),
@@ -171,14 +168,14 @@ class _NoticeListRouteState extends State<NoticeListRoute> {
                         Icon(Icons.remove_red_eye_outlined,
                         size: 12, color: Colors.grey,),
                         Text(' 10',
-                        style: TextStyle(fontSize: 12, color: Colors.grey),),
+                        style: KNoticeCountTextStyle),
                         Container(
                           width: 10,
                         ),
                         Icon(Icons.chat_outlined,
                         size: 12, color: Colors.grey),
                         Text(' 4',
-                        style: TextStyle(fontSize: 12, color: Colors.grey),)
+                        style: KNoticeCountTextStyle)
                       ],
                     ),
                     Container(
