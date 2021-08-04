@@ -3,7 +3,6 @@ import 'package:do_it_church/screens/notice_new.dart';
 import 'package:flutter/material.dart';
 import 'notice_detail.dart';
 import 'notice_new.dart';
-import 'package:do_it_church/components/notice.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class NoticeListRoute extends StatefulWidget {
@@ -28,7 +27,6 @@ class _NoticeListRouteState extends State<NoticeListRoute> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getCurrentUser();
   }
@@ -38,7 +36,12 @@ class _NoticeListRouteState extends State<NoticeListRoute> {
     // var mediaQuery = MediaQuery.of(context);
     // final size = mediaQuery.size.width;
     int screenIndex = 0;
-    List<Widget> screenList = [Text('홈스크린'), Text('채팅'), Text('활동가이드화면'), Text('모아보기화면')];
+    List<Widget> screenList = [
+      Text('홈스크린'),
+      Text('채팅'),
+      Text('활동가이드화면'),
+      Text('모아보기화면')
+    ];
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -68,26 +71,23 @@ class _NoticeListRouteState extends State<NoticeListRoute> {
                 Icons.create_rounded,
                 color: Color(0xFF89A1F8),
               ),
-              onPressed: (){
+              onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                      builder: (context) => NoticeAddRoute()),
+                  MaterialPageRoute(builder: (context) => NoticeAddRoute()),
                 );
                 setState(() {});
-              }
-          ),
+              }),
         ],
       ),
       body: Center(
         child: Column(
           children: <Widget>[
             InkWell(
-              onTap: (){
+              onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                      builder: (context) => NoticeDetail()),
+                  MaterialPageRoute(builder: (context) => NoticeDetail()),
                 );
                 setState(() {});
               },
@@ -109,8 +109,10 @@ class _NoticeListRouteState extends State<NoticeListRoute> {
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Icon(Icons.notes_rounded,
-                        color: Colors.black,),
+                        Icon(
+                          Icons.notes_rounded,
+                          color: Colors.black,
+                        ),
                         Expanded(
                           child: Container(
                             margin: const EdgeInsets.only(left: 10),
@@ -118,11 +120,12 @@ class _NoticeListRouteState extends State<NoticeListRoute> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
                                       '6월 생일잔치 세부사항',
-                                      style: KNoticeTitleTextStyle,
+                                      style: kNoticeTitleTextStyle,
                                     ),
                                     SizedBox(
                                       height: 18,
@@ -130,9 +133,8 @@ class _NoticeListRouteState extends State<NoticeListRoute> {
                                         onPressed: () {},
                                         child: Text('수정하기'),
                                         style: TextButton.styleFrom(
-                                          primary: Colors.red,
-                                          padding: EdgeInsets.all(0)
-                                        ),
+                                            primary: Colors.red,
+                                            padding: EdgeInsets.all(0)),
                                       ),
                                     ),
                                   ],
@@ -142,7 +144,7 @@ class _NoticeListRouteState extends State<NoticeListRoute> {
                                     Text(
                                       //날짜 + 작성자 서버에서 받아서 변수로 출력
                                       '2021년 6월 30일, 박강두 전도사',
-                                      style: KNoticeSubTitleTextStyle,
+                                      style: kNoticeSubTitleTextStyle,
                                     ),
                                   ],
                                 ),
@@ -151,9 +153,10 @@ class _NoticeListRouteState extends State<NoticeListRoute> {
                                     Container(
                                       margin: const EdgeInsets.only(
                                           top: 15, bottom: 20),
-                                      child: Text('6월 생일자: 김세희, 박효인, 최다운\n준비팀: 고은혜T, 고은미T, 박현동T\n'
+                                      child: Text(
+                                          '6월 생일자: 김세희, 박효인, 최다운\n준비팀: 고은혜T, 고은미T, 박현동T\n'
                                           '준비 열심히 해서 재밌게 진행해봅시다! 각 반의 ',
-                                      style: KNoticeContentTextStyle),
+                                          style: kNoticeContentTextStyle),
                                     )
                                   ],
                                 ),
@@ -165,17 +168,17 @@ class _NoticeListRouteState extends State<NoticeListRoute> {
                     ),
                     Row(
                       children: [
-                        Icon(Icons.remove_red_eye_outlined,
-                        size: 12, color: Colors.grey,),
-                        Text(' 10',
-                        style: KNoticeCountTextStyle),
+                        Icon(
+                          Icons.remove_red_eye_outlined,
+                          size: 12,
+                          color: Colors.grey,
+                        ),
+                        Text(' 10', style: kNoticeCountTextStyle),
                         Container(
                           width: 10,
                         ),
-                        Icon(Icons.chat_outlined,
-                        size: 12, color: Colors.grey),
-                        Text(' 4',
-                        style: KNoticeCountTextStyle)
+                        Icon(Icons.chat_outlined, size: 12, color: Colors.grey),
+                        Text(' 4', style: kNoticeCountTextStyle)
                       ],
                     ),
                     Container(
@@ -195,8 +198,10 @@ class _NoticeListRouteState extends State<NoticeListRoute> {
                                 color: Colors.red,
                                 size: 13,
                               ),
-                              label: Text('10',
-                              style: TextStyle(fontSize: 13),),
+                              label: Text(
+                                '10',
+                                style: TextStyle(fontSize: 13),
+                              ),
                             ),
                           ),
                         ),
@@ -208,8 +213,8 @@ class _NoticeListRouteState extends State<NoticeListRoute> {
                             height: 27,
                             child: OutlinedButton(
                               onPressed: () {},
-                              child: Text('댓글쓰기',
-                                  style: TextStyle(fontSize: 13)),
+                              child:
+                                  Text('댓글쓰기', style: TextStyle(fontSize: 13)),
                             ),
                           ),
                         ),
@@ -226,8 +231,8 @@ class _NoticeListRouteState extends State<NoticeListRoute> {
                                 color: Colors.blueAccent,
                                 size: 13,
                               ),
-                              label: Text('공유하기',
-                                  style: TextStyle(fontSize: 13)),
+                              label:
+                                  Text('공유하기', style: TextStyle(fontSize: 13)),
                             ),
                           ),
                         ),
@@ -264,7 +269,7 @@ class _NoticeListRouteState extends State<NoticeListRoute> {
         currentIndex: screenIndex,
         selectedItemColor: Color(0xff89A1F8),
         unselectedItemColor: Color(0xffE5E5E5),
-        onTap: (value){
+        onTap: (value) {
           setState(() {
             screenIndex = value;
           });
