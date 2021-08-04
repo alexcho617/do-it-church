@@ -9,12 +9,13 @@ class LoginWidget extends StatefulWidget {
 
   final String textInput;
   final String buttonInput;
-
   @override
   _LoginWidgetState createState() => _LoginWidgetState();
 }
 
 class _LoginWidgetState extends State<LoginWidget> {
+  final phoneController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -24,6 +25,7 @@ class _LoginWidgetState extends State<LoginWidget> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4),
           child: TextField(
+            controller: phoneController,
             decoration: InputDecoration(
               border: OutlineInputBorder(),
               labelText: widget.textInput,
