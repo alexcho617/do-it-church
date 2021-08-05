@@ -1,3 +1,4 @@
+import 'package:do_it_church/screens/notice_add.dart';
 import 'package:flutter/material.dart';
 import 'new_notice_route.dart';
 
@@ -15,6 +16,7 @@ class NoticeDetailState extends State<NoticeDetail> {
     return MaterialApp(
       title: 'notice detail',
         home: Scaffold(
+          resizeToAvoidBottomInset: false,
          appBar: AppBar(
            backgroundColor: Colors.white,
            title: Text('공지목록보기',
@@ -32,19 +34,27 @@ class NoticeDetailState extends State<NoticeDetail> {
 
                   });
                 }),
-            leadingWidth: 20,
-            actions: [
-              IconButton(
-                 icon: Icon(
-                   Icons.create_rounded,
-                    color: Colors.blueAccent,
+             leadingWidth: 20,
+             actions: [
+             IconButton(
+                  icon: Icon(
+                  Icons.create_rounded,
+                  color: Color(0xFF89A1F8),
                   ),
-                   onPressed: null),
-          ],
+                  onPressed: (){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>NoticeAddRoute()),
+                  );
+                  setState(() {});
+                  }
+         ),
+             ],
          ),
 
-          body: SafeArea(
-          child: Column(
+          body: SingleChildScrollView(
+            child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: <Widget>[
               Container(
@@ -74,11 +84,13 @@ class NoticeDetailState extends State<NoticeDetail> {
               ),
             ),
 
-
             Container(
+
+
               padding: EdgeInsets.all(4.0),
               color: Colors.white38,
               child: OutlineButton.icon(
+
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20)
                   ),
@@ -101,35 +113,6 @@ class NoticeDetailState extends State<NoticeDetail> {
 
 
 
-            Container(
-                color: Colors.white38,
-              margin: EdgeInsets.all(10),
-              child:Row(
-                children: <Widget>[
-                  Flexible(
-              child:TextField(
-                decoration: InputDecoration(
-                  labelText: '댓글 작성',
-                  hintText: 'Enter your comment.',
-                  labelStyle: TextStyle(color: Colors.black),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                    borderSide: BorderSide(width: 1, color: Colors.redAccent),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                    borderSide: BorderSide(width: 1, color: Colors.black38),
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                  ),
-                ),
-                keyboardType: TextInputType.text,
-              )
-                  ),
-           ]
-            )
-            ),
 
 
             Container(
@@ -137,7 +120,12 @@ class NoticeDetailState extends State<NoticeDetail> {
               color: Colors.white38,
               child: ListTile(
                   //CircleAvatar() , use images from the images folder
-                  leading: Icon(Icons.account_circle_rounded),
+                   leading: CircleAvatar(
+                      backgroundImage: AssetImage(
+                          'images/pro.jpg'), //always add images in directory
+                     maxRadius:15,
+                    ),
+
                   title: Text(
                     '김은희(소망반)',
                     style: TextStyle(
@@ -156,7 +144,11 @@ class NoticeDetailState extends State<NoticeDetail> {
             Container(
               color: Colors.white38,
               child: ListTile(
-                  leading: Icon(Icons.account_circle_rounded),
+                leading: CircleAvatar(
+                  backgroundImage: AssetImage(
+                      'images/pro1.png'), //always add images in directory
+                  maxRadius:15,
+                ),
                   title: Text(
                     '박세미(다윗반)',
                     style: TextStyle(
@@ -164,6 +156,8 @@ class NoticeDetailState extends State<NoticeDetail> {
                       fontSize: 15,
                     ),
                   ),
+                  subtitle: Text('확인완료했습니다! 잘 준비합시다',
+                    style: TextStyle(fontSize: 13),)
                 ),
             ),
 
@@ -171,7 +165,11 @@ class NoticeDetailState extends State<NoticeDetail> {
                 Container(
                   color: Colors.white38,
                   child: ListTile(
-                      leading: Icon(Icons.account_circle_rounded),
+                      leading: CircleAvatar(
+                        backgroundImage: AssetImage(
+                            'images/pro2.jpg'), //always add images in directory
+                        maxRadius:15,
+                      ),
                       title: Text('고은미(사랑반)',
                         style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15,),),
                       subtitle: Text('확인완료했습니다! 늘 신경써주셔서 감사해요!',
@@ -186,7 +184,11 @@ class NoticeDetailState extends State<NoticeDetail> {
 
               child: ListTile(
                 //CircleAvatar() , use images from the images folder
-                  leading: Icon(Icons.account_circle_rounded),
+                  leading: CircleAvatar(
+                    backgroundImage: AssetImage(
+                        'images/pro3.jpg'), //always add images in directory
+                    maxRadius:15,
+                  ),
                   title: Text(
                     '김말희(믿음반)',
                     style: TextStyle(
@@ -195,11 +197,81 @@ class NoticeDetailState extends State<NoticeDetail> {
                     ),
                   ),
                   subtitle: Text(
-                    '늘 수고가 많으세요:) 화이팅!',
+                    '확인완료~ 늘 수고가 많으세요:) 화이팅!',
                     style: TextStyle(fontSize: 13),
                   )),
             ),
-            
+
+              Container(
+                color: Colors.white38,
+
+                child: ListTile(
+                  //CircleAvatar() , use images from the images folder
+                    leading: CircleAvatar(
+                      backgroundImage: AssetImage(
+                          'images/pro4.jpg'), //always add images in directory
+                      maxRadius:15,
+                    ),
+                    title: Text(
+                      '박준기(기쁨반)',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                      ),
+                    ),
+                    subtitle: Text(
+                      '확인완료 항상 기도하고 있습니다!',
+                      style: TextStyle(fontSize: 13),
+                    )),
+              ),
+
+              Container(
+                  color: Colors.white38,
+                  margin: EdgeInsets.all(10),
+                  child:Row(
+                      children: <Widget>[
+                        Flexible(
+                            child:TextField(
+                              decoration: InputDecoration(
+                                labelText: '댓글 작성',
+                                hintText: 'Enter your comment.',
+                                labelStyle: TextStyle(color: Colors.black),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                                  borderSide: BorderSide(width: 1, color: Colors.redAccent),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                                  borderSide: BorderSide(width: 1, color: Colors.black38),
+                                ),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                                ),
+                              ),
+                              keyboardType: TextInputType.text,
+                            )
+                        ),
+
+                        //완료버튼
+                        new ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              padding: EdgeInsets.all(17.0),
+                              primary: Color(0xff89A1F8), // background
+                              onPrimary: Colors.white, // foreground
+                            ),
+
+                            onPressed: () => debugPrint("작성완료"),
+                            child: new Text("완료",
+                                style: new TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                )
+                            )
+                        )
+                      ]
+                  )
+              ),
           ],
         ),
       ),
