@@ -1,7 +1,8 @@
-import 'package:do_it_church/screens/home_route.dart';
+import 'package:do_it_church/screens/home.dart';
 import 'package:flutter/material.dart';
 import 'screens/login.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,7 +32,29 @@ void main() async {
         ),
       ),
       title: 'DoItChurch Navigation',
-      home: LoginRoute(),
+      home: InitializerWidget(),
     ),
   );
+}
+
+class InitializerWidget extends StatefulWidget {
+  const InitializerWidget({Key? key}) : super(key: key);
+
+  @override
+  _InitializerWidgetState createState() => _InitializerWidgetState();
+}
+
+class _InitializerWidgetState extends State<InitializerWidget> {
+  @override
+  Widget build(BuildContext context) {
+    FirebaseAuth _auth = FirebaseAuth.instance;
+    final user = _auth.currentUser;
+    if (user != null) {
+      User loggedInUser = user;
+      print('SUCCESS(main.dart): Signed in As:${loggedInUser.phoneNumber}');
+      return HomeRoute();
+    } else {
+      return LoginRoute();
+    }
+  }
 }

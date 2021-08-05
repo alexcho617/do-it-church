@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:do_it_church/constants.dart';
+import 'login.dart';
 
 class HomeRoute extends StatefulWidget {
   const HomeRoute({Key? key}) : super(key: key);
@@ -11,7 +11,6 @@ class HomeRoute extends StatefulWidget {
 
 class _HomeRouteState extends State<HomeRoute> {
   final _auth = FirebaseAuth.instance;
-  //User loggedInUser; //getting error
   void getCurrentUser() async {
     try {
       final user = _auth.currentUser;
@@ -28,18 +27,23 @@ class _HomeRouteState extends State<HomeRoute> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    getCurrentUser();
+    // getCurrentUser();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Container(
-          child: Center(
-            child: Text('Home Screen'),
-          ),
-        ),
+      body: Center(
+        child: Text('Home Screen'),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          _auth.signOut();
+          print('signed out');
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => LoginRoute()));
+        },
+        child: Icon(Icons.logout),
       ),
     );
   }
