@@ -59,6 +59,14 @@ class _MypageRouteState extends State<MypageRoute> {
               },
                   child: Text('로그아웃'))
             ),
+            Container(
+              child: Column(
+                children: [
+                  Text('유저 정보'),
+                  Text('here')
+                ],
+              )
+            )
           ],
         )
       ),
