@@ -64,6 +64,7 @@ class _MypageRouteState extends State<MypageRoute> {
                 await _auth.signOut();
                 Navigator.popUntil(
                     context, (Route<dynamic> route) => route.isFirst);
+
                 Navigator.pushReplacement(context,
                     MaterialPageRoute(builder: (context) => LoginRoute()));
               },
