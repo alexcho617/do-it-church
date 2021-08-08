@@ -1,7 +1,7 @@
 import 'package:do_it_church/screens/notice_list.dart';
 import 'package:do_it_church/screens/notice_new.dart';
 import 'package:flutter/material.dart';
-import 'new_notice_route.dart';
+import 'notice_new.dart';
 
 class NoticeDetail extends StatefulWidget {
   const NoticeDetail({Key? key}) : super(key: key);
@@ -258,9 +258,6 @@ class NoticeDetailState extends State<NoticeDetail> {
                   ]
                 ),
               ),
-
-
-
             ],
           ),
         ),
