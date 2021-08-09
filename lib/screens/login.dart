@@ -22,7 +22,6 @@ class LoginRoute extends StatefulWidget {
 class _LoginRouteState extends State<LoginRoute> {
   MobileVerificationState currentState =
       MobileVerificationState.SHOW_MOBILE_FORM_STATE;
-  //final currentState = MobileVerificationState.SHOW_OPT_FORM_STATE;
   FirebaseAuth _auth = FirebaseAuth.instance;
   String verificationId = '';
   bool showLoading = false;
@@ -44,6 +43,12 @@ class _LoginRouteState extends State<LoginRoute> {
             context, MaterialPageRoute(builder: (context) => LandingRoute()));
       }
     } on Exception catch (e) {
+      setState(() {
+        showLoading = false;
+        //TODO 2:Add some kind of snackbar
+        print('err from signInWithPhoneAUthCredential function call back');
+        currentState = MobileVerificationState.SHOW_MOBILE_FORM_STATE;
+      });
       print(e);
     }
   }
@@ -75,14 +80,15 @@ class _LoginRouteState extends State<LoginRoute> {
               setState(() {
                 showLoading = true;
               });
-
+              //TODO 1:check if number is in database
               await _auth.verifyPhoneNumber(
                   phoneNumber: phoneController.text,
                   verificationCompleted: (phoneAuthCredential) async {
                     setState(() {
                       showLoading = false;
                     });
-                    //signInWithPhoneAuthCredential(phoneAuthCredential); not needed yet
+                    signInWithPhoneAuthCredential(
+                        phoneAuthCredential); //not needed yet
                   },
                   verificationFailed: (verificationFailed) async {
                     setState(() {
@@ -91,6 +97,12 @@ class _LoginRouteState extends State<LoginRoute> {
                     // _scaffoldKey.currentState.showSnackBar(
                     //     SnackBar(content: Text(verificationFailed.message)));
                     print(verificationFailed.message);
+                    setState(() {
+                      showLoading = false;
+                    });
+                    print('error from verificatinofailed');
+                    currentState =
+                        MobileVerificationState.SHOW_MOBILE_FORM_STATE;
                   },
                   codeSent: (verificationId, resendingToken) async {
                     setState(() {

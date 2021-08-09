@@ -29,7 +29,6 @@ class _HomeRouteState extends State<HomeRoute> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getCurrentUser();
   }

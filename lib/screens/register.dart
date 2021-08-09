@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import '../components/user.dart';
+import '../components/customUser.dart';
 import 'package:do_it_church/constants.dart';
 import 'notice_list.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-//TODO: 코드 정리하고 NULL VALUE 핸들하기 (NULL AWARE OPERATOR 사용?)
+//TODO 3: handle null value
 class RegisterRoute extends StatefulWidget {
   @override
   _RegisterRouteState createState() => _RegisterRouteState();

@@ -26,7 +26,6 @@ class _MypageRouteState extends State<MypageRoute> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getCurrentUser();
   }
