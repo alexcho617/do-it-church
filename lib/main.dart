@@ -1,4 +1,4 @@
-import 'package:do_it_church/screens/home.dart';
+import 'package:do_it_church/screens/landing_route.dart';
 import 'package:flutter/material.dart';
 import 'screens/login.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -53,7 +53,7 @@ class _InitializerWidgetState extends State<InitializerWidget> {
       User loggedInUser = user;
       print('SUCCESS(main.dart): Signed in As:${loggedInUser.phoneNumber}');
       //landingPage로 가게 할
-      return HomeRoute();
+      return LandingRoute();
     } else {
       return LoginRoute();
     }

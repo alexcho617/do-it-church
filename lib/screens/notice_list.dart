@@ -1,5 +1,5 @@
 import 'package:do_it_church/constants.dart';
-import 'package:do_it_church/screens/mainpage.dart';
+import 'package:do_it_church/screens/landing_route.dart';
 import 'package:do_it_church/screens/notice_new.dart';
 import 'package:flutter/material.dart';
 import 'notice_detail.dart';
@@ -136,15 +136,15 @@ class _NoticeListRouteState extends State<NoticeListRoute> {
                                 Row(
                                   children: [
                                     Flexible(
-                                      child: RichText(
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 3,
-                                        text: TextSpan(
-                                          text:'6월 생일자: 김세희, 박효인, 최다운\n준비팀: 고은혜T, 고은미T, 박현동T\n'
+                                        child: RichText(
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 3,
+                                      text: TextSpan(
+                                          text:
+                                              '6월 생일자: 김세희, 박효인, 최다운\n준비팀: 고은혜T, 고은미T, 박현동T\n'
                                               '준비 열심히 해서 재밌게 진행해봅시다! 각 반의 선생님들께서는 아이들에게 생일잔치에 대한 문자 메세지를 하루 전 날에 꼬옥 보내주세요!',
                                           style: kNoticeContentTextStyle),
-                                      )
-                                    )
+                                    ))
                                   ],
                                 ),
                               ],
@@ -152,30 +152,29 @@ class _NoticeListRouteState extends State<NoticeListRoute> {
                           ),
                         ),
                         IconButton(
-                            padding: EdgeInsets.zero,
-                            constraints: BoxConstraints(),
-                            icon: Icon(Icons.more_horiz, color: Colors.black),
-                            onPressed: () {
-                              showModalBottomSheet(
-                                  context: context,
-                                  builder: (context){
-                                    return Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        ListTile(
-                                          title: Text('글 수정하기'),
-                                        ),
-                                        ListTile(
-                                          title: Text('공유하기'),
-                                        ),
-                                        ListTile(
-                                          title: Text('삭제하기'),
-                                        ),
-                                      ],
-                                    );
-                                  }
-                              );
-                            },
+                          padding: EdgeInsets.zero,
+                          constraints: BoxConstraints(),
+                          icon: Icon(Icons.more_horiz, color: Colors.black),
+                          onPressed: () {
+                            showModalBottomSheet(
+                                context: context,
+                                builder: (context) {
+                                  return Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      ListTile(
+                                        title: Text('글 수정하기'),
+                                      ),
+                                      ListTile(
+                                        title: Text('공유하기'),
+                                      ),
+                                      ListTile(
+                                        title: Text('삭제하기'),
+                                      ),
+                                    ],
+                                  );
+                                });
+                          },
                         )
                       ],
                     ),
@@ -234,7 +233,8 @@ class _NoticeListRouteState extends State<NoticeListRoute> {
                               onPressed: () {
                                 Navigator.push(
                                   context,
-                                  MaterialPageRoute(builder: (context) => MainRoute()),
+                                  MaterialPageRoute(
+                                      builder: (context) => LandingRoute()),
                                 );
                                 setState(() {});
                               },
