@@ -62,6 +62,7 @@ class _MypageRouteState extends State<MypageRoute> {
             child: OutlinedButton(
               onPressed: () async {
                 await _auth.signOut();
+
                 Navigator.popUntil(
                     context, (Route<dynamic> route) => route.isFirst);
 

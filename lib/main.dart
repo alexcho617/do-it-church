@@ -52,6 +52,7 @@ class _InitializerWidgetState extends State<InitializerWidget> {
     if (user != null) {
       User loggedInUser = user;
       print('SUCCESS(main.dart): Signed in As:${loggedInUser.phoneNumber}');
+      //landingPage로 가게 할
       return HomeRoute();
     } else {
       return LoginRoute();
