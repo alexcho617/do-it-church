@@ -4,7 +4,7 @@ import 'package:do_it_church/constants.dart';
 import 'package:do_it_church/screens/register.dart';
 import 'package:do_it_church/screens/find_id.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'home.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 enum MobileVerificationState {
   SHOW_MOBILE_FORM_STATE,
@@ -22,9 +22,13 @@ class LoginRoute extends StatefulWidget {
 class _LoginRouteState extends State<LoginRoute> {
   MobileVerificationState currentState =
       MobileVerificationState.SHOW_MOBILE_FORM_STATE;
+
   FirebaseAuth _auth = FirebaseAuth.instance;
+  FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
   String verificationId = '';
   bool showLoading = false;
+  List<dynamic> phoneNumbers = [];
 
   void signInWithPhoneAuthCredential(
       PhoneAuthCredential phoneAuthCredential) async {
@@ -39,13 +43,27 @@ class _LoginRouteState extends State<LoginRoute> {
         showLoading = false;
       });
       if (authCredential.user != null) {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => LandingRoute()));
+        //add to firestore
+        final user = _auth.currentUser;
+        User loggedInUser = user!;
+
+        if (phoneNumbers.contains(loggedInUser.phoneNumber)) {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => LandingRoute()));
+        } else {
+          _firestore.collection('userPhoneNumber').add({
+            'phoneNumber': loggedInUser.phoneNumber,
+          });
+
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => LandingRoute()));
+        }
       }
     } on Exception catch (e) {
       setState(() {
         showLoading = false;
         //TODO 2:Add some kind of snackbar
+        //goes back to phone number entering stage
         print('err from signInWithPhoneAUthCredential function call back');
         currentState = MobileVerificationState.SHOW_MOBILE_FORM_STATE;
       });
@@ -55,7 +73,7 @@ class _LoginRouteState extends State<LoginRoute> {
 
   getMobileFormWidget(context) {
     final phoneController = TextEditingController();
-    final textInput = '핸드폰번호';
+    final textInput = 'xxxxxxxx';
     final buttonInput = '인증코드 받기';
 
     return (Column(
@@ -77,12 +95,32 @@ class _LoginRouteState extends State<LoginRoute> {
           child: ElevatedButton(
             //invoke firebase auth
             onPressed: () async {
+              await _firestore
+                  .collection("userPhoneNumber")
+                  .get()
+                  .then((querySnapshot) {
+                querySnapshot.docs.forEach((result) {
+                  print(result.get('phoneNumber'));
+                  if (phoneNumbers.contains(result.get('phoneNumber')) ==
+                      false) {
+                    phoneNumbers.add(result.get('phoneNumber'));
+                  }
+                });
+              });
+              print(phoneNumbers);
               setState(() {
                 showLoading = true;
               });
+              //use if to differentiate 010,011. is it really neccessary?
+              String processedPhoneNumber = '+8210' + phoneController.text;
+              //get all phoneNumbers
               //TODO 1:check if number is in database
-              await _auth.verifyPhoneNumber(
-                  phoneNumber: phoneController.text,
+              if (phoneNumbers.contains(processedPhoneNumber)) {
+                print('line113');
+                //login
+                await _auth.verifyPhoneNumber(
+                  phoneNumber: processedPhoneNumber,
+                  //phoneNumber: phoneController.text,
                   verificationCompleted: (phoneAuthCredential) async {
                     setState(() {
                       showLoading = false;
@@ -94,15 +132,14 @@ class _LoginRouteState extends State<LoginRoute> {
                     setState(() {
                       showLoading = false;
                     });
-                    // _scaffoldKey.currentState.showSnackBar(
-                    //     SnackBar(content: Text(verificationFailed.message)));
+
                     print(verificationFailed.message);
                     setState(() {
                       showLoading = false;
+                      currentState =
+                          MobileVerificationState.SHOW_MOBILE_FORM_STATE;
                     });
-                    print('error from verificatinofailed');
-                    currentState =
-                        MobileVerificationState.SHOW_MOBILE_FORM_STATE;
+                    print('error from verificationFailed');
                   },
                   codeSent: (verificationId, resendingToken) async {
                     setState(() {
@@ -112,7 +149,17 @@ class _LoginRouteState extends State<LoginRoute> {
                       this.verificationId = verificationId;
                     });
                   },
-                  codeAutoRetrievalTimeout: (verificationId) async {});
+                  codeAutoRetrievalTimeout: (verificationId) async {},
+                );
+              } else {
+                print('line149');
+                //register
+                setState(() {
+                  showLoading = false;
+                });
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => RegisterRoute()));
+              }
             },
             style: ButtonStyle(
               shape: MaterialStateProperty.all(RoundedRectangleBorder(
