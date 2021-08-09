@@ -1,13 +1,9 @@
-import 'package:do_it_church/screens/notice_new.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:do_it_church/screens/home.dart';
 import 'chat.dart';
 import 'guide.dart';
 import 'more.dart';
-import 'notice_list.dart';
-import 'mypage.dart';
-import 'package:do_it_church/components/notice.dart';
 
 class LandingRoute extends StatefulWidget {
   @override

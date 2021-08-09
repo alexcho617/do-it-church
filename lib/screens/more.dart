@@ -16,7 +16,7 @@ class _MoreRouteState extends State<MoreRoute> {
       final user = _auth.currentUser;
       if (user != null) {
         User loggedInUser = user;
-        print('SUCCESS(more_screen): Signed in As:${loggedInUser.email}');
+        print('SUCCESS(more_screen): Signed in As:${loggedInUser.phoneNumber}');
       }
     } catch (e) {
       print(e);
@@ -40,19 +40,7 @@ class _MoreRouteState extends State<MoreRoute> {
         centerTitle: true,
         title: Text(
           '모아보기',
-          style: TextStyle(
-              fontSize: 15,
-              color: Colors.black
-          ),
-        ),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_rounded),
-          onPressed: () {
-            _auth.signOut();
-            print('SUCCESS(more_screen): Sign Out');
-            Navigator.pop(context);
-            setState(() {});
-          },
+          style: TextStyle(fontSize: 15, color: Colors.black),
         ),
         leadingWidth: 20,
       ),
@@ -62,4 +50,3 @@ class _MoreRouteState extends State<MoreRoute> {
     );
   }
 }
-

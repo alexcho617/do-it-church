@@ -15,6 +15,25 @@ class HomeRoute extends StatefulWidget {
 class _HomeRouteState extends State<HomeRoute> {
   final _auth = FirebaseAuth.instance;
 
+  void getCurrentUser() async {
+    try {
+      final user = _auth.currentUser;
+      if (user != null) {
+        User loggedInUser = user;
+        print('SUCCESS(home_screen): Signed in As:${loggedInUser.phoneNumber}');
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getCurrentUser();
+  }
+
   @override
   Widget build(BuildContext context) {
     // var mediaQuery = MediaQuery.of(context);

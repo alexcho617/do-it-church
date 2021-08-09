@@ -19,7 +19,8 @@ class _NoticeListRouteState extends State<NoticeListRoute> {
       final user = _auth.currentUser;
       if (user != null) {
         User loggedInUser = user;
-        print('SUCCESS(notice_screen): Signed in As:${loggedInUser.email}');
+        print(
+            'SUCCESS(notice_list_screen): Signed in As:${loggedInUser.phoneNumber}');
       }
     } catch (e) {
       print(e);
@@ -51,9 +52,6 @@ class _NoticeListRouteState extends State<NoticeListRoute> {
         leading: IconButton(
             icon: Icon(Icons.arrow_back_ios_rounded),
             onPressed: () {
-              _auth.signOut();
-              print('SUCCESS(notice_screen): Sign Out');
-              Navigator.pop(context);
               setState(() {
                 //
               });

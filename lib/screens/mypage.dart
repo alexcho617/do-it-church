@@ -1,8 +1,6 @@
 import 'package:do_it_church/screens/login.dart';
 import 'package:flutter/material.dart';
 import 'login.dart';
-import 'notice_list.dart';
-import 'package:do_it_church/components/notice.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class MypageRoute extends StatefulWidget {
@@ -12,6 +10,26 @@ class MypageRoute extends StatefulWidget {
 
 class _MypageRouteState extends State<MypageRoute> {
   final _auth = FirebaseAuth.instance;
+
+  void getCurrentUser() async {
+    try {
+      final user = _auth.currentUser;
+      if (user != null) {
+        User loggedInUser = user;
+        print(
+            'SUCCESS(mypage_screen): Signed in As:${loggedInUser.phoneNumber}');
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getCurrentUser();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +79,7 @@ class _MypageRouteState extends State<MypageRoute> {
             child: OutlinedButton(
               onPressed: () async {
                 await _auth.signOut();
-
+                print('SUCCESS(mypage_screen): Signed out');
                 Navigator.popUntil(
                     context, (Route<dynamic> route) => route.isFirst);
 
