@@ -1,5 +1,5 @@
+import 'package:do_it_church/screens/landing_route.dart';
 import 'package:flutter/material.dart';
-import 'package:do_it_church/components/loginWidget.dart';
 import 'package:do_it_church/constants.dart';
 import 'package:do_it_church/screens/register.dart';
 import 'package:do_it_church/screens/find_id.dart';
@@ -41,7 +41,7 @@ class _LoginRouteState extends State<LoginRoute> {
       });
       if (authCredential.user != null) {
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => HomeRoute()));
+            context, MaterialPageRoute(builder: (context) => LandingRoute()));
       }
     } on Exception catch (e) {
       print(e);

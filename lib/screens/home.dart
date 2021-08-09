@@ -236,36 +236,6 @@ class _HomeRouteState extends State<HomeRoute> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        backgroundColor: Colors.white,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home_rounded),
-            label: '홈',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.chat_rounded),
-            label: '채팅',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.grass_rounded),
-            label: '활동가이드',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.grid_view_rounded),
-            label: '모아보기',
-          ),
-        ],
-        currentIndex: screenIndex,
-        selectedItemColor: Color(0xff89A1F8),
-        unselectedItemColor: Color(0xffE5E5E5),
-        onTap: (value) {
-          setState(() {
-            screenIndex = value;
-          });
-        },
-      ),
     );
   }
 }
