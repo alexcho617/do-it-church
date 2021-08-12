@@ -16,7 +16,8 @@ class _GuideRouteState extends State<GuideRoute> {
       final user = _auth.currentUser;
       if (user != null) {
         User loggedInUser = user;
-        print('SUCCESS(guide_screen): Signed in As:${loggedInUser.email}');
+        print(
+            'SUCCESS(guide_screen): Signed in As:${loggedInUser.phoneNumber}');
       }
     } catch (e) {
       print(e);
@@ -40,19 +41,7 @@ class _GuideRouteState extends State<GuideRoute> {
         centerTitle: true,
         title: Text(
           '활동 가이드',
-          style: TextStyle(
-              fontSize: 15,
-              color: Colors.black
-          ),
-        ),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_rounded),
-          onPressed: () {
-            _auth.signOut();
-            print('SUCCESS(guide_screen): Sign Out');
-            Navigator.pop(context);
-            setState(() {});
-          },
+          style: TextStyle(fontSize: 15, color: Colors.black),
         ),
         leadingWidth: 20,
       ),
@@ -62,4 +51,3 @@ class _GuideRouteState extends State<GuideRoute> {
     );
   }
 }
-

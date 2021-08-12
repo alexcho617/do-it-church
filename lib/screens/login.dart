@@ -1,10 +1,15 @@
+import 'package:do_it_church/screens/landing_route.dart';
+import 'package:flutter/material.dart';
 import 'package:do_it_church/constants.dart';
-import 'package:do_it_church/screens/home.dart';
 import 'package:do_it_church/screens/register.dart';
 import 'package:do_it_church/screens/find_id.dart';
-import 'package:flutter/material.dart';
-import 'notice_list.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'home.dart';
+
+enum MobileVerificationState {
+  SHOW_MOBILE_FORM_STATE,
+  SHOW_OPT_FORM_STATE,
+}
 
 //LOG IN SCREEN///////////////////////////////
 class LoginRoute extends StatefulWidget {
@@ -15,23 +20,213 @@ class LoginRoute extends StatefulWidget {
 }
 
 class _LoginRouteState extends State<LoginRoute> {
-  final _auth = FirebaseAuth.instance;
-  String userEmail = '';
-  String passWord = '';
+  MobileVerificationState currentState =
+      MobileVerificationState.SHOW_MOBILE_FORM_STATE;
+  FirebaseAuth _auth = FirebaseAuth.instance;
+  String verificationId = '';
+  bool showLoading = false;
 
+  void signInWithPhoneAuthCredential(
+      PhoneAuthCredential phoneAuthCredential) async {
+    setState(() {
+      showLoading = true;
+    });
+
+    try {
+      final authCredential =
+          await _auth.signInWithCredential(phoneAuthCredential);
+      setState(() {
+        showLoading = false;
+      });
+      if (authCredential.user != null) {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => LandingRoute()));
+      }
+    } on Exception catch (e) {
+      setState(() {
+        showLoading = false;
+        //TODO 2:Add some kind of snackbar
+        print('err from signInWithPhoneAUthCredential function call back');
+        currentState = MobileVerificationState.SHOW_MOBILE_FORM_STATE;
+      });
+      print(e);
+    }
+  }
+
+  getMobileFormWidget(context) {
+    final phoneController = TextEditingController();
+    final textInput = '핸드폰번호';
+    final buttonInput = '인증코드 받기';
+
+    return (Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4),
+          child: TextField(
+            controller: phoneController,
+            decoration: InputDecoration(
+              border: OutlineInputBorder(),
+              labelText: textInput,
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4),
+          child: ElevatedButton(
+            //invoke firebase auth
+            onPressed: () async {
+              setState(() {
+                showLoading = true;
+              });
+              //TODO 1:check if number is in database
+              await _auth.verifyPhoneNumber(
+                  phoneNumber: phoneController.text,
+                  verificationCompleted: (phoneAuthCredential) async {
+                    setState(() {
+                      showLoading = false;
+                    });
+                    signInWithPhoneAuthCredential(
+                        phoneAuthCredential); //not needed yet
+                  },
+                  verificationFailed: (verificationFailed) async {
+                    setState(() {
+                      showLoading = false;
+                    });
+                    // _scaffoldKey.currentState.showSnackBar(
+                    //     SnackBar(content: Text(verificationFailed.message)));
+                    print(verificationFailed.message);
+                    setState(() {
+                      showLoading = false;
+                    });
+                    print('error from verificatinofailed');
+                    currentState =
+                        MobileVerificationState.SHOW_MOBILE_FORM_STATE;
+                  },
+                  codeSent: (verificationId, resendingToken) async {
+                    setState(() {
+                      showLoading = false;
+                      currentState =
+                          MobileVerificationState.SHOW_OPT_FORM_STATE;
+                      this.verificationId = verificationId;
+                    });
+                  },
+                  codeAutoRetrievalTimeout: (verificationId) async {});
+            },
+            style: ButtonStyle(
+              shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30.0))),
+              backgroundColor:
+                  MaterialStateProperty.all<Color>(Color(0xFF89A1F8)),
+            ),
+            child: Text(
+              buttonInput,
+              style: kLogInButtonTextStyle,
+            ),
+          ),
+        ),
+        //login button
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: TextButton(
+                style: TextButton.styleFrom(primary: Colors.black54),
+                child: Text('회원가입'),
+                onPressed: () {
+                  setState(() {
+                    print('register button pressed');
+                  });
+
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => RegisterRoute()),
+                  );
+                },
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: TextButton(
+                style: TextButton.styleFrom(primary: Colors.black54),
+                child: Text('이메일/비밀번호 찾기'),
+                onPressed: () {
+                  setState(() {
+                    print('find id/pw  button pressed');
+                  });
+
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => FindId()),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ],
+    ));
+  }
+
+  getOtpFormWidget(context) {
+    final otpController = TextEditingController();
+    final textInput = '인증코드';
+    final buttonInput = '인증하기';
+
+    return (Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4),
+          child: TextField(
+            controller: otpController,
+            decoration: InputDecoration(
+              border: OutlineInputBorder(),
+              labelText: textInput,
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4),
+          child: ElevatedButton(
+            //invoke firebase auth
+            onPressed: () async {
+              PhoneAuthCredential phoneAuthCredential =
+                  PhoneAuthProvider.credential(
+                      verificationId: verificationId,
+                      smsCode: otpController.text);
+              signInWithPhoneAuthCredential(phoneAuthCredential);
+            },
+            style: ButtonStyle(
+              shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30.0))),
+              backgroundColor:
+                  MaterialStateProperty.all<Color>(Color(0xFF89A1F8)),
+            ),
+            child: Text(
+              buttonInput,
+              style: kLogInButtonTextStyle,
+            ),
+          ),
+        ),
+        //login button
+      ],
+    ));
+  }
+
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
+        key: _scaffoldKey,
         body: SafeArea(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              //Clip Oval로 이미지 적용시켜볼것
-              // ClipOval(
-              //   child: Image.asset('images/logo.png'),
-              // ),
-              //circle avatar도 좋으나 ListTile 과 주로 함께 프로필사진 쓰는용도임
               Hero(
                 tag: 'logo',
                 child: CircleAvatar(
@@ -43,121 +238,16 @@ class _LoginRouteState extends State<LoginRoute> {
               SizedBox(
                 height: 20,
               ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16.0, vertical: 4),
-                    child: TextField(
-                      onChanged: (value1) => userEmail = value1,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: '이메일',
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16.0, vertical: 4),
-                    child: TextField(
-                      onChanged: (value2) => passWord = value2,
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: '비밀번호',
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16.0, vertical: 4),
-                    child: ElevatedButton(
-                      style: ButtonStyle(
-                        shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30.0))),
-                        backgroundColor:
-                            MaterialStateProperty.all<Color>(Color(0xFF89A1F8)),
-                      ),
-                      child: Text(
-                        '로그인',
-                        style: kLogInButtonTextStyle,
-                      ),
-                      onPressed: () async {
-                        try {
-                          final newUser =
-                              await _auth.signInWithEmailAndPassword(
-                                  email: userEmail, password: passWord);
-
-                          if (newUser != null) {
-                            print('login success');
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => NoticeListRoute()),
-                            );
-                          }
-                        } catch (e) {
-                          print(e);
-                        }
-                        setState(() {
-                          //To change state here
-                        });
-                        print('User Email = $userEmail');
-                        print('Password = $passWord');
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => HomeRoute()),
-                        );
-
-                      },
-                    ),
-                  ),
-                  //login button
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: TextButton(
-                          style: TextButton.styleFrom(primary: Colors.black54),
-                          child: Text('회원가입'),
-                          onPressed: () {
-                            setState(() {
-                              print('register button pressed');
-                            });
-
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => RegisterRoute()),
-                            );
-                          },
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: TextButton(
-                          style: TextButton.styleFrom(primary: Colors.black54),
-                          child: Text('이메일/비밀번호 찾기'),
-                          onPressed: () {
-                            setState(() {
-                              print('find id/pw  button pressed');
-                            });
-
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => FindId()),
-                            );
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+              Container(
+                child: showLoading
+                    ? Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    : currentState ==
+                            MobileVerificationState.SHOW_MOBILE_FORM_STATE
+                        ? getMobileFormWidget(context)
+                        : getOtpFormWidget(context),
+              )
             ],
           ),
         ),

@@ -1,7 +1,7 @@
-import 'package:do_it_church/screens/notice_list.dart';
 import 'package:do_it_church/screens/notice_new.dart';
 import 'package:flutter/material.dart';
 import 'notice_new.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class NoticeDetail extends StatefulWidget {
   const NoticeDetail({Key? key}) : super(key: key);
@@ -10,15 +10,29 @@ class NoticeDetail extends StatefulWidget {
   NoticeDetailState createState() => NoticeDetailState();
 }
 
-
 class NoticeDetailState extends State<NoticeDetail> {
   // 텍스트필드 제어용 컨트롤러
   TextEditingController _textEditingController = TextEditingController();
 
+  final _auth = FirebaseAuth.instance;
+  void getCurrentUser() async {
+    try {
+      final user = _auth.currentUser;
+      if (user != null) {
+        User loggedInUser = user;
+        print(
+            'SUCCESS(notice_detail_screen): Signed in As:${loggedInUser.phoneNumber}');
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
   @override
   void initState() {
-    _textEditingController = TextEditingController();
     super.initState();
+    getCurrentUser();
+    _textEditingController = TextEditingController();
   }
 
   @override
@@ -29,12 +43,20 @@ class NoticeDetailState extends State<NoticeDetail> {
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
           backgroundColor: Colors.white,
+<<<<<<< HEAD
           title: Center(
             child: Text('공지사항보기',
               style: TextStyle(
                 fontSize: 15,
                 color: Colors.black,
               ),
+=======
+          title: Text(
+            '공지목록보기',
+            style: TextStyle(
+              fontSize: 15,
+              color: Colors.black,
+>>>>>>> 0c86d4fd5b6988771a6b6d2d7810f0b352b75c0a
             ),
           ),
           leading: IconButton(
@@ -42,9 +64,7 @@ class NoticeDetailState extends State<NoticeDetail> {
               color: Colors.black,
               onPressed: () {
                 Navigator.pop(context);
-                setState(() {
-
-                });
+                setState(() {});
               }),
           leadingWidth: 20,
           actions: [
@@ -56,15 +76,16 @@ class NoticeDetailState extends State<NoticeDetail> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                        builder: (context) => NoticeAddRoute()),
+                    MaterialPageRoute(builder: (context) => NoticeAddRoute()),
                   );
                   setState(() {});
-                }
-            ),
+                }),
           ],
         ),
+<<<<<<< HEAD
 //listview사용하기
+=======
+>>>>>>> 0c86d4fd5b6988771a6b6d2d7810f0b352b75c0a
         body: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
@@ -84,7 +105,6 @@ class NoticeDetailState extends State<NoticeDetail> {
               ),
 
               Container(
-
                 padding: EdgeInsets.all(20),
                 color: Colors.white,
                 child: Text(
@@ -96,15 +116,12 @@ class NoticeDetailState extends State<NoticeDetail> {
                 ),
               ),
 
-
               Container(
                 padding: EdgeInsets.all(4.0),
                 color: Colors.white38,
                 child: OutlineButton.icon(
-
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20)
-                  ),
+                      borderRadius: BorderRadius.circular(20)),
                   onPressed: () {},
                   icon: Icon(
                     Icons.share,
@@ -113,8 +130,6 @@ class NoticeDetailState extends State<NoticeDetail> {
                   label: Text('공유하기'),
                 ),
                 margin: const EdgeInsets.only(left: 10),
-
-
               ),
 
               //구분선 만들기
@@ -124,18 +139,15 @@ class NoticeDetailState extends State<NoticeDetail> {
                 color: Colors.black38,
               ),
 
-
               Container(
-
                 color: Colors.white38,
                 child: ListTile(
-                  //CircleAvatar() , use images from the images folder
+                    //CircleAvatar() , use images from the images folder
                     leading: CircleAvatar(
                       backgroundImage: AssetImage(
                           'images/pro.jpg'), //always add images in directory
                       maxRadius: 15,
                     ),
-
                     title: Text(
                       '김은희(소망반)',
                       style: TextStyle(
@@ -146,10 +158,8 @@ class NoticeDetailState extends State<NoticeDetail> {
                     subtitle: Text(
                       '확인완료했습니다! 이번에도 즐겁게!',
                       style: TextStyle(fontSize: 13),
-                    )
-                ),
+                    )),
               ),
-
 
               Container(
                 color: Colors.white38,
@@ -166,11 +176,11 @@ class NoticeDetailState extends State<NoticeDetail> {
                         fontSize: 15,
                       ),
                     ),
-                    subtitle: Text('확인완료했습니다! 잘 준비합시다',
-                      style: TextStyle(fontSize: 13),)
-                ),
+                    subtitle: Text(
+                      '확인완료했습니다! 잘 준비합시다',
+                      style: TextStyle(fontSize: 13),
+                    )),
               ),
-
 
               Container(
                 color: Colors.white38,
@@ -180,20 +190,23 @@ class NoticeDetailState extends State<NoticeDetail> {
                           'images/pro2.jpg'), //always add images in directory
                       maxRadius: 15,
                     ),
-                    title: Text('고은미(사랑반)',
+                    title: Text(
+                      '고은미(사랑반)',
                       style: TextStyle(
-                        fontWeight: FontWeight.bold, fontSize: 15,),),
-                    subtitle: Text('확인완료했습니다! 늘 신경써주셔서 감사해요!',
-                      style: TextStyle(fontSize: 13),)
-
-                ),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                      ),
+                    ),
+                    subtitle: Text(
+                      '확인완료했습니다! 늘 신경써주셔서 감사해요!',
+                      style: TextStyle(fontSize: 13),
+                    )),
               ),
 
               Container(
                 color: Colors.white38,
-
                 child: ListTile(
-                  //CircleAvatar() , use images from the images folder
+                    //CircleAvatar() , use images from the images folder
                     leading: CircleAvatar(
                       backgroundImage: AssetImage(
                           'images/pro3.jpg'), //always add images in directory
@@ -214,9 +227,8 @@ class NoticeDetailState extends State<NoticeDetail> {
 
               Container(
                 color: Colors.white38,
-
                 child: ListTile(
-                  //CircleAvatar() , use images from the images folder
+                    //CircleAvatar() , use images from the images folder
                     leading: CircleAvatar(
                       backgroundImage: AssetImage(
                           'images/pro4.jpg'), //always add images in directory
@@ -238,6 +250,7 @@ class NoticeDetailState extends State<NoticeDetail> {
 //댓글창 만들기
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 8.0),
+<<<<<<< HEAD
                 child: Row(
                   children: [
                     Expanded(
@@ -251,16 +264,28 @@ class NoticeDetailState extends State<NoticeDetail> {
                     ),
                     SizedBox(
                       width: 8.0,
+=======
+                child: Row(children: [
+                  Expanded(
+                    child: TextField(
+                      //style:TextStyle(height:0.01, fontSize: 12),
+                      controller: _textEditingController,
+                      decoration: InputDecoration(hintText: "댓글 입력창"),
+                      onSubmitted: _handleSubmitted,
+>>>>>>> 0c86d4fd5b6988771a6b6d2d7810f0b352b75c0a
                     ),
-                    FlatButton(
-                      onPressed: () {
-                        _handleSubmitted(_textEditingController.text);
-                      },
-                      child: Text("완료"),
-                        color: Colors.blueAccent,
-                      ),
-                  ]
-                ),
+                  ),
+                  SizedBox(
+                    width: 8.0,
+                  ),
+                  FlatButton(
+                    onPressed: () {
+                      _handleSubmitted(_textEditingController.text);
+                    },
+                    child: Text("완료"),
+                    color: Colors.blueAccent,
+                  ),
+                ]),
               ),
             ],
           ),
@@ -269,10 +294,6 @@ class NoticeDetailState extends State<NoticeDetail> {
     );
   }
 }
-
-
-
-
 
 void _handleSubmitted(String text) {
   print(text);

@@ -1,22 +1,23 @@
-import 'package:do_it_church/screens/notice_new.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:do_it_church/screens/home.dart';
 import 'chat.dart';
 import 'guide.dart';
 import 'more.dart';
-import 'notice_list.dart';
-import 'mypage.dart';
-import 'package:do_it_church/components/notice.dart';
 
-class MainRoute extends StatefulWidget {
+class LandingRoute extends StatefulWidget {
   @override
-  _MainRouteState createState() => _MainRouteState();
+  _LandingRouteState createState() => _LandingRouteState();
 }
 
-class _MainRouteState extends State<MainRoute> {
+class _LandingRouteState extends State<LandingRoute> {
   int screenIndex = 0;
-  final List <Widget> screenList = [HomeRoute(), ChatRoute(), GuideRoute(), MoreRoute()];
+  final List<Widget> screenList = [
+    HomeRoute(),
+    ChatRoute(),
+    GuideRoute(),
+    MoreRoute()
+  ];
   @override
   Widget build(BuildContext context) {
     // var mediaQuery = MediaQuery.of(context);
@@ -49,7 +50,7 @@ class _MainRouteState extends State<MainRoute> {
         currentIndex: screenIndex,
         selectedItemColor: Color(0xff89A1F8),
         unselectedItemColor: Color(0xffE5E5E5),
-        onTap: (value){
+        onTap: (value) {
           setState(() {
             screenIndex = value;
           });
