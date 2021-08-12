@@ -12,7 +12,8 @@ class NoticeDetail extends StatefulWidget {
 
 
 class NoticeDetailState extends State<NoticeDetail> {
-  late TextEditingController _textEditingController = TextEditingController();
+  // 텍스트필드 제어용 컨트롤러
+  TextEditingController _textEditingController = TextEditingController();
 
   @override
   void initState() {
@@ -28,10 +29,12 @@ class NoticeDetailState extends State<NoticeDetail> {
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
           backgroundColor: Colors.white,
-          title: Text('공지목록보기',
-            style: TextStyle(
-              fontSize: 15,
-              color: Colors.black,
+          title: Center(
+            child: Text('공지사항보기',
+              style: TextStyle(
+                fontSize: 15,
+                color: Colors.black,
+              ),
             ),
           ),
           leading: IconButton(
@@ -61,7 +64,7 @@ class NoticeDetailState extends State<NoticeDetail> {
             ),
           ],
         ),
-
+//listview사용하기
         body: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
@@ -71,7 +74,7 @@ class NoticeDetailState extends State<NoticeDetail> {
                 child: ListTile(
                     leading: Icon(Icons.menu),
                     title: Text(
-                      '6월 생일잔치 세부사항',
+                      '6월 생일잔치 알려드립니다.',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                     subtitle: Text(
@@ -240,6 +243,7 @@ class NoticeDetailState extends State<NoticeDetail> {
                     Expanded(
                       child: TextField(
                         //style:TextStyle(height:0.01, fontSize: 12),
+
                         controller: _textEditingController,
                         decoration: InputDecoration(hintText: "댓글 입력창"),
                         onSubmitted: _handleSubmitted,

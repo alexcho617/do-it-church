@@ -42,7 +42,7 @@ class _NoticeListRouteState extends State<NoticeListRoute> {
         backgroundColor: Colors.white,
         centerTitle: true,
         title: Text(
-          '공지사항',
+          '공지목록보기',
           style: TextStyle(
             fontSize: 15,
             color: Colors.black,
