@@ -1,12 +1,10 @@
 class Notice {
-  Notice({this.date, this.likes, this.writer}); //constructor
-  //date
-  //writer
-  //contents
-  //title
-  //likes
-  //comments
+  Notice({this.title, this.date, this.writer, this.contents}); //constructor
+  var title;
   var date;
   var writer;
-  var likes;
+  var contents;
+  //likes
+  //comments
+
 }
