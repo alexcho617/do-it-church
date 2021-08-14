@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:do_it_church/screens/notice_new.dart';
 import 'package:flutter/material.dart';
 import 'notice_new.dart';
@@ -14,6 +15,10 @@ class NoticeDetailState extends State<NoticeDetail> {
   late TextEditingController _textEditingController = TextEditingController();
 
   final _auth = FirebaseAuth.instance;
+  final firestore = FirebaseFirestore.instance;
+
+  //Notice notice = Notice();
+
   void getCurrentUser() async {
     try {
       final user = _auth.currentUser;
@@ -77,19 +82,35 @@ class NoticeDetailState extends State<NoticeDetail> {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: <Widget>[
               Container(
-                color: Colors.white,
-                child: ListTile(
-                    leading: Icon(Icons.menu),
-                    title: Text(
-                      '6월 생일잔치 세부사항',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    subtitle: Text(
-                      '2021년 6월 30일, 박강두 전도사',
-                      style: TextStyle(fontSize: 10),
-                    )),
-              ),
-
+                color: Colors.white,child: StreamBuilder<QuerySnapshot>(
+                  stream: firestore.collection('Notice').snapshots(),
+                  builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                    if(!snapshot.hasData) return CircularProgressIndicator();
+                        return
+                          SizedBox(
+                            height: 80,
+                            child: ListView(
+                            children: (snapshot.data!).docs.map((DocumentSnapshot document){
+                              return
+                                ListTile(
+                                  leading: Icon(Icons.menu),
+                                  title: Text(
+                                    document.get("title").toString(),
+                                    //'6월 생일잔치 세부사항',
+                                    style: TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                  subtitle: Text(
+                                    document.get("writer").toString(),
+                                    //'2021년 6월 30일, 박강두 전도사',
+                                    style: TextStyle(fontSize: 10),
+                                  )
+                              );
+                            }).toList(),
+                          ),
+                        );
+                    }
+                  )
+                ),
               Container(
                 padding: EdgeInsets.all(20),
                 color: Colors.white,

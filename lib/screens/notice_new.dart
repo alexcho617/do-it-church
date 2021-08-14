@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:do_it_church/components/notice.dart';
 
 class NoticeAddRoute extends StatefulWidget {
   @override
@@ -8,6 +10,11 @@ class NoticeAddRoute extends StatefulWidget {
 
 class _NoticeAddRouteState extends State<NoticeAddRoute> {
   final _auth = FirebaseAuth.instance;
+  final firestore = FirebaseFirestore.instance;
+
+  Notice notice = Notice();
+
+
   void getCurrentUser() async {
     try {
       final user = _auth.currentUser;
@@ -28,8 +35,8 @@ class _NoticeAddRouteState extends State<NoticeAddRoute> {
   }
 
   @override
-  String noticeTitle = '';
-  String noticeContents = '';
+  //String noticeTitle = '';
+  //String noticeContents = '';
   Widget build(BuildContext context) {
     // var mediaQuery = MediaQuery.of(context);
     // final size = mediaQuery.size.width;
@@ -68,8 +75,14 @@ class _NoticeAddRouteState extends State<NoticeAddRoute> {
                 style: TextStyle(color: Colors.red),
               ),
               onPressed: () {
-                print('New Notice Title = $noticeTitle');
-                print('New Notice Contents = $noticeContents');
+                firestore.collection('Notice').add({
+                  'title': notice.title,
+                  'contents': notice.contents,
+                  'writer' : notice.writer,
+                  'date' : Timestamp.now(),
+                });
+                //print('New Notice Title = $noticeTitle');
+                //print('New Notice Contents = $noticeContents');
                 Navigator.pop(context);
               }),
         ],
@@ -83,7 +96,7 @@ class _NoticeAddRouteState extends State<NoticeAddRoute> {
               children: [
                 TextField(
                   autocorrect: true,
-                  onChanged: (value3) => noticeTitle = value3,
+                  onChanged: (value3) => notice.title = value3,
                   decoration: InputDecoration(
                     border: InputBorder.none,
                     hintText: '새로운 공지의 제목을 적어보세요',
@@ -91,7 +104,7 @@ class _NoticeAddRouteState extends State<NoticeAddRoute> {
                 ),
                 Divider(),
                 TextField(
-                  onChanged: (value4) => noticeContents = value4,
+                  onChanged: (value4) => notice.contents = value4,
                   decoration: InputDecoration(
                     border: InputBorder.none,
                     hintText: '여기를 눌러 새로운 공지를 적어보세요',
