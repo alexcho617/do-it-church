@@ -48,14 +48,14 @@ class _LoginRouteState extends State<LoginRoute> {
         User loggedInUser = user!;
 
         if (phoneNumbers.contains(loggedInUser.phoneNumber)) {
-          Navigator.push(
+          Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => LandingRoute()));
         } else {
           _firestore.collection('userPhoneNumber').add({
             'phoneNumber': loggedInUser.phoneNumber,
           });
 
-          Navigator.push(
+          Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => LandingRoute()));
         }
       }
@@ -83,6 +83,7 @@ class _LoginRouteState extends State<LoginRoute> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4),
           child: TextField(
+            keyboardType: TextInputType.phone,
             controller: phoneController,
             decoration: InputDecoration(
               border: OutlineInputBorder(),
@@ -116,13 +117,14 @@ class _LoginRouteState extends State<LoginRoute> {
               //get all phoneNumbers
               //TODO 1:check if number is in database
               if (phoneNumbers.contains(processedPhoneNumber)) {
-                print('line113');
+                print('number is included in database');
                 //login
                 await _auth.verifyPhoneNumber(
                   phoneNumber: processedPhoneNumber,
                   //phoneNumber: phoneController.text,
                   verificationCompleted: (phoneAuthCredential) async {
                     setState(() {
+                      print('verificationCompleted');
                       showLoading = false;
                     });
                     signInWithPhoneAuthCredential(
@@ -130,6 +132,7 @@ class _LoginRouteState extends State<LoginRoute> {
                   },
                   verificationFailed: (verificationFailed) async {
                     setState(() {
+                      print('verificationFailed');
                       showLoading = false;
                     });
 
@@ -142,6 +145,7 @@ class _LoginRouteState extends State<LoginRoute> {
                     print('error from verificationFailed');
                   },
                   codeSent: (verificationId, resendingToken) async {
+                    print('codeSent');
                     setState(() {
                       showLoading = false;
                       currentState =
@@ -152,7 +156,7 @@ class _LoginRouteState extends State<LoginRoute> {
                   codeAutoRetrievalTimeout: (verificationId) async {},
                 );
               } else {
-                print('line149');
+                print('number not in database, proceed to register new user');
                 //register
                 setState(() {
                   showLoading = false;
@@ -229,6 +233,7 @@ class _LoginRouteState extends State<LoginRoute> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4),
           child: TextField(
+            keyboardType: TextInputType.phone,
             controller: otpController,
             decoration: InputDecoration(
               border: OutlineInputBorder(),
