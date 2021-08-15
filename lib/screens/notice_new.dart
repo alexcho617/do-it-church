@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -48,6 +49,7 @@ class _NoticeAddRouteState extends State<NoticeAddRoute> {
       Text('모아보기화면')
     ];
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -60,6 +62,7 @@ class _NoticeAddRouteState extends State<NoticeAddRoute> {
           ),
         ),
         leading: IconButton(
+            color: Colors.black54,
             icon: Icon(Icons.cancel_outlined),
             onPressed: () {
               Navigator.pop(context);
@@ -87,34 +90,58 @@ class _NoticeAddRouteState extends State<NoticeAddRoute> {
               }),
         ],
       ),
+
+
       body: Center(
           child: Column(
-        children: [
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            child: Column(
-              children: [
-                TextField(
-                  autocorrect: true,
-                  onChanged: (value3) => notice.title = value3,
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                    hintText: '새로운 공지의 제목을 적어보세요',
-                  ),
+            children: [
+              Container(
+                height: 450,
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                child: Column(
+                  children: [
+                    TextField(
+                      autocorrect: true,
+                      onChanged: (value3) => notice.title = value3,
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        hintText: '제목',
+                        hintStyle: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    Divider(),
+                    TextField(
+                      onChanged: (value4) => notice.contents = value4,
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        hintText: '여기 내용을 입력하세요',
+                      ),
+                    ),
+                  ],
                 ),
-                Divider(),
-                TextField(
-                  onChanged: (value4) => notice.contents = value4,
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                    hintText: '여기를 눌러 새로운 공지를 적어보세요',
+              ),
+                  Divider(
+                    thickness:1.0,
+                    indent: 15,
+                    endIndent: 15,
                   ),
+
+              Container(
+                child:Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    IconButton(
+                        icon: Icon(Icons.add_to_photos),
+                        onPressed: (){
+
+                        }
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          ),
-        ],
-      )),
+              ),
+            ],
+          )
+      ),
     );
   }
 }
