@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+
 import '../components/customUser.dart';
 import 'package:do_it_church/constants.dart';
-import 'notice_list.dart';
+
+import 'landing_route.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -13,10 +16,48 @@ class RegisterRoute extends StatefulWidget {
 
 class _RegisterRouteState extends State<RegisterRoute> {
   final _auth = FirebaseAuth.instance;
-  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  final phoneController = TextEditingController();
+  final otpController = TextEditingController();
+  String verificationId = '';
 
   CustomUser myUser = CustomUser();
   String name = '';
+
+  void signInWithPhoneAuthCredential(
+      PhoneAuthCredential phoneAuthCredential) async {
+    setState(() {
+      //showLoading = true;
+    });
+
+    try {
+      final authCredential =
+          await _auth.signInWithCredential(phoneAuthCredential);
+      setState(() {
+        //showLoading = false;
+      });
+      if (authCredential.user != null) {
+        //add to firestore
+        final user = _auth.currentUser;
+        User loggedInUser = user!;
+        _firestore.collection('userPhoneNumber').add({
+          'phoneNumber': loggedInUser.phoneNumber,
+        });
+
+        //CollectionReference member = FirebaseFirestore.instance.collection('member');
+        _firestore.collection('Users').add({
+          'email': myUser.email,
+          'name': myUser.name,
+          'phone_num': myUser.phoneNumber
+        });
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => LandingRoute()));
+      }
+    } on Exception catch (e) {
+      print(e);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,55 +93,45 @@ class _RegisterRouteState extends State<RegisterRoute> {
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: ElevatedButton(
-                  child: Text(
-                    '중복확인',
-                    style: kElevatedButtonTextStyle,
-                  ),
-                  style: ButtonStyle(
-                    shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30.0))),
-                    backgroundColor:
-                        MaterialStateProperty.all<Color>(Color(0xFF89A1F8)),
-                  ),
-                  onPressed: () {
-                    String checkID = myUser.email;
-                    showDialog<void>(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: Text('삐빅!! $checkID'),
-                          content: Text('안돼 돌아가'),
-                          actions: <Widget>[
-                            TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              child: const Text('돌아가자ㅜ'),
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                    setState(() {
-                      //To change state here
-                    });
-                  },
-                ),
-              ),
+              // Padding(
+              //   padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              //   child: ElevatedButton(
+              //     child: Text(
+              //       '중복확인',
+              //       style: kElevatedButtonTextStyle,
+              //     ),
+              //     style: ButtonStyle(
+              //       shape: MaterialStateProperty.all(RoundedRectangleBorder(
+              //           borderRadius: BorderRadius.circular(30.0))),
+              //       backgroundColor:
+              //           MaterialStateProperty.all<Color>(Color(0xFF89A1F8)),
+              //     ),
+              //     onPressed: () {
+              //       String checkID = myUser.email;
+              //       showDialog<void>(
+              //         context: context,
+              //         builder: (BuildContext context) {
+              //           return AlertDialog(
+              //             title: Text('삐빅!! $checkID'),
+              //             content: Text('안돼 돌아가'),
+              //             actions: <Widget>[
+              //               TextButton(
+              //                 onPressed: () {
+              //                   Navigator.pop(context);
+              //                 },
+              //                 child: const Text('돌아가자ㅜ'),
+              //               ),
+              //             ],
+              //           );
+              //         },
+              //       );
+              //       setState(() {
+              //         //To change state here
+              //       });
+              //     },
+              //   ),
+              // ),
             ],
-          ),
-          Flexible(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: TextField(
-                obscureText: true,
-                onChanged: (textPW) => myUser.password = textPW,
-                decoration: const InputDecoration(labelText: "비밀번호"),
-              ),
-            ),
           ),
           Flexible(
             child: Padding(
@@ -118,6 +149,7 @@ class _RegisterRouteState extends State<RegisterRoute> {
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: TextField(
+                    controller: phoneController,
                     onChanged: (textPhone) => myUser.phoneNumber = textPhone,
                     decoration: const InputDecoration(labelText: "전화번호"),
                   ),
@@ -136,37 +168,56 @@ class _RegisterRouteState extends State<RegisterRoute> {
                     backgroundColor:
                         MaterialStateProperty.all<Color>(Color(0xFF89A1F8)),
                   ),
-                  onPressed: () {
-                    String checkPhone = myUser.phoneNumber;
-                    showDialog<void>(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: Text('니 전화번호~'),
-                          content: Text('$checkPhone'),
-                          actions: <Widget>[
-                            TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              child: const Text('수고!'),
-                            ),
-                          ],
-                        );
+                  onPressed: () async {
+                    String processedPhoneNumber =
+                        '+8210' + phoneController.text;
+                    await _auth.verifyPhoneNumber(
+                      phoneNumber: processedPhoneNumber,
+                      //phoneNumber: phoneController.text,
+                      verificationCompleted: (phoneAuthCredential) async {
+                        setState(() {
+                          print('verificationCompleted');
+                          //showLoading = false;
+                        });
+                        signInWithPhoneAuthCredential(
+                            phoneAuthCredential); //not needed yet
                       },
+                      verificationFailed: (verificationFailed) async {
+                        setState(() {
+                          print('verificationFailed');
+                          //showLoading = false;
+                        });
+
+                        print(verificationFailed.message);
+                        setState(() {
+                          //showLoading = false;
+                          // currentState =
+                          //     MobileVerificationState.SHOW_MOBILE_FORM_STATE;
+                        });
+                        print('error from verificationFailed');
+                      },
+                      codeSent: (verificationId, resendingToken) async {
+                        print('codeSent');
+                        setState(() {
+                          //showLoading = false;
+                          // currentState =
+                          //     MobileVerificationState.SHOW_OPT_FORM_STATE;
+                          this.verificationId = verificationId;
+                        });
+                      },
+                      codeAutoRetrievalTimeout: (verificationId) async {},
                     );
-                    setState(() {
-                      //To change state here
-                    });
                   },
                 ),
               ),
             ],
           ),
+          //authentication code
           Flexible(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: TextField(
+                controller: otpController,
                 //onChanged: (textAuthen) => authenticationCode = textAuthen,
                 decoration: const InputDecoration(labelText: "인증번호"),
               ),
@@ -199,30 +250,17 @@ class _RegisterRouteState extends State<RegisterRoute> {
               ),
               onPressed: () async {
                 try {
-                  final newUser = await _auth.createUserWithEmailAndPassword(
-                      email: myUser.email, password: myUser.password);
-
-                  //CollectionReference member = FirebaseFirestore.instance.collection('member');
-                  firestore.collection('member').add({
-                    'email': myUser.email,
-                    'name': myUser.name,
-                    'password': myUser.password,
-                    'phone_num': myUser.phoneNumber
-                  });
-
-                  if (newUser != null) {
-                    print('login success');
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => NoticeListRoute()),
-                    );
-                  }
+                  //make credential
+                  PhoneAuthCredential phoneAuthCredential =
+                      PhoneAuthProvider.credential(
+                          verificationId: verificationId,
+                          smsCode: otpController.text);
+                  //function call
+                  signInWithPhoneAuthCredential(phoneAuthCredential);
                 } catch (e) {
                   print(e);
                 }
                 print(myUser.email);
-                print(myUser.password);
                 print(myUser.name);
                 print(myUser.phoneNumber);
                 setState(() {

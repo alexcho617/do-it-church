@@ -96,6 +96,7 @@ class _LoginRouteState extends State<LoginRoute> {
           child: ElevatedButton(
             //invoke firebase auth
             onPressed: () async {
+              //this cannot happen because of authorization rule.
               await _firestore
                   .collection("userPhoneNumber")
                   .get()
@@ -116,6 +117,7 @@ class _LoginRouteState extends State<LoginRoute> {
               String processedPhoneNumber = '+8210' + phoneController.text;
               //get all phoneNumbers
               //TODO 1:check if number is in database
+              //cannot happen because authorization rule. if i leave it empty then we may expose all users number.
               if (phoneNumbers.contains(processedPhoneNumber)) {
                 print('number is included in database');
                 //login
@@ -191,7 +193,7 @@ class _LoginRouteState extends State<LoginRoute> {
                     print('register button pressed');
                   });
 
-                  Navigator.push(
+                  Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(builder: (context) => RegisterRoute()),
                   );
