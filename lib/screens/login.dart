@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:do_it_church/constants.dart';
 import 'package:do_it_church/screens/register.dart';
 import 'package:do_it_church/screens/find_id.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 enum MobileVerificationState {
   SHOW_MOBILE_FORM_STATE,
@@ -24,11 +24,9 @@ class _LoginRouteState extends State<LoginRoute> {
       MobileVerificationState.SHOW_MOBILE_FORM_STATE;
 
   FirebaseAuth _auth = FirebaseAuth.instance;
-  FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   String verificationId = '';
   bool showLoading = false;
-  List<dynamic> phoneNumbers = [];
 
   void signInWithPhoneAuthCredential(
       PhoneAuthCredential phoneAuthCredential) async {
@@ -46,18 +44,8 @@ class _LoginRouteState extends State<LoginRoute> {
         //add to firestore
         final user = _auth.currentUser;
         User loggedInUser = user!;
-
-        if (phoneNumbers.contains(loggedInUser.phoneNumber)) {
-          Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => LandingRoute()));
-        } else {
-          _firestore.collection('userPhoneNumber').add({
-            'phoneNumber': loggedInUser.phoneNumber,
-          });
-
-          Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => LandingRoute()));
-        }
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => LandingRoute()));
       }
     } on Exception catch (e) {
       setState(() {
@@ -96,19 +84,8 @@ class _LoginRouteState extends State<LoginRoute> {
           child: ElevatedButton(
             //invoke firebase auth
             onPressed: () async {
-              await _firestore
-                  .collection("userPhoneNumber")
-                  .get()
-                  .then((querySnapshot) {
-                querySnapshot.docs.forEach((result) {
-                  print(result.get('phoneNumber'));
-                  if (phoneNumbers.contains(result.get('phoneNumber')) ==
-                      false) {
-                    phoneNumbers.add(result.get('phoneNumber'));
-                  }
-                });
-              });
-              print(phoneNumbers);
+              //this cannot happen because of authorization rule.
+
               setState(() {
                 showLoading = true;
               });
@@ -116,54 +93,41 @@ class _LoginRouteState extends State<LoginRoute> {
               String processedPhoneNumber = '+8210' + phoneController.text;
               //get all phoneNumbers
               //TODO 1:check if number is in database
-              if (phoneNumbers.contains(processedPhoneNumber)) {
-                print('number is included in database');
-                //login
-                await _auth.verifyPhoneNumber(
-                  phoneNumber: processedPhoneNumber,
-                  //phoneNumber: phoneController.text,
-                  verificationCompleted: (phoneAuthCredential) async {
-                    setState(() {
-                      print('verificationCompleted');
-                      showLoading = false;
-                    });
-                    signInWithPhoneAuthCredential(
-                        phoneAuthCredential); //not needed yet
-                  },
-                  verificationFailed: (verificationFailed) async {
-                    setState(() {
-                      print('verificationFailed');
-                      showLoading = false;
-                    });
+              //login
+              await _auth.verifyPhoneNumber(
+                phoneNumber: processedPhoneNumber,
+                verificationCompleted: (phoneAuthCredential) async {
+                  setState(() {
+                    print('verificationCompleted');
+                    showLoading = false;
+                  });
+                  signInWithPhoneAuthCredential(
+                      phoneAuthCredential); //not needed yet
+                },
+                verificationFailed: (verificationFailed) async {
+                  setState(() {
+                    print('verificationFailed');
+                    showLoading = false;
+                  });
 
-                    print(verificationFailed.message);
-                    setState(() {
-                      showLoading = false;
-                      currentState =
-                          MobileVerificationState.SHOW_MOBILE_FORM_STATE;
-                    });
-                    print('error from verificationFailed');
-                  },
-                  codeSent: (verificationId, resendingToken) async {
-                    print('codeSent');
-                    setState(() {
-                      showLoading = false;
-                      currentState =
-                          MobileVerificationState.SHOW_OPT_FORM_STATE;
-                      this.verificationId = verificationId;
-                    });
-                  },
-                  codeAutoRetrievalTimeout: (verificationId) async {},
-                );
-              } else {
-                print('number not in database, proceed to register new user');
-                //register
-                setState(() {
-                  showLoading = false;
-                });
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => RegisterRoute()));
-              }
+                  print(verificationFailed.message);
+                  setState(() {
+                    showLoading = false;
+                    currentState =
+                        MobileVerificationState.SHOW_MOBILE_FORM_STATE;
+                  });
+                  print('error from verificationFailed');
+                },
+                codeSent: (verificationId, resendingToken) async {
+                  print('codeSent');
+                  setState(() {
+                    showLoading = false;
+                    currentState = MobileVerificationState.SHOW_OPT_FORM_STATE;
+                    this.verificationId = verificationId;
+                  });
+                },
+                codeAutoRetrievalTimeout: (verificationId) async {},
+              );
             },
             style: ButtonStyle(
               shape: MaterialStateProperty.all(RoundedRectangleBorder(
@@ -191,7 +155,7 @@ class _LoginRouteState extends State<LoginRoute> {
                     print('register button pressed');
                   });
 
-                  Navigator.push(
+                  Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(builder: (context) => RegisterRoute()),
                   );
