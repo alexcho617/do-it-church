@@ -41,12 +41,15 @@ class _RegisterRouteState extends State<RegisterRoute> {
         //add to firestore
         final user = _auth.currentUser;
         User loggedInUser = user!;
-        _firestore.collection('userPhoneNumber').add({
+        await _firestore
+            .collection('userPhoneNumber')
+            .doc(loggedInUser.uid)
+            .set({
           'phoneNumber': loggedInUser.phoneNumber,
         });
 
         //CollectionReference member = FirebaseFirestore.instance.collection('member');
-        _firestore.collection('Users').add({
+        await _firestore.collection('Users').doc(loggedInUser.uid).set({
           'email': myUser.email,
           'name': myUser.name,
           'phone_num': myUser.phoneNumber
@@ -93,44 +96,6 @@ class _RegisterRouteState extends State<RegisterRoute> {
                   ),
                 ),
               ),
-              // Padding(
-              //   padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              //   child: ElevatedButton(
-              //     child: Text(
-              //       '중복확인',
-              //       style: kElevatedButtonTextStyle,
-              //     ),
-              //     style: ButtonStyle(
-              //       shape: MaterialStateProperty.all(RoundedRectangleBorder(
-              //           borderRadius: BorderRadius.circular(30.0))),
-              //       backgroundColor:
-              //           MaterialStateProperty.all<Color>(Color(0xFF89A1F8)),
-              //     ),
-              //     onPressed: () {
-              //       String checkID = myUser.email;
-              //       showDialog<void>(
-              //         context: context,
-              //         builder: (BuildContext context) {
-              //           return AlertDialog(
-              //             title: Text('삐빅!! $checkID'),
-              //             content: Text('안돼 돌아가'),
-              //             actions: <Widget>[
-              //               TextButton(
-              //                 onPressed: () {
-              //                   Navigator.pop(context);
-              //                 },
-              //                 child: const Text('돌아가자ㅜ'),
-              //               ),
-              //             ],
-              //           );
-              //         },
-              //       );
-              //       setState(() {
-              //         //To change state here
-              //       });
-              //     },
-              //   ),
-              // ),
             ],
           ),
           Flexible(
@@ -218,7 +183,6 @@ class _RegisterRouteState extends State<RegisterRoute> {
               padding: const EdgeInsets.all(16.0),
               child: TextField(
                 controller: otpController,
-                //onChanged: (textAuthen) => authenticationCode = textAuthen,
                 decoration: const InputDecoration(labelText: "인증번호"),
               ),
             ),
