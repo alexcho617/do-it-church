@@ -15,12 +15,12 @@ class _NoticeAddRouteState extends State<NoticeAddRoute> {
 
   Notice notice = Notice();
 
-
   void getCurrentUser() async {
     try {
       final user = _auth.currentUser;
       if (user != null) {
         User loggedInUser = user;
+        loggedInUser = notice.writer;
         print(
             'SUCCESS(notice_new_screen): Signed in As:${loggedInUser.phoneNumber}');
       }
@@ -84,8 +84,6 @@ class _NoticeAddRouteState extends State<NoticeAddRoute> {
                   'writer' : notice.writer,
                   'date' : Timestamp.now(),
                 });
-                //print('New Notice Title = $noticeTitle');
-                //print('New Notice Contents = $noticeContents');
                 Navigator.pop(context);
               }),
         ],
