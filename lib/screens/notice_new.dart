@@ -88,8 +88,10 @@ class _NoticeAddRouteState extends State<NoticeAddRoute> {
                 style: TextStyle(color: Colors.red),
               ),
               onPressed: () async {
-                if (notice.title.toString().length > 0 &&
-                    notice.writer.toString().length > 0) {
+                if (notice.title != null &&
+                    notice.contents != null &&
+                    notice.title.toString().length > 1 &&
+                    notice.writer.toString().length > 1) {
                   firestore.collection('Notice').add({
                     'title': notice.title,
                     'contents': notice.contents,

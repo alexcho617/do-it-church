@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:do_it_church/components/notice.dart';
 import 'package:do_it_church/constants.dart';
+import 'package:do_it_church/screens/notice_detail.dart';
 import 'package:do_it_church/screens/notice_new.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -108,6 +109,8 @@ class NoticeStream extends StatelessWidget {
         List<NoticeBuilder> noticeList = [];
 
         for (var doc in docs) {
+          notice.docId = doc.id;
+          print(notice.docId);
           notice.title = doc.get("title").toString();
           notice.date = doc.get("date").toString();
           notice.writer = doc.get("writer").toString();
@@ -131,16 +134,19 @@ class NoticeStream extends StatelessWidget {
 }
 
 class NoticeBuilder extends StatelessWidget {
-  const NoticeBuilder({this.title, this.date, this.writer, this.contents});
+  const NoticeBuilder(
+      {this.title, this.date, this.writer, this.contents, this.docId});
   final title;
   final date;
   final contents;
   final writer;
+  final docId;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -176,9 +182,21 @@ class NoticeBuilder extends StatelessWidget {
                             });
                       },
                     ),
-                    title: Text(
-                      '$title',
-                      style: kNoticeTitleTextStyle,
+                    title: TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => NoticeDetail(
+                                      notice: notice,
+                                    )));
+                      },
+                      style:
+                          TextButton.styleFrom(alignment: Alignment.centerLeft),
+                      child: Text(
+                        '$title',
+                        style: kNoticeTitleTextStyle,
+                      ),
                     ),
                     subtitle: Text(
                       '$writer',
