@@ -48,11 +48,11 @@ class _RegisterRouteState extends State<RegisterRoute> {
           'phoneNumber': loggedInUser.phoneNumber,
         });
 
-        //CollectionReference member = FirebaseFirestore.instance.collection('member');
         await _firestore.collection('Users').doc(loggedInUser.uid).set({
           'email': myUser.email,
           'name': myUser.name,
-          'phone_num': myUser.phoneNumber
+          'phone_num': myUser.phoneNumber,
+          'uid': loggedInUser.uid
         });
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => LandingRoute()));

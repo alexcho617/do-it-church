@@ -18,8 +18,6 @@ class NoticeListRoute extends StatefulWidget {
 }
 
 class _NoticeListRouteState extends State<NoticeListRoute> {
-
-
   //User loggedInUser; //getting error
   void getCurrentUser() async {
     try {
@@ -39,7 +37,6 @@ class _NoticeListRouteState extends State<NoticeListRoute> {
     super.initState();
     getCurrentUser();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +74,7 @@ class _NoticeListRouteState extends State<NoticeListRoute> {
               }),
         ],
       ),
-      body:  Center(
+      body: Center(
         child: Column(
           children: <Widget>[
             // InkWell(
@@ -88,7 +85,7 @@ class _NoticeListRouteState extends State<NoticeListRoute> {
             //     );
             //     setState(() {});
             //     },
-                    NoticeStream(),
+            NoticeStream(),
           ],
         ),
       ),
@@ -100,38 +97,41 @@ class NoticeStream extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: firestore.collection('Notice').orderBy("date",descending: true).snapshots(),
+      stream: firestore
+          .collection('Notice')
+          .orderBy("date", descending: true)
+          .snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) return CircularProgressIndicator();
         final docs = (snapshot.data!).docs;
         //(snapshot.data!).docs.map((DocumentSnapshot document)
-        List<NoticeListView> noticelists = [];
+        List<NoticeBuilder> noticeList = [];
 
         for (var doc in docs) {
           notice.title = doc.get("title").toString();
           notice.date = doc.get("date").toString();
           notice.writer = doc.get("writer").toString();
           notice.contents = doc.get("contents").toString();
-          final noticelist = NoticeListView(
-              title: notice.title,
-              date: notice.date,
-              writer: notice.writer,
-              contents: notice.contents,
+          final noticeObject = NoticeBuilder(
+            title: notice.title,
+            date: notice.date,
+            writer: notice.writer,
+            contents: notice.contents,
           );
-          noticelists.add(noticelist);
+          noticeList.add(noticeObject);
         }
         return Expanded(
-            child: ListView(
-              children: noticelists,
-            ),
-          );
+          child: ListView(
+            children: noticeList,
+          ),
+        );
       },
     );
   }
 }
 
-class NoticeListView extends StatelessWidget {
-  const NoticeListView({this.title, this.date, this.writer, this.contents});
+class NoticeBuilder extends StatelessWidget {
+  const NoticeBuilder({this.title, this.date, this.writer, this.contents});
   final title;
   final date;
   final contents;
@@ -140,139 +140,152 @@ class NoticeListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Column(
         children: [
-        Expanded(
-            child: Container(
-              margin: const EdgeInsets.only(left: 10, bottom: 20),
-              child: ListTile(
-                leading: Icon(
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Container(
+                  child: ListTile(
+                    leading: Icon(
                       Icons.notes_rounded,
                       color: Colors.black,
+                    ),
+                    trailing: IconButton(
+                      constraints: BoxConstraints(),
+                      icon: Icon(Icons.more_horiz, color: Colors.black),
+                      onPressed: () {
+                        showModalBottomSheet(
+                            context: context,
+                            builder: (context) {
+                              return Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  ListTile(
+                                    title: Text('글 수정하기'),
+                                  ),
+                                  ListTile(
+                                    title: Text('공유하기'),
+                                  ),
+                                  ListTile(
+                                    title: Text('삭제하기'),
+                                  ),
+                                ],
+                              );
+                            });
+                      },
                     ),
                     title: Text(
                       '$title',
                       style: kNoticeTitleTextStyle,
                     ),
-                  subtitle: Text(
+                    subtitle: Text(
                       '$writer',
                       style: kNoticeSubTitleTextStyle,
                     ),
                   ),
-                    //         Flexible(
-                    //             child: RichText(
-                    //               overflow: TextOverflow.ellipsis,
-                    //               maxLines: 3,
-                    //               text: TextSpan(
-                    //                   text:
-                    //                   '$contents',
-                    //                   style: kNoticeContentTextStyle),
-                    //             ))
                 ),
+              ),
+            ],
           ),
-        IconButton(
-          padding: EdgeInsets.zero,
-          constraints: BoxConstraints(),
-          icon: Icon(Icons.more_horiz, color: Colors.black),
-          onPressed: () {
-            showModalBottomSheet(
-                context: context,
-                builder: (context) {
-                  return Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      ListTile(
-                        title: Text('글 수정하기'),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            child: RichText(
+              overflow: TextOverflow.ellipsis,
+              maxLines: 3,
+              text: TextSpan(text: '$contents', style: kNoticeContentTextStyle),
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.remove_red_eye_outlined,
+                  size: 12,
+                  color: Colors.grey,
+                ),
+                Container(
+                  width: 5,
+                ),
+                Text('25', style: kNoticeCountTextStyle),
+                Container(
+                  width: 10,
+                ),
+                Icon(Icons.chat_outlined, size: 12, color: Colors.grey),
+                Container(
+                  width: 5,
+                ),
+                Text('10', style: kNoticeCountTextStyle)
+              ],
+            ),
+          ),
+          Container(
+            height: 15,
+          ),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Expanded(
+                  //ElevatedButton, OutlinedButton
+                  child: SizedBox(
+                    height: 27,
+                    child: OutlinedButton(
+                      style: OutlinedButton.styleFrom(padding: EdgeInsets.zero),
+                      onPressed: () async {},
+                      child: LikeButton(
+                        isLiked: false,
+                        likeCount: 17,
+                        likeBuilder: (isLiked) {
+                          final color = isLiked ? Colors.red : Colors.grey;
+                          return Icon(Icons.favorite, color: color, size: 13);
+                        },
+                        likeCountPadding: EdgeInsets.zero,
+                        countBuilder: (count, isLiked, text) {
+                          final color =
+                              isLiked ? Color(0xFF89A1F8) : Colors.grey;
+                          return Text(
+                            text,
+                            style: TextStyle(fontSize: 13, color: color),
+                          );
+                        },
+                        onTap: (isLiked) async {
+                          isLiked = !isLiked;
+                          //likeCount += isLiked ? 1 : -1;
+                          return !isLiked;
+                        },
                       ),
-                      ListTile(
-                        title: Text('공유하기'),
-                      ),
-                      ListTile(
-                        title: Text('삭제하기'),
-                      ),
-                    ],
-                  );
-                });
-          },
-        ),
-      //     Row(
-      //       children: [
-      //         Icon(
-      //           Icons.remove_red_eye_outlined,
-      //           size: 12,
-      //           color: Colors.grey,
-      //         ),
-      //         Container(
-      //           width: 5,
-      //         ),
-      //         Text('25', style: kNoticeCountTextStyle),
-      //         Container(
-      //           width: 10,
-      //         ),
-      //         Icon(Icons.chat_outlined, size: 12, color: Colors.grey),
-      //         Container(
-      //           width: 5,
-      //         ),
-      //         Text('10', style: kNoticeCountTextStyle)
-      //       ],
-      //     ),
-      //     Container(
-      //       height: 15,
-      //     ),
-      //     Row(
-      //       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      //       children: [
-      //         Expanded(
-      //           //ElevatedButton, OutlinedButton
-      //           child: SizedBox(
-      //             height: 27,
-      //             child: OutlinedButton(
-      //               style: OutlinedButton.styleFrom(
-      //                   padding: EdgeInsets.zero
-      //               ),
-      //               onPressed: () async {},
-      //               child: LikeButton(
-      //                 isLiked: false,
-      //                 likeCount: 17,
-      //                 likeBuilder: (isLiked){
-      //                   final color = isLiked ? Colors.red : Colors.grey;
-      //                   return Icon(Icons.favorite, color: color, size: 13);
-      //                 },
-      //                 likeCountPadding: EdgeInsets.zero,
-      //                 countBuilder: (count, isLiked, text) {
-      //                   final color = isLiked ? Color(0xFF89A1F8) : Colors.grey;
-      //                   return Text(
-      //                     text,
-      //                     style: TextStyle(fontSize: 13, color: color),
-      //                   );
-      //                 },
-      //                 onTap: (isLiked) async{
-      //                   isLiked = !isLiked;
-      //                   //likeCount += isLiked ? 1 : -1;
-      //                   return !isLiked;
-      //                 },
-      //               ),
-      //             ),
-      //           ),
-      //         ),
-      //         Container(
-      //           width: 10,
-      //         ),
-      //         Expanded(
-      //           child: SizedBox(
-      //             height: 27,
-      //             child: OutlinedButton(
-      //               onPressed: () { },
-      //               child:
-      //               Text('댓글쓰기', style: TextStyle(fontSize: 13)),
-      //             ),
-      //           ),
-      //         ),
-      //       ],
-      //     ),
-         ],
-       ),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: 10,
+                ),
+                Expanded(
+                  child: SizedBox(
+                    height: 27,
+                    child: OutlinedButton(
+                      onPressed: () {},
+                      child: Text('댓글쓰기', style: TextStyle(fontSize: 13)),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            height: 20,
+            child: Divider(
+              thickness: 1,
+              color: Colors.grey,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -17,10 +17,25 @@ class _NoticeAddRouteState extends State<NoticeAddRoute> {
 
   void assignCurrentWriter() async {
     final user = _auth.currentUser;
-    if(user != null){
+    if (user != null) {
       User loggedInUser = user;
-      print('SUCCESS(notice_new_screen): Signed in As:${loggedInUser.phoneNumber}');
+      print(
+          'SUCCESS(notice_new_screen): Signed in As:${loggedInUser.phoneNumber}');
       notice.writer = loggedInUser.phoneNumber;
+      print(loggedInUser.uid);
+      QuerySnapshot userData = await FirebaseFirestore.instance
+          .collection('Users')
+          .where('uid', isEqualTo: loggedInUser.uid)
+          .get();
+      for (var doc in userData.docs) {
+        if (doc.exists) {
+          //print('Data:${doc.data()}');
+          print('Name:${doc["name"]}');
+          notice.writer = doc["name"];
+        } else {
+          print('noData');
+        }
+      }
     }
   }
 
@@ -72,70 +87,64 @@ class _NoticeAddRouteState extends State<NoticeAddRoute> {
                 '완료',
                 style: TextStyle(color: Colors.red),
               ),
-              onPressed: () {
-                //notice.writer =
-                firestore.collection('Notice').add({
-                  'title': notice.title,
-                  'contents': notice.contents,
-                  'writer' : notice.writer,
-                  'date' : Timestamp.now(),
-                });
+              onPressed: () async {
+                if (notice.title.toString().length > 0 &&
+                    notice.writer.toString().length > 0) {
+                  firestore.collection('Notice').add({
+                    'title': notice.title,
+                    'contents': notice.contents,
+                    'writer': notice.writer,
+                    'date': Timestamp.now(),
+                  });
+                }
                 Navigator.pop(context);
               }),
         ],
       ),
-
-
       body: Center(
           child: Column(
-            children: [
-              Container(
-                height: 450,
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                child: Column(
-                  children: [
-                    TextField(
-                      autocorrect: true,
-                      onChanged: (value3) => notice.title = value3,
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        hintText: '제목',
-                        hintStyle: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    Divider(),
-                    TextField(
-                      onChanged: (value4) => notice.contents = value4,
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        hintText: '여기 내용을 입력하세요',
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-                  Divider(
-                    thickness:1.0,
-                    indent: 15,
-                    endIndent: 15,
+        children: [
+          Container(
+            height: 450,
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            child: Column(
+              children: [
+                TextField(
+                  autocorrect: true,
+                  onChanged: (value3) => notice.title = value3,
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    hintText: '제목',
+                    hintStyle:
+                        TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
                   ),
-
-              Container(
-                child:Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    IconButton(
-                        icon: Icon(Icons.add_to_photos),
-                        onPressed: (){
-
-                        }
-                    ),
-                  ],
                 ),
-              ),
-            ],
-          )
-      ),
+                Divider(),
+                TextField(
+                  onChanged: (value4) => notice.contents = value4,
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    hintText: '여기 내용을 입력하세요',
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Divider(
+            thickness: 1.0,
+            indent: 15,
+            endIndent: 15,
+          ),
+          Container(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                IconButton(icon: Icon(Icons.add_to_photos), onPressed: () {}),
+              ],
+            ),
+          ),
+        ],
+      )),
     );
   }
 }
