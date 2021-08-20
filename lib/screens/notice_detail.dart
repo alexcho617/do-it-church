@@ -1,15 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:do_it_church/components/notice.dart';
 import 'package:do_it_church/screens/notice_new.dart';
 import 'package:do_it_church/constants.dart';
 import 'package:flutter/material.dart';
 import 'notice_new.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-
-
 class NoticeDetail extends StatefulWidget {
-  const NoticeDetail({Key? key}) : super(key: key);
-
+  NoticeDetail({required this.notice});
+  final notice;
   @override
   NoticeDetailState createState() => NoticeDetailState();
 }
@@ -41,7 +40,11 @@ class NoticeDetailState extends State<NoticeDetail> {
       await ref.set({
         'docID': ref.id,
       });
-      firestore.collection('Notice').doc(ref.id).get().then((DocumentSnapshot documentSnapshot) {
+      firestore
+          .collection('Notice')
+          .doc(ref.id)
+          .get()
+          .then((DocumentSnapshot documentSnapshot) {
         title = documentSnapshot.get("title").toString();
         print(title);
       });
@@ -54,17 +57,22 @@ class NoticeDetailState extends State<NoticeDetail> {
       //     title = document.get("title").toString();
       //     print(title);
       //   });
-    //}
-   } catch(e) {
-     print(e);
-   }
+      //}
+    } catch (e) {
+      print(e);
+    }
   }
+
   @override
   void initState() {
     super.initState();
     getCurrentUser();
-    getNotice();
-    _textEditingController = TextEditingController();
+    //getNotice();
+    //_textEditingController = TextEditingController();
+    Notice detailNotice = widget.notice;
+    print(detailNotice.docId);
+    print(detailNotice.writer);
+    print(detailNotice.contents);
   }
 
   @override
@@ -106,8 +114,6 @@ class NoticeDetailState extends State<NoticeDetail> {
                 }),
           ],
         ),
-
-
         body: GestureDetector(
           onTap: () {
             FocusScope.of(context).unfocus();
@@ -117,7 +123,7 @@ class NoticeDetailState extends State<NoticeDetail> {
               children: <Widget>[
                 Container(
                   alignment: Alignment.topCenter,
-                  margin: const EdgeInsets.only(top:20),
+                  margin: const EdgeInsets.only(top: 20),
                   padding: EdgeInsets.all(10),
                   decoration: BoxDecoration(
                     border: Border(
@@ -140,7 +146,8 @@ class NoticeDetailState extends State<NoticeDetail> {
                           ),
                           Expanded(
                             child: Container(
-                              margin: const EdgeInsets.only(left: 10, bottom: 80),
+                              margin:
+                                  const EdgeInsets.only(left: 10, bottom: 80),
                               child: Column(
                                 //crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
@@ -171,16 +178,13 @@ class NoticeDetailState extends State<NoticeDetail> {
                                           '6월 생일자: 김세희, 박효인, 최다운 \n준비팀: 고은혜T, 고은미T, 박현동T \n준비 열심히 해서 재밌게 진행해봅시다! \n각 반의 선생님들께서는 아이들에게 생일잔치에 대한 \n문자 메세지를 하루 전 날에 꼬옥 보내주세요!\n\n**공지를 확인하신 선생님들은 댓글창에\n "확인완료" 혹은 "확인했습니다"라고 댓글 부탁드려요~~',
                                           softWrap: true,
                                           overflow: TextOverflow.ellipsis,
-                                          style: kNoticeContentTextStyle
-                                      ),
+                                          style: kNoticeContentTextStyle),
                                     ],
                                   ),
                                 ],
                               ),
                             ),
                           ),
-
-
                           IconButton(
                             padding: EdgeInsets.zero,
                             constraints: BoxConstraints(),
@@ -194,50 +198,44 @@ class NoticeDetailState extends State<NoticeDetail> {
                                       children: [
                                         ListTile(
                                             leading: TextButton(
-                                              onPressed: () {
-                                                // Respond to button press
-                                              },
-                                              child: Text(
-                                                "글 수정하기",
-                                                style:TextStyle(
-                                                  fontSize: 15,
-                                                  color: Colors.black,
-                                                ),
-                                              ),
-                                            )
-                                        ),
-
-
+                                          onPressed: () {
+                                            // Respond to button press
+                                          },
+                                          child: Text(
+                                            "글 수정하기",
+                                            style: TextStyle(
+                                              fontSize: 15,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                        )),
                                         ListTile(
                                             leading: TextButton(
-                                              onPressed: () {
-                                                // Respond to button press
-                                              },
-                                              child: Text("공유하기",
-                                                style:TextStyle(
-                                                  fontSize: 15,
-                                                  color: Colors.black,
-                                                ),
-                                              ),
-                                            )
-                                        ),
-
-
+                                          onPressed: () {
+                                            // Respond to button press
+                                          },
+                                          child: Text(
+                                            "공유하기",
+                                            style: TextStyle(
+                                              fontSize: 15,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                        )),
                                         ListTile(
                                             leading: TextButton(
-                                              onPressed: () {
-                                                showAlertDialog(context);
-                                                // Respond to button press
-                                              },
-                                              child: Text("삭제하기",
-                                                style:TextStyle(
-                                                  fontSize: 15,
-                                                  color: Colors.black,
-                                                ),
-                                              ),
-                                            )
-                                        ),
-
+                                          onPressed: () {
+                                            showAlertDialog(context);
+                                            // Respond to button press
+                                          },
+                                          child: Text(
+                                            "삭제하기",
+                                            style: TextStyle(
+                                              fontSize: 15,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                        )),
                                       ],
                                     );
                                   });
@@ -256,37 +254,33 @@ class NoticeDetailState extends State<NoticeDetail> {
                       //댓글창 만들기
                       Container(
                         padding: EdgeInsets.symmetric(horizontal: 8.0),
-                        child:
-                        Row(
-                            children: [
-                              Expanded(
-                                child: TextField(
-                                  //style:TextStyle(height:0.01, fontSize: 12),
-                                  controller: _textEditingController,
-                                  decoration: InputDecoration( hintText: "댓글 입력창"),
-                                  onSubmitted: _handleSubmitted,
-                                ),
-                              ),
-                              SizedBox(
-                                width: 8.0,
-                              ),
-
-                              FlatButton(
-                                onPressed: () {
-                                  _handleSubmitted(_textEditingController.text);
-                                  _textEditingController.clear();
-                                },
-                                child: Text("완료"),
-
-                                color: Colors.blueAccent,
-                              ),
-                            ]),
+                        child: Row(children: [
+                          Expanded(
+                            child: TextField(
+                              //style:TextStyle(height:0.01, fontSize: 12),
+                              controller: _textEditingController,
+                              decoration: InputDecoration(hintText: "댓글 입력창"),
+                              onSubmitted: _handleSubmitted,
+                            ),
+                          ),
+                          SizedBox(
+                            width: 8.0,
+                          ),
+                          FlatButton(
+                            onPressed: () {
+                              _handleSubmitted(_textEditingController.text);
+                              _textEditingController.clear();
+                            },
+                            child: Text("완료"),
+                            color: Colors.blueAccent,
+                          ),
+                        ]),
                       ),
 
                       Container(
                         color: Colors.white38,
                         child: ListTile(
-                          //CircleAvatar() , use images from the images folder
+                            //CircleAvatar() , use images from the images folder
                             leading: CircleAvatar(
                               backgroundImage: AssetImage(
                                   'images/pro.jpg'), //always add images in directory
@@ -350,7 +344,7 @@ class NoticeDetailState extends State<NoticeDetail> {
                       Container(
                         color: Colors.white38,
                         child: ListTile(
-                          //CircleAvatar() , use images from the images folder
+                            //CircleAvatar() , use images from the images folder
                             leading: CircleAvatar(
                               backgroundImage: AssetImage(
                                   'images/pro3.jpg'), //always add images in directory
@@ -372,7 +366,7 @@ class NoticeDetailState extends State<NoticeDetail> {
                       Container(
                         color: Colors.white38,
                         child: ListTile(
-                          //CircleAvatar() , use images from the images folder
+                            //CircleAvatar() , use images from the images folder
                             leading: CircleAvatar(
                               backgroundImage: AssetImage(
                                   'images/pro4.jpg'), //always add images in directory
@@ -407,20 +401,19 @@ void _handleSubmitted(String text) {
   //  _textEditingController.clear();
 }
 
-
 void showAlertDialog(BuildContext context) async {
   String result = await showDialog(
     context: context,
     barrierDismissible: false, // user must tap button!
-    builder: (BuildContext context)
-    {
+    builder: (BuildContext context) {
       return AlertDialog(
         title: Text('삭제하기'),
         content: Text("글을 삭제하시겠습니까?"),
         actions: <Widget>[
           TextButton(
-            child: Text('OK',
-              style:TextStyle(
+            child: Text(
+              'OK',
+              style: TextStyle(
                 color: Colors.blue,
               ),
             ),
@@ -429,8 +422,9 @@ void showAlertDialog(BuildContext context) async {
             },
           ),
           TextButton(
-            child: Text('Cancel',
-              style:TextStyle(
+            child: Text(
+              'Cancel',
+              style: TextStyle(
                 color: Colors.red,
               ),
             ),
