@@ -15,24 +15,19 @@ class _NoticeAddRouteState extends State<NoticeAddRoute> {
 
   Notice notice = Notice();
 
-  void getCurrentUser() async {
-    try {
-      final user = _auth.currentUser;
-      if (user != null) {
-        User loggedInUser = user;
-        loggedInUser = notice.writer;
-        print(
-            'SUCCESS(notice_new_screen): Signed in As:${loggedInUser.phoneNumber}');
-      }
-    } catch (e) {
-      print(e);
+  void assignCurrentWriter() async {
+    final user = _auth.currentUser;
+    if(user != null){
+      User loggedInUser = user;
+      print('SUCCESS(notice_new_screen): Signed in As:${loggedInUser.phoneNumber}');
+      notice.writer = loggedInUser.phoneNumber;
     }
   }
 
   @override
   void initState() {
     super.initState();
-    getCurrentUser();
+    assignCurrentWriter();
   }
 
   @override
@@ -78,6 +73,7 @@ class _NoticeAddRouteState extends State<NoticeAddRoute> {
                 style: TextStyle(color: Colors.red),
               ),
               onPressed: () {
+                //notice.writer =
                 firestore.collection('Notice').add({
                   'title': notice.title,
                   'contents': notice.contents,
