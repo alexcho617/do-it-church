@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'screens/login.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:do_it_church/screens/home.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -65,7 +66,7 @@ class _InitializerWidgetState extends State<InitializerWidget> {
       //landingPage로 가게 할
       return LandingRoute();
     } else {
-      return LoginRoute();
+      return HomeRoute();
     }
   }
 }

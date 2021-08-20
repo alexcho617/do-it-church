@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:do_it_church/screens/notice_new.dart';
 import 'package:do_it_church/constants.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +18,10 @@ class NoticeDetailState extends State<NoticeDetail> {
   late TextEditingController _textEditingController = TextEditingController();
 
   final _auth = FirebaseAuth.instance;
+  final firestore = FirebaseFirestore.instance;
+
+  String title = "";
+
   void getCurrentUser() async {
     try {
       final user = _auth.currentUser;
@@ -30,10 +35,35 @@ class NoticeDetailState extends State<NoticeDetail> {
     }
   }
 
+  void getNotice() async {
+    try {
+      var ref = firestore.collection('Notice').doc();
+      await ref.set({
+        'docID': ref.id,
+      });
+      firestore.collection('Notice').doc(ref.id).get().then((DocumentSnapshot documentSnapshot) {
+        title = documentSnapshot.get("title").toString();
+        print(title);
+      });
+      // var collection = firestore.collection('Notice');
+      // var querysnapshot = await collection.get();
+      // for (var snapshot in querysnapshot.docs){
+      //   var documentId = snapshot.id;
+      //   print(documentId);
+      //   firestore.collection('Notice').doc(documentId).get().then((DocumentSnapshot document) {
+      //     title = document.get("title").toString();
+      //     print(title);
+      //   });
+    //}
+   } catch(e) {
+     print(e);
+   }
+  }
   @override
   void initState() {
     super.initState();
     getCurrentUser();
+    getNotice();
     _textEditingController = TextEditingController();
   }
 
@@ -99,7 +129,6 @@ class NoticeDetailState extends State<NoticeDetail> {
                   ),
                   //width: size,
                   width: double.infinity,
-
                   child: Column(
                     children: [
                       Row(
@@ -109,8 +138,6 @@ class NoticeDetailState extends State<NoticeDetail> {
                             Icons.notes_rounded,
                             color: Colors.black,
                           ),
-
-
                           Expanded(
                             child: Container(
                               margin: const EdgeInsets.only(left: 10, bottom: 80),
@@ -120,6 +147,7 @@ class NoticeDetailState extends State<NoticeDetail> {
                                   Row(
                                     children: [
                                       Text(
+                                        //title,
                                         '6월 생일잔치 알려드립니다',
                                         style: kNoticeTitleTextStyle,
                                       ),
@@ -143,14 +171,15 @@ class NoticeDetailState extends State<NoticeDetail> {
                                           '6월 생일자: 김세희, 박효인, 최다운 \n준비팀: 고은혜T, 고은미T, 박현동T \n준비 열심히 해서 재밌게 진행해봅시다! \n각 반의 선생님들께서는 아이들에게 생일잔치에 대한 \n문자 메세지를 하루 전 날에 꼬옥 보내주세요!\n\n**공지를 확인하신 선생님들은 댓글창에\n "확인완료" 혹은 "확인했습니다"라고 댓글 부탁드려요~~',
                                           softWrap: true,
                                           overflow: TextOverflow.ellipsis,
-                                          style: kNoticeContentTextStyle),
-
+                                          style: kNoticeContentTextStyle
+                                      ),
                                     ],
                                   ),
                                 ],
                               ),
                             ),
                           ),
+
 
                           IconButton(
                             padding: EdgeInsets.zero,
@@ -217,8 +246,6 @@ class NoticeDetailState extends State<NoticeDetail> {
                         ],
                       ),
 
-
-
                       //구분선 만들기
                       Container(
                         height: 1.0,
@@ -226,9 +253,7 @@ class NoticeDetailState extends State<NoticeDetail> {
                         color: Colors.black38,
                       ),
 
-
                       //댓글창 만들기
-
                       Container(
                         padding: EdgeInsets.symmetric(horizontal: 8.0),
                         child:
