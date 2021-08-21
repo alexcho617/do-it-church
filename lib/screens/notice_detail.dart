@@ -7,8 +7,8 @@ import 'notice_new.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class NoticeDetail extends StatefulWidget {
-  NoticeDetail({required this.notice});
-  final notice;
+  NoticeDetail({required this.noticeId});
+  final noticeId;
   @override
   NoticeDetailState createState() => NoticeDetailState();
 }
@@ -34,6 +34,10 @@ class NoticeDetailState extends State<NoticeDetail> {
     }
   }
 
+  //TODO 5: Implement notice fetch here via noticeId
+  //1.get notice object
+  //2.assign fields to local variable
+  //3.display them as screen initiates
   void getNotice() async {
     try {
       var ref = firestore.collection('Notice').doc();
@@ -69,10 +73,7 @@ class NoticeDetailState extends State<NoticeDetail> {
     getCurrentUser();
     //getNotice();
     //_textEditingController = TextEditingController();
-    Notice detailNotice = widget.notice;
-    print(detailNotice.docId);
-    print(detailNotice.writer);
-    print(detailNotice.contents);
+    print(widget.noticeId);
   }
 
   @override
