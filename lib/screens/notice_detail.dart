@@ -7,8 +7,8 @@ import 'notice_new.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class NoticeDetail extends StatefulWidget {
-  NoticeDetail({required this.notice});
-  final notice;
+  NoticeDetail({required this.noticeId});
+  final noticeId;
   @override
   NoticeDetailState createState() => NoticeDetailState();
 }
@@ -19,7 +19,7 @@ class NoticeDetailState extends State<NoticeDetail> {
   final _auth = FirebaseAuth.instance;
   final firestore = FirebaseFirestore.instance;
 
-  String title = "";
+  Notice notice = Notice();
 
   void getCurrentUser() async {
     try {
@@ -34,30 +34,14 @@ class NoticeDetailState extends State<NoticeDetail> {
     }
   }
 
-  void getNotice() async {
+  void getNoticeDetail() async {
     try {
-      var ref = firestore.collection('Notice').doc();
-      await ref.set({
-        'docID': ref.id,
+      firestore.collection("Notice").doc(widget.noticeId).get().then((DocumentSnapshot doc) {
+        notice.title = doc.get("title").toString();
+        notice.date = doc.get("date").toString();
+        notice.writer = doc.get("writer").toString();
+        notice.contents = doc.get("contents").toString();
       });
-      firestore
-          .collection('Notice')
-          .doc(ref.id)
-          .get()
-          .then((DocumentSnapshot documentSnapshot) {
-        title = documentSnapshot.get("title").toString();
-        print(title);
-      });
-      // var collection = firestore.collection('Notice');
-      // var querysnapshot = await collection.get();
-      // for (var snapshot in querysnapshot.docs){
-      //   var documentId = snapshot.id;
-      //   print(documentId);
-      //   firestore.collection('Notice').doc(documentId).get().then((DocumentSnapshot document) {
-      //     title = document.get("title").toString();
-      //     print(title);
-      //   });
-      //}
     } catch (e) {
       print(e);
     }
@@ -67,12 +51,8 @@ class NoticeDetailState extends State<NoticeDetail> {
   void initState() {
     super.initState();
     getCurrentUser();
-    //getNotice();
-    //_textEditingController = TextEditingController();
-    Notice detailNotice = widget.notice;
-    print(detailNotice.docId);
-    print(detailNotice.writer);
-    print(detailNotice.contents);
+    //print(widget.noticeId);
+    getNoticeDetail();
   }
 
   @override
@@ -137,111 +117,13 @@ class NoticeDetailState extends State<NoticeDetail> {
                   width: double.infinity,
                   child: Column(
                     children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Icon(
-                            Icons.notes_rounded,
-                            color: Colors.black,
-                          ),
-                          Expanded(
-                            child: Container(
-                              margin:
-                                  const EdgeInsets.only(left: 10, bottom: 80),
-                              child: Column(
-                                //crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Text(
-                                        //title,
-                                        '6월 생일잔치 알려드립니다',
-                                        style: kNoticeTitleTextStyle,
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      Text(
-                                        //날짜 + 작성자 서버에서 받아서 변수로 출력
-                                        '2021년 6월 30일, 박강두 전도사',
-                                        style: kNoticeSubTitleTextStyle,
-                                      ),
-                                    ],
-                                  ),
-                                  Container(
-                                    height: 20,
-                                  ),
-                                  Row(
-                                    children: [
-                                      Text(
-                                          '6월 생일자: 김세희, 박효인, 최다운 \n준비팀: 고은혜T, 고은미T, 박현동T \n준비 열심히 해서 재밌게 진행해봅시다! \n각 반의 선생님들께서는 아이들에게 생일잔치에 대한 \n문자 메세지를 하루 전 날에 꼬옥 보내주세요!\n\n**공지를 확인하신 선생님들은 댓글창에\n "확인완료" 혹은 "확인했습니다"라고 댓글 부탁드려요~~',
-                                          softWrap: true,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: kNoticeContentTextStyle),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          IconButton(
-                            padding: EdgeInsets.zero,
-                            constraints: BoxConstraints(),
-                            icon: Icon(Icons.more_horiz, color: Colors.black),
-                            onPressed: () {
-                              showModalBottomSheet(
-                                  context: context,
-                                  builder: (context) {
-                                    return Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        ListTile(
-                                            leading: TextButton(
-                                          onPressed: () {
-                                            // Respond to button press
-                                          },
-                                          child: Text(
-                                            "글 수정하기",
-                                            style: TextStyle(
-                                              fontSize: 15,
-                                              color: Colors.black,
-                                            ),
-                                          ),
-                                        )),
-                                        ListTile(
-                                            leading: TextButton(
-                                          onPressed: () {
-                                            // Respond to button press
-                                          },
-                                          child: Text(
-                                            "공유하기",
-                                            style: TextStyle(
-                                              fontSize: 15,
-                                              color: Colors.black,
-                                            ),
-                                          ),
-                                        )),
-                                        ListTile(
-                                            leading: TextButton(
-                                          onPressed: () {
-                                            showAlertDialog(context);
-                                            // Respond to button press
-                                          },
-                                          child: Text(
-                                            "삭제하기",
-                                            style: TextStyle(
-                                              fontSize: 15,
-                                              color: Colors.black,
-                                            ),
-                                          ),
-                                        )),
-                                      ],
-                                    );
-                                  });
-                            },
-                          )
-                        ],
+                      Container(
+                        child: NoticeDetailBuilder(
+                            title : notice.title,
+                            writer : notice.writer,
+                            date : notice.date,
+                            contents : notice.contents
+                        ),
                       ),
 
                       //구분선 만들기
@@ -298,92 +180,6 @@ class NoticeDetailState extends State<NoticeDetail> {
                               style: TextStyle(fontSize: 13),
                             )),
                       ),
-
-                      Container(
-                        color: Colors.white38,
-                        child: ListTile(
-                            leading: CircleAvatar(
-                              backgroundImage: AssetImage(
-                                  'images/pro1.png'), //always add images in directory
-                              maxRadius: 15,
-                            ),
-                            title: Text(
-                              '박세미(다윗반)',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 15,
-                              ),
-                            ),
-                            subtitle: Text(
-                              '확인완료했습니다! 잘 준비합시다',
-                              style: TextStyle(fontSize: 13),
-                            )),
-                      ),
-
-                      Container(
-                        color: Colors.white38,
-                        child: ListTile(
-                            leading: CircleAvatar(
-                              backgroundImage: AssetImage(
-                                  'images/pro2.jpg'), //always add images in directory
-                              maxRadius: 15,
-                            ),
-                            title: Text(
-                              '고은미(사랑반)',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 15,
-                              ),
-                            ),
-                            subtitle: Text(
-                              '확인완료했습니다! 늘 신경써주셔서 감사해요!',
-                              style: TextStyle(fontSize: 13),
-                            )),
-                      ),
-
-                      Container(
-                        color: Colors.white38,
-                        child: ListTile(
-                            //CircleAvatar() , use images from the images folder
-                            leading: CircleAvatar(
-                              backgroundImage: AssetImage(
-                                  'images/pro3.jpg'), //always add images in directory
-                              maxRadius: 15,
-                            ),
-                            title: Text(
-                              '김말희(믿음반)',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 15,
-                              ),
-                            ),
-                            subtitle: Text(
-                              '확인완료~ 늘 수고가 많으세요:) 화이팅!',
-                              style: TextStyle(fontSize: 13),
-                            )),
-                      ),
-
-                      Container(
-                        color: Colors.white38,
-                        child: ListTile(
-                            //CircleAvatar() , use images from the images folder
-                            leading: CircleAvatar(
-                              backgroundImage: AssetImage(
-                                  'images/pro4.jpg'), //always add images in directory
-                              maxRadius: 15,
-                            ),
-                            title: Text(
-                              '박준기(기쁨반)',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 15,
-                              ),
-                            ),
-                            subtitle: Text(
-                              '확인완료 항상 기도하고 있습니다!',
-                              style: TextStyle(fontSize: 13),
-                            )),
-                      ),
                     ],
                   ),
                 ),
@@ -391,6 +187,85 @@ class NoticeDetailState extends State<NoticeDetail> {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class NoticeDetailBuilder extends StatelessWidget {
+  const NoticeDetailBuilder({this.title, this.writer, this.date, this.contents});
+  final title;
+  final writer;
+  final date;
+  final contents;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 200,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Container(
+                  child: ListTile(
+                    leading: Icon(
+                      Icons.notes_rounded,
+                      color: Colors.black,
+                    ),
+                    trailing: IconButton(
+                      constraints: BoxConstraints(),
+                      icon: Icon(Icons.more_horiz, color: Colors.black),
+                      onPressed: () {
+                        showModalBottomSheet(
+                            context: context,
+                            builder: (context) {
+                              return Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  ListTile(
+                                    title: Text('글 수정하기'),
+                                  ),
+                                  ListTile(
+                                    title: Text('공유하기'),
+                                  ),
+                                  ListTile(
+                                    title: Text('삭제하기'),
+                                  ),
+                                ],
+                              );
+                            });
+                      },
+                    ),
+                    title: Text(
+                        '$title',
+                        style: kNoticeTitleTextStyle,
+                      ),
+                    subtitle: Text(
+                      '$writer',
+                      style: kNoticeSubTitleTextStyle,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          Flexible(
+            flex: 1,
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: Text(
+                  '$contents',
+                  softWrap: true,
+                  overflow: TextOverflow.ellipsis,
+                  style: kNoticeContentTextStyle
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -437,3 +312,89 @@ void showAlertDialog(BuildContext context) async {
     },
   );
 }
+
+//Container(
+//   color: Colors.white38,
+//   child: ListTile(
+//       leading: CircleAvatar(
+//         backgroundImage: AssetImage(
+//             'images/pro1.png'), //always add images in directory
+//         maxRadius: 15,
+//       ),
+//       title: Text(
+//         '박세미(다윗반)',
+//         style: TextStyle(
+//           fontWeight: FontWeight.bold,
+//           fontSize: 15,
+//         ),
+//       ),
+//       subtitle: Text(
+//         '확인완료했습니다! 잘 준비합시다',
+//         style: TextStyle(fontSize: 13),
+//       )),
+// ),
+//
+// Container(
+//   color: Colors.white38,
+//   child: ListTile(
+//       leading: CircleAvatar(
+//         backgroundImage: AssetImage(
+//             'images/pro2.jpg'), //always add images in directory
+//         maxRadius: 15,
+//       ),
+//       title: Text(
+//         '고은미(사랑반)',
+//         style: TextStyle(
+//           fontWeight: FontWeight.bold,
+//           fontSize: 15,
+//         ),
+//       ),
+//       subtitle: Text(
+//         '확인완료했습니다! 늘 신경써주셔서 감사해요!',
+//         style: TextStyle(fontSize: 13),
+//       )),
+// ),
+//
+// Container(
+//   color: Colors.white38,
+//   child: ListTile(
+//       //CircleAvatar() , use images from the images folder
+//       leading: CircleAvatar(
+//         backgroundImage: AssetImage(
+//             'images/pro3.jpg'), //always add images in directory
+//         maxRadius: 15,
+//       ),
+//       title: Text(
+//         '김말희(믿음반)',
+//         style: TextStyle(
+//           fontWeight: FontWeight.bold,
+//           fontSize: 15,
+//         ),
+//       ),
+//       subtitle: Text(
+//         '확인완료~ 늘 수고가 많으세요:) 화이팅!',
+//         style: TextStyle(fontSize: 13),
+//       )),
+// ),
+//
+// Container(
+//   color: Colors.white38,
+//   child: ListTile(
+//       //CircleAvatar() , use images from the images folder
+//       leading: CircleAvatar(
+//         backgroundImage: AssetImage(
+//             'images/pro4.jpg'), //always add images in directory
+//         maxRadius: 15,
+//       ),
+//       title: Text(
+//         '박준기(기쁨반)',
+//         style: TextStyle(
+//           fontWeight: FontWeight.bold,
+//           fontSize: 15,
+//         ),
+//       ),
+//       subtitle: Text(
+//         '확인완료 항상 기도하고 있습니다!',
+//         style: TextStyle(fontSize: 13),
+//       )),
+// ),
