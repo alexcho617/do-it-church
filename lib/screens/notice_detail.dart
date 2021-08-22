@@ -51,8 +51,8 @@ class NoticeDetailState extends State<NoticeDetail> {
   void initState() {
     super.initState();
     getCurrentUser();
-    //print(widget.noticeId);
     getNoticeDetail();
+    print(widget.noticeId);
   }
 
   @override

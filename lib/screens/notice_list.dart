@@ -18,6 +18,7 @@ class NoticeListRoute extends StatefulWidget {
   _NoticeListRouteState createState() => _NoticeListRouteState();
 }
 
+//TODO 4: When going from noticeList to newNotice, all the notice items are printed in console. Only need printing once when noticeList is initiating. Need to fix that. 리스트에서 새로운 공지화면으로 넘어갈때 디비에 있는 공지 리스트 들이 콘솔에 출력되는것 수정해야함
 class _NoticeListRouteState extends State<NoticeListRoute> {
   //User loggedInUser; //getting error
   void getCurrentUser() async {
@@ -107,7 +108,6 @@ class NoticeStream extends StatelessWidget {
         final docs = (snapshot.data!).docs;
         //(snapshot.data!).docs.map((DocumentSnapshot document)
         List<NoticeBuilder> noticeList = [];
-
         for (var doc in docs) {
           notice.docId = doc.id;
           print(notice.docId);
@@ -116,6 +116,7 @@ class NoticeStream extends StatelessWidget {
           notice.writer = doc.get("writer").toString();
           notice.contents = doc.get("contents").toString();
           final noticeObject = NoticeBuilder(
+            docId: notice.docId,
             title: notice.title,
             date: notice.date,
             writer: notice.writer,
@@ -188,7 +189,7 @@ class NoticeBuilder extends StatelessWidget {
                             context,
                             MaterialPageRoute(
                                 builder: (context) => NoticeDetail(
-                                      notice: notice,
+                                      noticeId: '$docId',
                                     )));
                       },
                       style:
