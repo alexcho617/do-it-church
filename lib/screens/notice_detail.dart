@@ -60,26 +60,26 @@ class NoticeDetailState extends State<NoticeDetail> {
     }
   }
 
-  void getNoticeDetail(Notice notice) async {
+  Future<void> getNoticeDetail(Notice notice) async {
     try {
       //its missing the await
       if (widget.noticeId != null) {
         print('got noticeId');
-        await firestore
-            .collection("Notice")
-            .doc(widget.noticeId)
-            .get()
+        DocumentReference doc = firestore.collection("Notice").doc(widget.noticeId);
+        await doc.get()
             .then((DocumentSnapshot doc) {
-          notice.title = doc.get("title").toString();
-          notice.date = doc.get("date").toString();
-          notice.writer = doc.get("writer").toString();
-          notice.contents = doc.get("contents").toString();
+              setState(() {
+                notice.title = doc.get("title").toString();
+                notice.date = doc.get("date").toString();
+                notice.writer = doc.get("writer").toString();
+                notice.contents = doc.get("contents").toString();
+              });
         });
-        print('${notice.title}');
-        print('${notice.writer}');
-        print('${notice.contents}');
-        print('fetched notice details');
       }
+      // print('${notice.title}');
+      // print('${notice.writer}');
+      // print('${notice.contents}');
+      // print('fetched notice details');
     } catch (e) {
       print(e);
     }
@@ -136,80 +136,69 @@ class NoticeDetailState extends State<NoticeDetail> {
                 }),
           ],
         ),
-        body: GestureDetector(
-          onTap: () {
-            FocusScope.of(context).unfocus();
-          },
+        body: Container(
+          alignment: Alignment.topCenter,
+          margin: const EdgeInsets.only(top: 20),
+          padding: EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            border: Border(
+              bottom: BorderSide(
+                color: Color(0xffE5E5E5),
+                width: 4.0,
+              ),
+            ),
+          ),
+          //width: size,
+          width: double.infinity,
           child: SingleChildScrollView(
             child: Column(
-              children: <Widget>[
+              children: [
                 Container(
-                  alignment: Alignment.topCenter,
-                  margin: const EdgeInsets.only(top: 20),
-                  padding: EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    border: Border(
-                      bottom: BorderSide(
-                        color: Color(0xffE5E5E5),
-                        width: 4.0,
-                      ),
-                    ),
-                  ),
-                  //width: size,
-                  width: double.infinity,
-                  child: Column(
-                    children: [
-                      Container(
-                        child: NoticeDetailBuilder(
-                            title: notice.title,
-                            writer: notice.writer,
-                            date: notice.date,
-                            contents: notice.contents),
-                      ),
-
-                      //구분선 만들기
-                      Container(
-                        height: 1.0,
-                        width: 500.0,
-                        color: Colors.black38,
-                      ),
-
-                      //댓글창 만들기
-                      Container(
-                        padding: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Row(children: [
-                          Expanded(
-                            child: TextField(
-                              //style:TextStyle(height:0.01, fontSize: 12),
-                              controller: commentTextController,
-                              decoration: InputDecoration(hintText: "댓글 입력창"),
-                              //onSubmitted: _handleSubmitted(),
-                            ),
-                          ),
-                          SizedBox(
-                            width: 8.0,
-                          ),
-                          TextButton(
-                            style: TextButton.styleFrom(
-                              primary: Color(0xFF89A1F8),
-                            ),
-                            onPressed: () {
-                              _handleSubmitted(
-                                  commentTextController.text, widget.noticeId);
-                              commentTextController.clear();
-                            },
-                            child: Text("완료"),
-                          ),
-                        ]),
-                      ),
-
-                      Container(
-                          // color: Colors.white38,
-                          // child: CommentBubble(),
-                          ),
-                    ],
+                  child: NoticeDetailBuilder(
+                      noticeId: widget.noticeId,
+                      title: notice.title,
+                      writer: notice.writer,
+                      date: notice.date,
+                      contents: notice.contents
                   ),
                 ),
+
+                //구분선 만들기
+                Container(
+                  height: 1.0,
+                  width: 500.0,
+                  color: Colors.black38,
+                ),
+
+                //댓글창 만들기
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Row(children: [
+                    Expanded(
+                      child: TextField(
+                        //style:TextStyle(height:0.01, fontSize: 12),
+                        controller: commentTextController,
+                        decoration: InputDecoration(hintText: "댓글 입력창"),
+                        //onSubmitted: _handleSubmitted(),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 8.0,
+                    ),
+                    TextButton(
+                      style: TextButton.styleFrom(
+                        primary: Color(0xFF89A1F8),
+                      ),
+                      onPressed: () {
+                        _handleSubmitted(
+                            commentTextController.text, widget.noticeId);
+                        commentTextController.clear();
+                      },
+                      child: Text("완료"),
+                    ),
+                  ]),
+                ),
+                CommentBubble(noticeId: widget.noticeId),
               ],
             ),
           ),
@@ -220,39 +209,38 @@ class NoticeDetailState extends State<NoticeDetail> {
 }
 
 class CommentBubble extends StatelessWidget {
-  const CommentBubble({
-    Key? key,
-  }) : super(key: key);
+  const CommentBubble({this.noticeId});
+  final noticeId;
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-        //CircleAvatar() , use images from the images folder
-        leading: CircleAvatar(
-          backgroundImage:
-              AssetImage('images/pro.jpg'), //always add images in directory
-          maxRadius: 15,
-        ),
-        title: Text(
-          '김은희(소망반)',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 15,
-          ),
-        ),
-        subtitle: Text(
-          '확인완료했습니다! 이번에도 즐겁게!',
-          style: TextStyle(fontSize: 13),
-        ));
+    return StreamBuilder<QuerySnapshot>(
+        stream: firestore.collection("Notice").doc(noticeId).collection("Comments").snapshots(),
+        builder: (context, snapshot) {
+          if(!snapshot.hasData){
+            return CircularProgressIndicator();
+          }
+          return SizedBox(
+            height: 400,
+            child: ListView(
+              children: (snapshot.data!).docs.map((DocumentSnapshot document) {
+                Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
+                return ListTile(
+                  title: Text(data['comment']),
+                  subtitle: Text(data['writer']),
+                );
+              }).toList(),
+            ),
+          );
+        }
+      );
   }
 }
 
 class NoticeDetailBuilder extends StatelessWidget {
   const NoticeDetailBuilder(
-      {@required this.title,
-      @required this.writer,
-      @required this.date,
-      @required this.contents});
+      {this.noticeId, this.title, this.writer, this.date, this.contents});
+  final noticeId;
   final title;
   final writer;
   final date;
