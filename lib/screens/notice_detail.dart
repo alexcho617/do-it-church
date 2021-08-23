@@ -65,15 +65,16 @@ class NoticeDetailState extends State<NoticeDetail> {
       //its missing the await
       if (widget.noticeId != null) {
         print('got noticeId');
-        DocumentReference doc = firestore.collection("Notice").doc(widget.noticeId);
-        await doc.get()
-            .then((DocumentSnapshot doc) {
-              setState(() {
-                notice.title = doc.get("title").toString();
-                notice.date = doc.get("date").toString();
-                notice.writer = doc.get("writer").toString();
-                notice.contents = doc.get("contents").toString();
-              });
+        DocumentReference doc =
+            firestore.collection("Notice").doc(widget.noticeId);
+        await doc.get().then((DocumentSnapshot doc) {
+          setState(() {
+            notice.title = doc.get("title").toString();
+            notice.date = doc.get("date").toString();
+            notice.writer = doc.get("writer").toString();
+            notice.contents = doc.get("contents").toString();
+          });
+          return 0;
         });
       }
       // print('${notice.title}');
@@ -90,15 +91,12 @@ class NoticeDetailState extends State<NoticeDetail> {
     super.initState();
     getCurrentUser();
     assignCurrentWriter();
+    getNoticeDetail(notice);
     print(widget.noticeId);
   }
 
   @override
   Widget build(BuildContext context) {
-    setState(() {
-      getNoticeDetail(notice);
-    });
-
     return MaterialApp(
       title: 'notice detail',
       home: Scaffold(
@@ -159,8 +157,7 @@ class NoticeDetailState extends State<NoticeDetail> {
                       title: notice.title,
                       writer: notice.writer,
                       date: notice.date,
-                      contents: notice.contents
-                  ),
+                      contents: notice.contents),
                 ),
 
                 //구분선 만들기
@@ -215,16 +212,24 @@ class CommentBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-        stream: firestore.collection("Notice").doc(noticeId).collection("Comments").snapshots(),
+        stream: firestore
+            .collection("Notice")
+            .doc(noticeId)
+            .collection("Comments")
+            .orderBy(
+              "date",
+            )
+            .snapshots(),
         builder: (context, snapshot) {
-          if(!snapshot.hasData){
+          if (!snapshot.hasData) {
             return CircularProgressIndicator();
           }
           return SizedBox(
             height: 400,
             child: ListView(
               children: (snapshot.data!).docs.map((DocumentSnapshot document) {
-                Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
+                Map<String, dynamic> data =
+                    document.data()! as Map<String, dynamic>;
                 return ListTile(
                   title: Text(data['comment']),
                   subtitle: Text(data['writer']),
@@ -232,8 +237,7 @@ class CommentBubble extends StatelessWidget {
               }).toList(),
             ),
           );
-        }
-      );
+        });
   }
 }
 
@@ -324,7 +328,11 @@ void _handleSubmitted(String commentText, String noticeId) async {
       .collection('Notice')
       .doc(noticeId)
       .collection('Comments')
-      .add({'comment': commentText, 'writer': comment.writer});
+      .add({
+    'comment': commentText,
+    'writer': comment.writer,
+    'date': Timestamp.now()
+  });
   //  _textEditingController.clear();
 }
 

@@ -96,6 +96,7 @@ class _NoticeAddRouteState extends State<NoticeAddRoute> {
                     'title': notice.title,
                     'contents': notice.contents,
                     'writer': notice.writer,
+                    //server
                     'date': Timestamp.now(),
                   });
                 }
