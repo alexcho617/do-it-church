@@ -136,83 +136,53 @@ class NoticeDetailState extends State<NoticeDetail> {
                 }),
           ],
         ),
-        body: GestureDetector(
-          onTap: () {
-            FocusScope.of(context).unfocus();
-          },
-          child: SingleChildScrollView(
-            child: Column(
-              children: <Widget>[
-                Container(
-                  alignment: Alignment.topCenter,
-                  margin: const EdgeInsets.only(top: 20),
-                  padding: EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    border: Border(
-                      bottom: BorderSide(
-                        color: Color(0xffE5E5E5),
-                        width: 4.0,
-                      ),
-                    ),
-                  ),
-                  //width: size,
-                  width: double.infinity,
-                  child: Column(
-                    children: [
-                      Container(
-                        child: NoticeDetailBuilder(
-                            title: notice.title,
-                            writer: notice.writer,
-                            date: notice.date,
-                            contents: notice.contents),
-                      ),
+        body: Column(
+          children: [
+            Container(
+              child: NoticeDetailBuilder(
+                  title: notice.title,
+                  writer: notice.writer,
+                  date: notice.date,
+                  contents: notice.contents),
+            ),
 
-                      //구분선 만들기
-                      Container(
-                        height: 1.0,
-                        width: 500.0,
-                        color: Colors.black38,
-                      ),
+            //구분선 만들기
+            Container(
+              height: 1.0,
+              width: 500.0,
+              color: Colors.black38,
+            ),
 
-                      //댓글창 만들기
-                      Container(
-                        padding: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Row(children: [
-                          Expanded(
-                            child: TextField(
-                              //style:TextStyle(height:0.01, fontSize: 12),
-                              controller: commentTextController,
-                              decoration: InputDecoration(hintText: "댓글 입력창"),
-                              //onSubmitted: _handleSubmitted(),
-                            ),
-                          ),
-                          SizedBox(
-                            width: 8.0,
-                          ),
-                          TextButton(
-                            style: TextButton.styleFrom(
-                              primary: Color(0xFF89A1F8),
-                            ),
-                            onPressed: () {
-                              _handleSubmitted(
-                                  commentTextController.text, widget.noticeId);
-                              commentTextController.clear();
-                            },
-                            child: Text("완료"),
-                          ),
-                        ]),
-                      ),
-
-                      Container(
-                          // color: Colors.white38,
-                          // child: CommentBubble(),
-                          ),
-                    ],
+            //댓글창 만들기
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 8.0),
+              child: Row(children: [
+                Expanded(
+                  child: TextField(
+                    //style:TextStyle(height:0.01, fontSize: 12),
+                    controller: commentTextController,
+                    decoration: InputDecoration(hintText: "댓글 입력창"),
+                    //onSubmitted: _handleSubmitted(),
                   ),
                 ),
-              ],
+                SizedBox(
+                  width: 8.0,
+                ),
+                TextButton(
+                  style: TextButton.styleFrom(
+                    primary: Color(0xFF89A1F8),
+                  ),
+                  onPressed: () {
+                    _handleSubmitted(
+                        commentTextController.text, widget.noticeId);
+                    commentTextController.clear();
+                  },
+                  child: Text("완료"),
+                ),
+              ]),
             ),
-          ),
+            CommentStream()
+          ],
         ),
       ),
     );
@@ -375,4 +345,40 @@ void showAlertDialog(BuildContext context) async {
       );
     },
   );
+}
+
+class CommentStream extends StatelessWidget {
+  const CommentStream({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder(
+        stream: firestore
+            .collection('Notice')
+            .doc(notice.docId)
+            .collection('Comments')
+            .snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (!snapshot.hasData) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+            //final comments = !snapshot.data.docs;
+          }
+          return Expanded(
+            child: ListView(
+              children: snapshot.data!.docs.map((DocumentSnapshot document) {
+                Map<String, dynamic> data =
+                    document.data()! as Map<String, dynamic>;
+                print(data['comment']);
+                return Text(data['comment']);
+                // return ListTile(
+                //   title: Text(data['comment']),
+                //   subtitle: Text(data['writer']),
+                //);
+              }).toList(),
+            ),
+          );
+        });
+  }
 }
