@@ -1,26 +1,27 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:do_it_church/components/comment.dart';
+import 'package:do_it_church/components/notice.dart';
 import 'package:do_it_church/screens/notice_new.dart';
 import 'package:do_it_church/constants.dart';
 import 'package:flutter/material.dart';
 import 'notice_new.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+final _auth = FirebaseAuth.instance;
+final firestore = FirebaseFirestore.instance;
 
+Notice notice = Notice();
+Comment comment = Comment();
 
 class NoticeDetail extends StatefulWidget {
-  const NoticeDetail({Key? key}) : super(key: key);
-
+  NoticeDetail({required this.noticeId});
+  final noticeId;
   @override
   NoticeDetailState createState() => NoticeDetailState();
 }
 
 class NoticeDetailState extends State<NoticeDetail> {
-  late TextEditingController _textEditingController = TextEditingController();
-
-  final _auth = FirebaseAuth.instance;
-  final firestore = FirebaseFirestore.instance;
-
-  String title = "";
+  late TextEditingController commentTextController = TextEditingController();
 
   void getCurrentUser() async {
     try {
@@ -28,43 +29,70 @@ class NoticeDetailState extends State<NoticeDetail> {
       if (user != null) {
         User loggedInUser = user;
         print(
-            'SUCCESS(notice_detail_screen): Signed in As:${loggedInUser.phoneNumber}');
+            'SUCCESS(notice_detail_screen): Signed in As:${loggedInUser.uid}');
       }
     } catch (e) {
       print(e);
     }
   }
 
-  void getNotice() async {
-    try {
-      var ref = firestore.collection('Notice').doc();
-      await ref.set({
-        'docID': ref.id,
-      });
-      firestore.collection('Notice').doc(ref.id).get().then((DocumentSnapshot documentSnapshot) {
-        title = documentSnapshot.get("title").toString();
-        print(title);
-      });
-      // var collection = firestore.collection('Notice');
-      // var querysnapshot = await collection.get();
-      // for (var snapshot in querysnapshot.docs){
-      //   var documentId = snapshot.id;
-      //   print(documentId);
-      //   firestore.collection('Notice').doc(documentId).get().then((DocumentSnapshot document) {
-      //     title = document.get("title").toString();
-      //     print(title);
-      //   });
-    //}
-   } catch(e) {
-     print(e);
-   }
+  void assignCurrentWriter() async {
+    final user = _auth.currentUser;
+    if (user != null) {
+      User loggedInUser = user;
+      print(
+          'SUCCESS(notice_new_screen): Signed in As:${loggedInUser.phoneNumber}');
+      comment.writer = loggedInUser.phoneNumber;
+      print('(notice_new_screen): Signed User UID:${loggedInUser.uid}');
+      QuerySnapshot userData = await FirebaseFirestore.instance
+          .collection('Users')
+          .where('uid', isEqualTo: loggedInUser.uid)
+          .get();
+      for (var doc in userData.docs) {
+        if (doc.exists) {
+          //print('Data:${doc.data()}');
+          print('(notice_detail): Signed User Name:${doc["name"]}');
+          comment.writer = doc["name"];
+        } else {
+          print('noData');
+        }
+      }
+    }
   }
+
+  Future<void> getNoticeDetail(Notice notice) async {
+    try {
+      //its missing the await
+      if (widget.noticeId != null) {
+        print('got noticeId');
+        DocumentReference doc =
+            firestore.collection("Notice").doc(widget.noticeId);
+        await doc.get().then((DocumentSnapshot doc) {
+          setState(() {
+            notice.title = doc.get("title").toString();
+            notice.date = doc.get("date").toString();
+            notice.writer = doc.get("writer").toString();
+            notice.contents = doc.get("contents").toString();
+          });
+          return 0;
+        });
+      }
+      // print('${notice.title}');
+      // print('${notice.writer}');
+      // print('${notice.contents}');
+      // print('fetched notice details');
+    } catch (e) {
+      print(e);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     getCurrentUser();
-    getNotice();
-    _textEditingController = TextEditingController();
+    assignCurrentWriter();
+    getNoticeDetail(notice);
+    print(widget.noticeId);
   }
 
   @override
@@ -106,293 +134,68 @@ class NoticeDetailState extends State<NoticeDetail> {
                 }),
           ],
         ),
-
-
-        body: GestureDetector(
-          onTap: () {
-            FocusScope.of(context).unfocus();
-          },
+        body: Container(
+          alignment: Alignment.topCenter,
+          margin: const EdgeInsets.only(top: 20),
+          padding: EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            border: Border(
+              bottom: BorderSide(
+                color: Color(0xffE5E5E5),
+                width: 4.0,
+              ),
+            ),
+          ),
+          //width: size,
+          width: double.infinity,
           child: SingleChildScrollView(
             child: Column(
-              children: <Widget>[
+              children: [
                 Container(
-                  alignment: Alignment.topCenter,
-                  margin: const EdgeInsets.only(top:20),
-                  padding: EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    border: Border(
-                      bottom: BorderSide(
-                        color: Color(0xffE5E5E5),
-                        width: 4.0,
+                  child: NoticeDetailBuilder(
+                      noticeId: widget.noticeId,
+                      title: notice.title,
+                      writer: notice.writer,
+                      date: notice.date,
+                      contents: notice.contents),
+                ),
+
+                //구분선 만들기
+                Container(
+                  height: 1.0,
+                  width: 500.0,
+                  color: Colors.black38,
+                ),
+
+                //댓글창 만들기
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Row(children: [
+                    Expanded(
+                      child: TextField(
+                        //style:TextStyle(height:0.01, fontSize: 12),
+                        controller: commentTextController,
+                        decoration: InputDecoration(hintText: "댓글 입력창"),
+                        //onSubmitted: _handleSubmitted(),
                       ),
                     ),
-                  ),
-                  //width: size,
-                  width: double.infinity,
-                  child: Column(
-                    children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Icon(
-                            Icons.notes_rounded,
-                            color: Colors.black,
-                          ),
-                          Expanded(
-                            child: Container(
-                              margin: const EdgeInsets.only(left: 10, bottom: 80),
-                              child: Column(
-                                //crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Text(
-                                        //title,
-                                        '6월 생일잔치 알려드립니다',
-                                        style: kNoticeTitleTextStyle,
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      Text(
-                                        //날짜 + 작성자 서버에서 받아서 변수로 출력
-                                        '2021년 6월 30일, 박강두 전도사',
-                                        style: kNoticeSubTitleTextStyle,
-                                      ),
-                                    ],
-                                  ),
-                                  Container(
-                                    height: 20,
-                                  ),
-                                  Row(
-                                    children: [
-                                      Text(
-                                          '6월 생일자: 김세희, 박효인, 최다운 \n준비팀: 고은혜T, 고은미T, 박현동T \n준비 열심히 해서 재밌게 진행해봅시다! \n각 반의 선생님들께서는 아이들에게 생일잔치에 대한 \n문자 메세지를 하루 전 날에 꼬옥 보내주세요!\n\n**공지를 확인하신 선생님들은 댓글창에\n "확인완료" 혹은 "확인했습니다"라고 댓글 부탁드려요~~',
-                                          softWrap: true,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: kNoticeContentTextStyle
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-
-
-                          IconButton(
-                            padding: EdgeInsets.zero,
-                            constraints: BoxConstraints(),
-                            icon: Icon(Icons.more_horiz, color: Colors.black),
-                            onPressed: () {
-                              showModalBottomSheet(
-                                  context: context,
-                                  builder: (context) {
-                                    return Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        ListTile(
-                                            leading: TextButton(
-                                              onPressed: () {
-                                                // Respond to button press
-                                              },
-                                              child: Text(
-                                                "글 수정하기",
-                                                style:TextStyle(
-                                                  fontSize: 15,
-                                                  color: Colors.black,
-                                                ),
-                                              ),
-                                            )
-                                        ),
-
-
-                                        ListTile(
-                                            leading: TextButton(
-                                              onPressed: () {
-                                                // Respond to button press
-                                              },
-                                              child: Text("공유하기",
-                                                style:TextStyle(
-                                                  fontSize: 15,
-                                                  color: Colors.black,
-                                                ),
-                                              ),
-                                            )
-                                        ),
-
-
-                                        ListTile(
-                                            leading: TextButton(
-                                              onPressed: () {
-                                                showAlertDialog(context);
-                                                // Respond to button press
-                                              },
-                                              child: Text("삭제하기",
-                                                style:TextStyle(
-                                                  fontSize: 15,
-                                                  color: Colors.black,
-                                                ),
-                                              ),
-                                            )
-                                        ),
-
-                                      ],
-                                    );
-                                  });
-                            },
-                          )
-                        ],
+                    SizedBox(
+                      width: 8.0,
+                    ),
+                    TextButton(
+                      style: TextButton.styleFrom(
+                        primary: Color(0xFF89A1F8),
                       ),
-
-                      //구분선 만들기
-                      Container(
-                        height: 1.0,
-                        width: 500.0,
-                        color: Colors.black38,
-                      ),
-
-                      //댓글창 만들기
-                      Container(
-                        padding: EdgeInsets.symmetric(horizontal: 8.0),
-                        child:
-                        Row(
-                            children: [
-                              Expanded(
-                                child: TextField(
-                                  //style:TextStyle(height:0.01, fontSize: 12),
-                                  controller: _textEditingController,
-                                  decoration: InputDecoration( hintText: "댓글 입력창"),
-                                  onSubmitted: _handleSubmitted,
-                                ),
-                              ),
-                              SizedBox(
-                                width: 8.0,
-                              ),
-
-                              FlatButton(
-                                onPressed: () {
-                                  _handleSubmitted(_textEditingController.text);
-                                  _textEditingController.clear();
-                                },
-                                child: Text("완료"),
-
-                                color: Colors.blueAccent,
-                              ),
-                            ]),
-                      ),
-
-                      Container(
-                        color: Colors.white38,
-                        child: ListTile(
-                          //CircleAvatar() , use images from the images folder
-                            leading: CircleAvatar(
-                              backgroundImage: AssetImage(
-                                  'images/pro.jpg'), //always add images in directory
-                              maxRadius: 15,
-                            ),
-                            title: Text(
-                              '김은희(소망반)',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 15,
-                              ),
-                            ),
-                            subtitle: Text(
-                              '확인완료했습니다! 이번에도 즐겁게!',
-                              style: TextStyle(fontSize: 13),
-                            )),
-                      ),
-
-                      Container(
-                        color: Colors.white38,
-                        child: ListTile(
-                            leading: CircleAvatar(
-                              backgroundImage: AssetImage(
-                                  'images/pro1.png'), //always add images in directory
-                              maxRadius: 15,
-                            ),
-                            title: Text(
-                              '박세미(다윗반)',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 15,
-                              ),
-                            ),
-                            subtitle: Text(
-                              '확인완료했습니다! 잘 준비합시다',
-                              style: TextStyle(fontSize: 13),
-                            )),
-                      ),
-
-                      Container(
-                        color: Colors.white38,
-                        child: ListTile(
-                            leading: CircleAvatar(
-                              backgroundImage: AssetImage(
-                                  'images/pro2.jpg'), //always add images in directory
-                              maxRadius: 15,
-                            ),
-                            title: Text(
-                              '고은미(사랑반)',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 15,
-                              ),
-                            ),
-                            subtitle: Text(
-                              '확인완료했습니다! 늘 신경써주셔서 감사해요!',
-                              style: TextStyle(fontSize: 13),
-                            )),
-                      ),
-
-                      Container(
-                        color: Colors.white38,
-                        child: ListTile(
-                          //CircleAvatar() , use images from the images folder
-                            leading: CircleAvatar(
-                              backgroundImage: AssetImage(
-                                  'images/pro3.jpg'), //always add images in directory
-                              maxRadius: 15,
-                            ),
-                            title: Text(
-                              '김말희(믿음반)',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 15,
-                              ),
-                            ),
-                            subtitle: Text(
-                              '확인완료~ 늘 수고가 많으세요:) 화이팅!',
-                              style: TextStyle(fontSize: 13),
-                            )),
-                      ),
-
-                      Container(
-                        color: Colors.white38,
-                        child: ListTile(
-                          //CircleAvatar() , use images from the images folder
-                            leading: CircleAvatar(
-                              backgroundImage: AssetImage(
-                                  'images/pro4.jpg'), //always add images in directory
-                              maxRadius: 15,
-                            ),
-                            title: Text(
-                              '박준기(기쁨반)',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 15,
-                              ),
-                            ),
-                            subtitle: Text(
-                              '확인완료 항상 기도하고 있습니다!',
-                              style: TextStyle(fontSize: 13),
-                            )),
-                      ),
-                    ],
-                  ),
+                      onPressed: () {
+                        _handleSubmitted(
+                            commentTextController.text, widget.noticeId);
+                        commentTextController.clear();
+                      },
+                      child: Text("완료"),
+                    ),
+                  ]),
                 ),
+                CommentBubble(noticeId: widget.noticeId),
               ],
             ),
           ),
@@ -402,25 +205,150 @@ class NoticeDetailState extends State<NoticeDetail> {
   }
 }
 
-void _handleSubmitted(String text) {
-  print(text);
-  //  _textEditingController.clear();
+class CommentBubble extends StatelessWidget {
+  const CommentBubble({this.noticeId});
+  final noticeId;
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<QuerySnapshot>(
+        stream: firestore
+            .collection("Notice")
+            .doc(noticeId)
+            .collection("Comments")
+            .orderBy(
+              "date",
+            )
+            .snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return CircularProgressIndicator();
+          }
+          return SizedBox(
+            height: 400,
+            child: ListView(
+              children: (snapshot.data!).docs.map((DocumentSnapshot document) {
+                Map<String, dynamic> data =
+                    document.data()! as Map<String, dynamic>;
+                return ListTile(
+                  title: Text(data['comment']),
+                  subtitle: Text(data['writer']),
+                );
+              }).toList(),
+            ),
+          );
+        });
+  }
 }
 
+class NoticeDetailBuilder extends StatelessWidget {
+  const NoticeDetailBuilder(
+      {this.noticeId, this.title, this.writer, this.date, this.contents});
+  final noticeId;
+  final title;
+  final writer;
+  final date;
+  final contents;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 200,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Container(
+                  child: ListTile(
+                    leading: Icon(
+                      Icons.notes_rounded,
+                      color: Colors.black,
+                    ),
+                    trailing: IconButton(
+                      constraints: BoxConstraints(),
+                      icon: Icon(Icons.more_horiz, color: Colors.black),
+                      onPressed: () {
+                        showModalBottomSheet(
+                            context: context,
+                            builder: (context) {
+                              return Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  ListTile(
+                                    title: Text('글 수정하기'),
+                                  ),
+                                  ListTile(
+                                    title: Text('공유하기'),
+                                  ),
+                                  ListTile(
+                                    title: Text('삭제하기'),
+                                  ),
+                                ],
+                              );
+                            });
+                      },
+                    ),
+                    title: Text(
+                      '$title',
+                      style: kNoticeTitleTextStyle,
+                    ),
+                    subtitle: Text(
+                      '$writer',
+                      style: kNoticeSubTitleTextStyle,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          Flexible(
+            flex: 1,
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: Text('$contents',
+                  softWrap: true,
+                  overflow: TextOverflow.ellipsis,
+                  style: kNoticeContentTextStyle),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+void _handleSubmitted(String commentText, String noticeId) async {
+  print(noticeId);
+  print(commentText);
+  print(comment.writer);
+  await firestore
+      .collection('Notice')
+      .doc(noticeId)
+      .collection('Comments')
+      .add({
+    'comment': commentText,
+    'writer': comment.writer,
+    'date': Timestamp.now()
+  });
+  //  _textEditingController.clear();
+}
 
 void showAlertDialog(BuildContext context) async {
   String result = await showDialog(
     context: context,
     barrierDismissible: false, // user must tap button!
-    builder: (BuildContext context)
-    {
+    builder: (BuildContext context) {
       return AlertDialog(
         title: Text('삭제하기'),
         content: Text("글을 삭제하시겠습니까?"),
         actions: <Widget>[
           TextButton(
-            child: Text('OK',
-              style:TextStyle(
+            child: Text(
+              'OK',
+              style: TextStyle(
                 color: Colors.blue,
               ),
             ),
@@ -429,8 +357,9 @@ void showAlertDialog(BuildContext context) async {
             },
           ),
           TextButton(
-            child: Text('Cancel',
-              style:TextStyle(
+            child: Text(
+              'Cancel',
+              style: TextStyle(
                 color: Colors.red,
               ),
             ),

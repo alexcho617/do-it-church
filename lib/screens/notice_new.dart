@@ -22,7 +22,7 @@ class _NoticeAddRouteState extends State<NoticeAddRoute> {
       print(
           'SUCCESS(notice_new_screen): Signed in As:${loggedInUser.phoneNumber}');
       notice.writer = loggedInUser.phoneNumber;
-      print(loggedInUser.uid);
+      print('(notice_new_screen): Signed User UID:${loggedInUser.uid}');
       QuerySnapshot userData = await FirebaseFirestore.instance
           .collection('Users')
           .where('uid', isEqualTo: loggedInUser.uid)
@@ -30,7 +30,7 @@ class _NoticeAddRouteState extends State<NoticeAddRoute> {
       for (var doc in userData.docs) {
         if (doc.exists) {
           //print('Data:${doc.data()}');
-          print('Name:${doc["name"]}');
+          print('(notice_new_screen): Signed User Name:${doc["name"]}');
           notice.writer = doc["name"];
         } else {
           print('noData');
@@ -88,12 +88,15 @@ class _NoticeAddRouteState extends State<NoticeAddRoute> {
                 style: TextStyle(color: Colors.red),
               ),
               onPressed: () async {
-                if (notice.title.toString().length > 0 &&
-                    notice.writer.toString().length > 0) {
+                if (notice.title != null &&
+                    notice.contents != null &&
+                    notice.title.toString().length > 1 &&
+                    notice.writer.toString().length > 1) {
                   firestore.collection('Notice').add({
                     'title': notice.title,
                     'contents': notice.contents,
                     'writer': notice.writer,
+                    //server
                     'date': Timestamp.now(),
                   });
                 }

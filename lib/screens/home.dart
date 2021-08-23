@@ -137,10 +137,10 @@ class _HomeRouteState extends State<HomeRoute> {
               ], borderRadius: BorderRadius.circular(10), color: Colors.white),
               child: InkWell(
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => NoticeDetail()),
-                  );
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(builder: (context) => NoticeDetail()),
+                  // );
                   setState(() {});
                 },
                 child: Container(
