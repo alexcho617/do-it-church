@@ -12,6 +12,7 @@ void main() async {
   runApp(
     MaterialApp(
       theme: ThemeData(
+        scaffoldBackgroundColor: Colors.white,
         primaryColor: Color(0xFF89A1F8),
         iconTheme: IconThemeData(color: Color(0xFF89A1F8)),
         outlinedButtonTheme: OutlinedButtonThemeData(
@@ -21,6 +22,7 @@ void main() async {
           ),
         ),
         appBarTheme: AppBarTheme(
+          iconTheme: IconThemeData(color: Color(0xFF89A1F8)),
           backgroundColor: Colors.white,
         ),
         textTheme: TextTheme(

@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:do_it_church/components/EditButton.dart';
+import 'package:do_it_church/components/NoticeHeader.dart';
 import 'package:do_it_church/components/comment.dart';
 import 'package:do_it_church/components/notice.dart';
 import 'package:do_it_church/screens/notice_new.dart';
@@ -153,7 +155,7 @@ class NoticeDetailState extends State<NoticeDetail> {
               children: [
                 Container(
                   child: NoticeDetailBuilder(
-                      noticeId: widget.noticeId,
+                      docId: widget.noticeId,
                       title: notice.title,
                       writer: notice.writer,
                       date: notice.date,
@@ -243,8 +245,8 @@ class CommentBubble extends StatelessWidget {
 
 class NoticeDetailBuilder extends StatelessWidget {
   const NoticeDetailBuilder(
-      {this.noticeId, this.title, this.writer, this.date, this.contents});
-  final noticeId;
+      {this.docId, this.title, this.writer, this.date, this.contents});
+  final docId;
   final title;
   final writer;
   final date;
@@ -257,53 +259,7 @@ class NoticeDetailBuilder extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Container(
-                  child: ListTile(
-                    leading: Icon(
-                      Icons.notes_rounded,
-                      color: Colors.black,
-                    ),
-                    trailing: IconButton(
-                      constraints: BoxConstraints(),
-                      icon: Icon(Icons.more_horiz, color: Colors.black),
-                      onPressed: () {
-                        showModalBottomSheet(
-                            context: context,
-                            builder: (context) {
-                              return Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  ListTile(
-                                    title: Text('글 수정하기'),
-                                  ),
-                                  ListTile(
-                                    title: Text('공유하기'),
-                                  ),
-                                  ListTile(
-                                    title: Text('삭제하기'),
-                                  ),
-                                ],
-                              );
-                            });
-                      },
-                    ),
-                    title: Text(
-                      '$title',
-                      style: kNoticeTitleTextStyle,
-                    ),
-                    subtitle: Text(
-                      '$writer',
-                      style: kNoticeSubTitleTextStyle,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
+          NoticeHeader(docId: docId, title: title, writer: writer),
           Flexible(
             flex: 1,
             child: Container(
