@@ -21,6 +21,11 @@ void main() async {
             primary: const Color(0xff89A1F8),
           ),
         ),
+        textButtonTheme: TextButtonThemeData(
+          style: TextButton.styleFrom(
+            primary: Color(0xFF687AB5),
+          ),
+        ),
         appBarTheme: AppBarTheme(
           iconTheme: IconThemeData(color: Color(0xFF89A1F8)),
           backgroundColor: Colors.white,

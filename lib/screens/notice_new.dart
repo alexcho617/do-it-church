@@ -1,8 +1,27 @@
+import 'package:do_it_church/components/ScreenDivider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:do_it_church/components/notice.dart';
+import 'package:do_it_church/constants.dart';
+
+void _handleSubmitted(String titleText,String contentText) async {
+  print(titleText);
+  print(contentText);
+  print(notice.writer);
+  await firestore.collection('Notice').add({
+    'title': titleText,
+    'contents': contentText,
+    'writer': notice.writer,
+    //server
+    'date': Timestamp.now(),
+  });
+}
+
+Notice notice = Notice();
+final _auth = FirebaseAuth.instance;
+final firestore = FirebaseFirestore.instance;
 
 class NoticeAddRoute extends StatefulWidget {
   @override
@@ -10,11 +29,6 @@ class NoticeAddRoute extends StatefulWidget {
 }
 
 class _NoticeAddRouteState extends State<NoticeAddRoute> {
-  final _auth = FirebaseAuth.instance;
-  final firestore = FirebaseFirestore.instance;
-
-  Notice notice = Notice();
-
   void assignCurrentWriter() async {
     final user = _auth.currentUser;
     if (user != null) {
@@ -46,59 +60,41 @@ class _NoticeAddRouteState extends State<NoticeAddRoute> {
   }
 
   @override
-  //String noticeTitle = '';
-  //String noticeContents = '';
   Widget build(BuildContext context) {
-    // var mediaQuery = MediaQuery.of(context);
-    // final size = mediaQuery.size.width;
-    int screenIndex = 0;
-    List<Widget> screenList = [
-      Text('홈스크린'),
-      Text('채팅'),
-      Text('활동가이드화면'),
-      Text('모아보기화면')
-    ];
+    final contentTextController = TextEditingController();
+    final titleTextController = TextEditingController();
+
+    bool _isButtonDisabled = false;
+    if(_isButtonDisabled = true){
+      TextButtonThemeData(
+        style: TextButton.styleFrom(
+          primary: Colors.red,
+        ),
+      );
+    }
+
+    final height = MediaQuery.of(context).size.height;
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
         centerTitle: true,
-        title: Text(
-          '공지작성',
-          style: TextStyle(
-            fontSize: 15,
-            color: Colors.black,
-          ),
-        ),
+        title: Text('공지작성', style: kAppBarTitleTextStyle),
         leading: IconButton(
-            color: Colors.black54,
             icon: Icon(Icons.cancel_outlined),
             onPressed: () {
               Navigator.pop(context);
-              setState(() {
-                //
-              });
             }),
-        leadingWidth: 20,
         actions: [
           TextButton(
-              child: Text(
-                '완료',
-                style: TextStyle(color: Colors.red),
-              ),
+              child: Text('완료'),
+              style: TextButton.styleFrom(primary: Colors.red),
               onPressed: () async {
-                if (notice.title != null &&
-                    notice.contents != null &&
-                    notice.title.toString().length > 1 &&
+                if (titleTextController.text != '' &&
+                    contentTextController.text != '' &&
+                    titleTextController.text.length > 1 &&
                     notice.writer.toString().length > 1) {
-                  firestore.collection('Notice').add({
-                    'title': notice.title,
-                    'contents': notice.contents,
-                    'writer': notice.writer,
-                    //server
-                    'date': Timestamp.now(),
-                  });
+                  _handleSubmitted(titleTextController.text, contentTextController.text);
                 }
                 Navigator.pop(context);
               }),
@@ -106,49 +102,30 @@ class _NoticeAddRouteState extends State<NoticeAddRoute> {
       ),
       body: Center(
           child: Column(
-        children: [
-          Container(
-            height: 450,
-            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            child: Column(
-              children: [
-                TextField(
-                  autocorrect: true,
-                  onChanged: (value3) => notice.title = value3,
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                    hintText: '제목',
-                    hintStyle:
-                        TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-                  ),
+            children: [
+              Container(
+                height: height * 0.5,
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                child: Column(
+                  children: [
+                    TextField(
+                      //autocorrect: true,
+                      controller: titleTextController,
+                      decoration: InputDecoration(
+                          hintText: "제목",
+                          hintStyle: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
+                    ),
+                    TextField(
+                        controller: contentTextController,
+                        decoration: InputDecoration(hintText: "여기 내용을 입력하세요"),
+                      maxLines: 20,
+                    ),
+                  ],
                 ),
-                Divider(),
-                TextField(
-                  maxLines: null,
-                  onChanged: (value4) => notice.contents = value4,
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                    hintText: '여기 내용을 입력하세요',
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Divider(
-            thickness: 1.0,
-            indent: 15,
-            endIndent: 15,
-          ),
-          Container(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                IconButton(icon: Icon(Icons.add_to_photos), onPressed: () {}),
-              ],
-            ),
-          ),
-        ],
-      )),
+              ),
+            ],
+          )
+      ),
     );
   }
 }

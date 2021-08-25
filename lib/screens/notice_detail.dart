@@ -139,6 +139,7 @@ class NoticeDetailState extends State<NoticeDetail> {
       body: SafeArea(
         child: Container(
           child: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
             child: Column(
               children: [
                 Container(
@@ -155,7 +156,8 @@ class NoticeDetailState extends State<NoticeDetail> {
                 Container(child: CommentBubble(noticeId: widget.noticeId)),
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 20.0),
-                  child: Row(children: [
+                  child: Row(
+                      children: [
                     Expanded(
                       child: TextField(
                         controller: commentTextController,
@@ -205,16 +207,16 @@ class NoticeDetailBuilder extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           NoticeDetailHeader(docId: docId, title: title, writer: writer),
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 20),
-            child: SingleChildScrollView(
-              child: RichText(
-                text:
-                    TextSpan(text: '$contents', style: kNoticeContentTextStyle),
-                overflow: TextOverflow.ellipsis,
+          Expanded(
+              child: Container(
+                alignment: Alignment.topLeft,
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: RichText(
+                  text: TextSpan(text: '$contents', style: kNoticeContentTextStyle),
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
             ),
-          ),
         ],
       ),
     );
