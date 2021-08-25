@@ -162,6 +162,7 @@ class NoticeDetailState extends State<NoticeDetail> {
                       child: TextField(
                         controller: commentTextController,
                         decoration: InputDecoration(hintText: "댓글을 입력하세요"),
+                        maxLines: null,
                       ),
                     ),
                     SizedBox(
@@ -208,12 +209,15 @@ class NoticeDetailBuilder extends StatelessWidget {
         children: [
           NoticeDetailHeader(docId: docId, title: title, writer: writer),
           Expanded(
-              child: Container(
-                alignment: Alignment.topLeft,
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: RichText(
-                  text: TextSpan(text: '$contents', style: kNoticeContentTextStyle),
-                  overflow: TextOverflow.ellipsis,
+              child: SingleChildScrollView(
+                child: Container(
+                  alignment: Alignment.topLeft,
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: RichText(
+                    text: TextSpan(
+                        text: '$contents', style: kNoticeContentTextStyle),
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
               ),
             ),

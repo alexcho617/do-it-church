@@ -22,7 +22,6 @@ void _handleSubmitted(String titleText,String contentText) async {
 Notice notice = Notice();
 final _auth = FirebaseAuth.instance;
 final firestore = FirebaseFirestore.instance;
-
 class NoticeAddRoute extends StatefulWidget {
   @override
   _NoticeAddRouteState createState() => _NoticeAddRouteState();
@@ -57,23 +56,15 @@ class _NoticeAddRouteState extends State<NoticeAddRoute> {
   void initState() {
     super.initState();
     assignCurrentWriter();
+
   }
 
   @override
   Widget build(BuildContext context) {
     final contentTextController = TextEditingController();
     final titleTextController = TextEditingController();
-
-    bool _isButtonDisabled = false;
-    if(_isButtonDisabled = true){
-      TextButtonThemeData(
-        style: TextButton.styleFrom(
-          primary: Colors.red,
-        ),
-      );
-    }
-
     final height = MediaQuery.of(context).size.height;
+    final formKey = GlobalKey<FormState>();
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -88,43 +79,57 @@ class _NoticeAddRouteState extends State<NoticeAddRoute> {
         actions: [
           TextButton(
               child: Text('완료'),
-              style: TextButton.styleFrom(primary: Colors.red),
               onPressed: () async {
-                if (titleTextController.text != '' &&
-                    contentTextController.text != '' &&
-                    titleTextController.text.length > 1 &&
-                    notice.writer.toString().length > 1) {
-                  _handleSubmitted(titleTextController.text, contentTextController.text);
-                }
+              if(formKey.currentState!.validate()){
+                _handleSubmitted(titleTextController.text, contentTextController.text);
                 Navigator.pop(context);
+              }
               }),
         ],
       ),
-      body: Center(
-          child: Column(
-            children: [
-              Container(
-                height: height * 0.5,
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                child: Column(
-                  children: [
-                    TextField(
-                      //autocorrect: true,
-                      controller: titleTextController,
-                      decoration: InputDecoration(
-                          hintText: "제목",
-                          hintStyle: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
-                    ),
-                    TextField(
-                        controller: contentTextController,
-                        decoration: InputDecoration(hintText: "여기 내용을 입력하세요"),
-                      maxLines: 20,
-                    ),
-                  ],
+      body: Form(
+        key: formKey,
+        child: Center(
+            child: Column(
+              children: [
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  child: Column(
+                    children: [
+                      Container(
+                        child: TextFormField(
+                          validator: (value){
+                            if(value == null || value.isEmpty){
+                              return '제목은 필수입니다';
+                            }
+                            return null;
+                          },
+                          controller: titleTextController,
+                          decoration: InputDecoration(
+                              hintText: "제목",
+                              hintStyle: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
+                        ),
+                      ),
+                      Container(
+                        child: TextFormField(
+                          validator: (value){
+                            if(value == null || value.isEmpty){
+                              return '내용은 필수입니다';
+                            }
+                            return null;
+                          },
+                          controller: contentTextController,
+                          decoration: InputDecoration(hintText: "내용을 입력하세요"),
+                          maxLines: 20,
+
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          )
+              ],
+            )
+        ),
       ),
     );
   }
