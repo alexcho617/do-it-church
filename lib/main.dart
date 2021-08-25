@@ -1,6 +1,5 @@
 import 'package:do_it_church/screens/landing_route.dart';
 import 'package:flutter/material.dart';
-import 'screens/login.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:do_it_church/screens/home.dart';
@@ -19,6 +18,11 @@ void main() async {
           style: OutlinedButton.styleFrom(
             side: BorderSide(color: const Color(0xff89A1F8)),
             primary: const Color(0xff89A1F8),
+          ),
+        ),
+        textButtonTheme: TextButtonThemeData(
+          style: TextButton.styleFrom(
+            primary: Color(0xFF687AB5),
           ),
         ),
         appBarTheme: AppBarTheme(
