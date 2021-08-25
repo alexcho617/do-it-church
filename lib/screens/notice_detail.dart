@@ -20,7 +20,6 @@ void _handleSubmitted(String commentText, String noticeId) async {
     'writer': comment.writer,
     'date': Timestamp.now()
   });
-  //  _textEditingController.clear();
 }
 
 void showAlertDialog(BuildContext context) async {
