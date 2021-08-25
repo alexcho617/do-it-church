@@ -124,6 +124,7 @@ class _NoticeAddRouteState extends State<NoticeAddRoute> {
                 ),
                 Divider(),
                 TextField(
+                  maxLines: null,
                   onChanged: (value4) => notice.contents = value4,
                   decoration: InputDecoration(
                     border: InputBorder.none,
