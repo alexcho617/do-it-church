@@ -61,8 +61,8 @@ class _LoginRouteState extends State<LoginRoute> {
 
   getMobileFormWidget(context) {
     final phoneController = TextEditingController();
-    final textInput = 'xxxxxxxx';
-    final buttonInput = '인증코드 받기';
+    final textInput = '휴대폰번호';
+    final buttonInput = '로그인';
 
     return (Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -142,44 +142,22 @@ class _LoginRouteState extends State<LoginRoute> {
           ),
         ),
         //login button
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: TextButton(
-                style: TextButton.styleFrom(primary: Colors.black54),
-                child: Text('회원가입'),
-                onPressed: () {
-                  setState(() {
-                    print('register button pressed');
-                  });
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: TextButton(
+            style: TextButton.styleFrom(primary: Colors.black54),
+            child: Text('회원가입'),
+            onPressed: () {
+              setState(() {
+                print('register button pressed');
+              });
 
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => RegisterRoute()),
-                  );
-                },
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: TextButton(
-                style: TextButton.styleFrom(primary: Colors.black54),
-                child: Text('이메일/비밀번호 찾기'),
-                onPressed: () {
-                  setState(() {
-                    print('find id/pw  button pressed');
-                  });
-
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => FindId()),
-                  );
-                },
-              ),
-            ),
-          ],
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => RegisterRoute()),
+              );
+            },
+          ),
         ),
       ],
     ));

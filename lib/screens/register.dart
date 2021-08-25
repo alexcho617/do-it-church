@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../components/customUser.dart';
 import 'package:do_it_church/constants.dart';
-
 import 'landing_route.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -49,7 +48,8 @@ class _RegisterRouteState extends State<RegisterRoute> {
         });
 
         await _firestore.collection('Users').doc(loggedInUser.uid).set({
-          'email': myUser.email,
+          'birthdate': myUser.birthdate,
+          'gender': myUser.gender,
           'name': myUser.name,
           'phone_num': myUser.phoneNumber,
           'uid': loggedInUser.uid
@@ -66,13 +66,6 @@ class _RegisterRouteState extends State<RegisterRoute> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        //title: Text('회원가입'),
         title: Hero(
           tag: 'logo',
           child: CircleAvatar(
@@ -84,25 +77,11 @@ class _RegisterRouteState extends State<RegisterRoute> {
       ),
       body: Column(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Flexible(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: TextField(
-                    onChanged: (textEmail) => myUser.email = textEmail,
-                    decoration: const InputDecoration(labelText: "이메일"),
-                  ),
-                ),
-              ),
-            ],
-          ),
           Flexible(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: TextField(
-                onChanged: (textName) => myUser.name = textName,
+                onChanged: (value) => myUser.name = value,
                 decoration: const InputDecoration(labelText: "이름"),
               ),
             ),
@@ -113,9 +92,36 @@ class _RegisterRouteState extends State<RegisterRoute> {
               Flexible(
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
+                  child: Text(
+                    '생년월일 : ${myUser.birthdate ?? '1999.01.01'}',
+                    style: kRegularTextStyle,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: ElevatedButton(
+                  onPressed: () {},
+                  child: Icon(Icons.date_range),
+                  style: ButtonStyle(
+                    shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30.0))),
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Color(0xFF89A1F8)),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Flexible(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
                   child: TextField(
                     controller: phoneController,
-                    onChanged: (textPhone) => myUser.phoneNumber = textPhone,
+                    onChanged: (value) => myUser.phoneNumber = value,
                     decoration: const InputDecoration(labelText: "전화번호"),
                   ),
                 ),
@@ -138,7 +144,6 @@ class _RegisterRouteState extends State<RegisterRoute> {
                         '+8210' + phoneController.text;
                     await _auth.verifyPhoneNumber(
                       phoneNumber: processedPhoneNumber,
-                      //phoneNumber: phoneController.text,
                       verificationCompleted: (phoneAuthCredential) async {
                         setState(() {
                           print('verificationCompleted');
@@ -224,8 +229,9 @@ class _RegisterRouteState extends State<RegisterRoute> {
                 } catch (e) {
                   print(e);
                 }
-                print(myUser.email);
                 print(myUser.name);
+                print(myUser.birthdate);
+                print(myUser.gender);
                 print(myUser.phoneNumber);
                 setState(() {
                   //To change state here
