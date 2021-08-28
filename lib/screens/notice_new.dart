@@ -1,4 +1,3 @@
-import 'package:do_it_church/components/ScreenDivider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -22,12 +21,17 @@ void _handleSubmitted(String titleText,String contentText) async {
 Notice notice = Notice();
 final _auth = FirebaseAuth.instance;
 final firestore = FirebaseFirestore.instance;
+
 class NoticeAddRoute extends StatefulWidget {
   @override
   _NoticeAddRouteState createState() => _NoticeAddRouteState();
 }
 
 class _NoticeAddRouteState extends State<NoticeAddRoute> {
+  final contentTextController = TextEditingController();
+  final titleTextController = TextEditingController();
+  final formKey = GlobalKey<FormState>();
+
   void assignCurrentWriter() async {
     final user = _auth.currentUser;
     if (user != null) {
@@ -56,16 +60,10 @@ class _NoticeAddRouteState extends State<NoticeAddRoute> {
   void initState() {
     super.initState();
     assignCurrentWriter();
-
   }
 
   @override
   Widget build(BuildContext context) {
-    final contentTextController = TextEditingController();
-    final titleTextController = TextEditingController();
-    final height = MediaQuery.of(context).size.height;
-    final formKey = GlobalKey<FormState>();
-
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -87,48 +85,50 @@ class _NoticeAddRouteState extends State<NoticeAddRoute> {
               }),
         ],
       ),
-      body: Form(
-        key: formKey,
-        child: Center(
-            child: Column(
-              children: [
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                  child: Column(
-                    children: [
-                      Container(
-                        child: TextFormField(
-                          validator: (value){
-                            if(value == null || value.isEmpty){
-                              return '제목은 필수입니다';
-                            }
-                            return null;
-                          },
-                          controller: titleTextController,
-                          decoration: InputDecoration(
-                              hintText: "제목",
-                              hintStyle: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
-                        ),
+      body: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
+        child: Form(
+          key: formKey,
+          child: Column(
+            children: [
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                child: Column(
+                  children: [
+                    Container(
+                      child: TextFormField(
+                        validator: (value){
+                          if(value == null || value.isEmpty){
+                            return '제목은 필수입니다';
+                          }
+                          return null;
+                        },
+                        controller: titleTextController,
+                        decoration: InputDecoration(
+                            hintText: "제목",
+                            hintStyle: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
                       ),
-                      Container(
-                        child: TextFormField(
-                          validator: (value){
-                            if(value == null || value.isEmpty){
-                              return '내용은 필수입니다';
-                            }
-                            return null;
-                          },
-                          controller: contentTextController,
-                          decoration: InputDecoration(hintText: "내용을 입력하세요"),
-                          maxLines: 20,
-
-                        ),
+                    ),
+                    Container(
+                      child: TextFormField(
+                        validator: (value){
+                          if(value == null || value.isEmpty){
+                            return '내용은 필수입니다';
+                          }
+                          return null;
+                        },
+                        controller: contentTextController,
+                        decoration: InputDecoration(hintText: "내용을 입력하세요"),
+                        maxLines: 20,
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
-            )
+              ),
+            ],
+          ),
         ),
       ),
     );
