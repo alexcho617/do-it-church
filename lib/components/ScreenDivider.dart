@@ -8,11 +8,10 @@ class ScreenDivider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 20),
-      height: 20,
+      height: 0,
       child: Divider(
-        thickness: 1,
-        color: Colors.grey,
+        thickness: 2,
+        color: Color(0xFFE0E0E0),
       ),
     );
   }

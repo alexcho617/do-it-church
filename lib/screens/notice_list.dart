@@ -4,6 +4,7 @@ import 'package:do_it_church/components/NoticeListContents.dart';
 import 'package:do_it_church/components/NoticeStatus.dart';
 import 'package:do_it_church/components/ScreenDivider.dart';
 import 'package:do_it_church/components/notice.dart';
+import 'package:do_it_church/screens/notice_detail.dart';
 import 'package:do_it_church/constants.dart';
 import 'package:do_it_church/screens/notice_new.dart';
 import 'package:flutter/material.dart';
@@ -37,6 +38,7 @@ class _NoticeListRouteState extends State<NoticeListRoute> {
     }
   }
 
+
   @override
   void initState() {
     super.initState();
@@ -52,18 +54,6 @@ class _NoticeListRouteState extends State<NoticeListRoute> {
           '공지목록',
           style: kAppBarTitleTextStyle,
         ),
-        actions: [
-          IconButton(
-              icon: Icon(
-                Icons.create_rounded,
-              ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => NoticeAddRoute()),
-                );
-              }),
-        ],
       ),
       body: Center(
         child: Column(
@@ -71,6 +61,16 @@ class _NoticeListRouteState extends State<NoticeListRoute> {
             NoticeStream(),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => NoticeAddRoute()),
+          );
+        },
+        child: Icon(Icons.add, size: 30,),
+        backgroundColor: Color(0xFF89A1F8),
       ),
     );
   }
@@ -125,68 +125,83 @@ class NoticeBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          NoticeHeader(docId: docId, title: title, writer: writer),
-          NoticeListContents(contents: contents),
-          NoticeStatus(),
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Expanded(
-                  //ElevatedButton, OutlinedButton
-                  child: SizedBox(
-                    height: 27,
-                    child: OutlinedButton(
-                      style: OutlinedButton.styleFrom(padding: EdgeInsets.zero),
-                      onPressed: () async {},
-                      child: LikeButton(
-                        isLiked: false,
-                        likeCount: 5,
-                        likeBuilder: (isLiked) {
-                          final color = isLiked ? Colors.red : Colors.grey;
-                          return Icon(Icons.favorite, color: color, size: 13);
-                        },
-                        likeCountPadding: EdgeInsets.zero,
-                        countBuilder: (count, isLiked, text) {
-                          final color =
-                              isLiked ? Color(0xFF89A1F8) : Colors.grey;
-                          return Text(
-                            text,
-                            style: TextStyle(fontSize: 13, color: color),
-                          );
-                        },
-                        onTap: (isLiked) async {
-                          isLiked = !isLiked;
-                          //likeCount += isLiked ? 1 : -1;
-                          return isLiked;
-                        },
+    return Column(
+      children: [
+        Container(
+          //width: ,
+          padding: EdgeInsets.symmetric(horizontal: 20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              NoticeHeader(docId: docId, title: title, writer: writer),
+              NoticeListContents(contents: contents),
+              NoticeStatus(),
+              Container(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Expanded(
+                      //ElevatedButton, OutlinedButton
+                      child: SizedBox(
+                        height: 27,
+                        child: OutlinedButton(
+                          style: OutlinedButton.styleFrom(padding: EdgeInsets.zero),
+                          onPressed: () async {},
+                          child: LikeButton(
+                            isLiked: false,
+                            likeCount: 5,
+                            likeBuilder: (isLiked) {
+                              final color = isLiked ? Colors.red : Colors.grey;
+                              return Icon(Icons.favorite, color: color, size: 13);
+                            },
+                            likeCountPadding: EdgeInsets.zero,
+                            countBuilder: (count, isLiked, text) {
+                              final color =
+                                  isLiked ? Color(0xFF89A1F8) : Colors.grey;
+                              return Text(
+                                text,
+                                style: TextStyle(fontSize: 13, color: color),
+                              );
+                            },
+                            onTap: (isLiked) async {
+                              isLiked = !isLiked;
+                              //likeCount += isLiked ? 1 : -1;
+                              return isLiked;
+                            },
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
-                SizedBox(
-                  width: 10,
-                ),
-                Expanded(
-                  child: SizedBox(
-                    height: 27,
-                    child: OutlinedButton(
-                      onPressed: () {},
-                      child: Text('댓글쓰기', style: TextStyle(fontSize: 13)),
+                    SizedBox(
+                      width: 10,
                     ),
-                  ),
+                    Expanded(
+                      child: SizedBox(
+                        height: 27,
+                        child: OutlinedButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => NoticeDetail(
+                                      noticeId: '$docId',
+                                    )));
+                          },
+                          child: Text('댓글쓰기', style: TextStyle(fontSize: 13)),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+              Container(
+                height: 20,
+              ),
+            ],
           ),
-          ScreenDivider(),
-        ],
-      ),
+        ),
+        ScreenDivider(),
+      ],
     );
   }
 }
