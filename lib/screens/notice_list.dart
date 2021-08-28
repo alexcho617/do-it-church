@@ -199,13 +199,11 @@ class NoticeBuilder extends StatelessWidget {
               ),
             ],
           ),
-
         ),
         ScreenDivider(
-          thickness: 2,
           color: Color(0xFFE0E0E0),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

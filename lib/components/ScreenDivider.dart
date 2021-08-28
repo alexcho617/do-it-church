@@ -12,7 +12,7 @@ class ScreenDivider extends StatelessWidget {
       height: 0,
       child: Divider(
         height: 1,
-        thickness: thickness,
+        thickness: 2,
         color: color,
       ),
     );
