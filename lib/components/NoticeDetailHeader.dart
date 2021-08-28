@@ -28,7 +28,7 @@ class NoticeDetailHeader extends StatelessWidget {
                 Icons.notes_rounded,
                 color: Colors.black,
               ),
-              trailing: NoticeEditButton(),
+              trailing: NoticeEditButton(docId: docId, title: title),
               title: Text(
                 '$title',
                 style: kNoticeTitleTextStyle,
