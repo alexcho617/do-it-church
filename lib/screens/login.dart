@@ -2,7 +2,6 @@ import 'package:do_it_church/screens/landing_route.dart';
 import 'package:flutter/material.dart';
 import 'package:do_it_church/constants.dart';
 import 'package:do_it_church/screens/register.dart';
-import 'package:do_it_church/screens/find_id.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -41,9 +40,6 @@ class _LoginRouteState extends State<LoginRoute> {
         showLoading = false;
       });
       if (authCredential.user != null) {
-        //add to firestore
-        final user = _auth.currentUser;
-        User loggedInUser = user!;
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => LandingRoute()));
       }
@@ -61,176 +57,189 @@ class _LoginRouteState extends State<LoginRoute> {
 
   getMobileFormWidget(context) {
     final phoneController = TextEditingController();
-    final textInput = 'xxxxxxxx';
-    final buttonInput = '인증코드 받기';
+    final phoneKey = GlobalKey<FormState>();
 
-    return (Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4),
-          child: TextField(
-            keyboardType: TextInputType.phone,
-            controller: phoneController,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              labelText: textInput,
-            ),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4),
-          child: ElevatedButton(
-            //invoke firebase auth
-            onPressed: () async {
-              //this cannot happen because of authorization rule.
+    final textInput = '휴대폰번호';
+    final buttonInput = '로그인';
 
-              setState(() {
-                showLoading = true;
-              });
-              //use if to differentiate 010,011. is it really neccessary?
-              String processedPhoneNumber = '+8210' + phoneController.text;
-              //get all phoneNumbers
-              //TODO 1:check if number is in database
-              //login
-              await _auth.verifyPhoneNumber(
-                phoneNumber: processedPhoneNumber,
-                verificationCompleted: (phoneAuthCredential) async {
-                  setState(() {
-                    print('verificationCompleted');
-                    showLoading = false;
-                  });
-                  signInWithPhoneAuthCredential(
-                      phoneAuthCredential); //not needed yet
-                },
-                verificationFailed: (verificationFailed) async {
-                  setState(() {
-                    print('verificationFailed');
-                    showLoading = false;
-                  });
-
-                  print(verificationFailed.message);
-                  setState(() {
-                    showLoading = false;
-                    currentState =
-                        MobileVerificationState.SHOW_MOBILE_FORM_STATE;
-                  });
-                  print('error from verificationFailed');
-                },
-                codeSent: (verificationId, resendingToken) async {
-                  print('codeSent');
-                  setState(() {
-                    showLoading = false;
-                    currentState = MobileVerificationState.SHOW_OPT_FORM_STATE;
-                    this.verificationId = verificationId;
-                  });
-                },
-                codeAutoRetrievalTimeout: (verificationId) async {},
-              );
-            },
-            style: ButtonStyle(
-              shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30.0))),
-              backgroundColor:
-                  MaterialStateProperty.all<Color>(Color(0xFF89A1F8)),
-            ),
-            child: Text(
-              buttonInput,
-              style: kLogInButtonTextStyle,
-            ),
-          ),
-        ),
-        //login button
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: TextButton(
-                style: TextButton.styleFrom(primary: Colors.black54),
-                child: Text('회원가입'),
-                onPressed: () {
-                  setState(() {
-                    print('register button pressed');
-                  });
-
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => RegisterRoute()),
-                  );
-                },
+    return Form(
+      key: phoneKey,
+      child: (Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4),
+            child: TextFormField(
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return '핸드폰번호를 입력하세요';
+                }
+                if (value.length != 11 ||
+                    value.contains('010') == false ||
+                    value.contains(RegExp(r'[A-Z]')) == true ||
+                    value.contains(RegExp(r'[a-z]')) == true) {
+                  return '올바른 핸드폰번호 11자리를 입력하세요';
+                }
+                if (value.contains('-')) {
+                  return '- 빼고 입력하세요';
+                }
+                return null;
+              },
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              maxLength: 11,
+              keyboardType: TextInputType.phone,
+              controller: phoneController,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: textInput,
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: TextButton(
-                style: TextButton.styleFrom(primary: Colors.black54),
-                child: Text('이메일/비밀번호 찾기'),
-                onPressed: () {
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4),
+            child: ElevatedButton(
+              //invoke firebase auth
+              onPressed: () async {
+                if (phoneKey.currentState!.validate()) {
                   setState(() {
-                    print('find id/pw  button pressed');
+                    showLoading = true;
                   });
+                  //use if to differentiate 010,011. is it really neccessary?
+                  String processedPhoneNumber =
+                      '+82' + phoneController.text.substring(1, 11);
+                  //get all phoneNumbers
+                  //TODO 1:check if number is in database
+                  //login
+                  await _auth.verifyPhoneNumber(
+                    phoneNumber: processedPhoneNumber,
+                    verificationCompleted: (phoneAuthCredential) async {
+                      setState(() {
+                        print('verificationCompleted');
+                        showLoading = false;
+                      });
+                      signInWithPhoneAuthCredential(
+                          phoneAuthCredential); //not needed yet
+                    },
+                    verificationFailed: (verificationFailed) async {
+                      setState(() {
+                        print('verificationFailed');
+                        showLoading = false;
+                      });
 
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => FindId()),
+                      print(verificationFailed.message);
+                      setState(() {
+                        showLoading = false;
+                        currentState =
+                            MobileVerificationState.SHOW_MOBILE_FORM_STATE;
+                      });
+                      print('error from verificationFailed');
+                    },
+                    codeSent: (verificationId, resendingToken) async {
+                      print('codeSent');
+                      setState(() {
+                        showLoading = false;
+                        currentState =
+                            MobileVerificationState.SHOW_OPT_FORM_STATE;
+                        this.verificationId = verificationId;
+                      });
+                    },
+                    codeAutoRetrievalTimeout: (verificationId) async {},
                   );
-                },
+                }
+              },
+
+              style: ButtonStyle(
+                shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30.0))),
+                backgroundColor:
+                    MaterialStateProperty.all<Color>(Color(0xFF89A1F8)),
+              ),
+              child: Text(
+                buttonInput,
+                style: kLogInButtonTextStyle,
               ),
             ),
-          ],
-        ),
-      ],
-    ));
+          ),
+          //login button
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: TextButton(
+              style: TextButton.styleFrom(primary: Colors.black54),
+              child: Text('회원가입'),
+              onPressed: () {
+                setState(() {
+                  print('register button pressed');
+                });
+
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => RegisterRoute()),
+                );
+              },
+            ),
+          ),
+        ],
+      )),
+    );
   }
 
   getOtpFormWidget(context) {
     final otpController = TextEditingController();
+    final otpKey = GlobalKey<FormState>();
     final textInput = '인증코드';
     final buttonInput = '인증하기';
 
-    return (Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4),
-          child: TextField(
-            keyboardType: TextInputType.phone,
-            controller: otpController,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              labelText: textInput,
+    return Form(
+      key: otpKey,
+      child: (Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4),
+            child: TextFormField(
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return '인증코드를 입력하세요';
+                }
+                return null;
+              },
+              keyboardType: TextInputType.phone,
+              controller: otpController,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: textInput,
+              ),
             ),
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4),
-          child: ElevatedButton(
-            //invoke firebase auth
-            onPressed: () async {
-              PhoneAuthCredential phoneAuthCredential =
-                  PhoneAuthProvider.credential(
-                      verificationId: verificationId,
-                      smsCode: otpController.text);
-              signInWithPhoneAuthCredential(phoneAuthCredential);
-            },
-            style: ButtonStyle(
-              shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30.0))),
-              backgroundColor:
-                  MaterialStateProperty.all<Color>(Color(0xFF89A1F8)),
-            ),
-            child: Text(
-              buttonInput,
-              style: kLogInButtonTextStyle,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4),
+            child: ElevatedButton(
+              //invoke firebase auth
+              onPressed: () async {
+                PhoneAuthCredential phoneAuthCredential =
+                    PhoneAuthProvider.credential(
+                        verificationId: verificationId,
+                        smsCode: otpController.text);
+                signInWithPhoneAuthCredential(phoneAuthCredential);
+              },
+              style: ButtonStyle(
+                shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30.0))),
+                backgroundColor:
+                    MaterialStateProperty.all<Color>(Color(0xFF89A1F8)),
+              ),
+              child: Text(
+                buttonInput,
+                style: kLogInButtonTextStyle,
+              ),
             ),
           ),
-        ),
-        //login button
-      ],
-    ));
+          //login button
+        ],
+      )),
+    );
   }
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
