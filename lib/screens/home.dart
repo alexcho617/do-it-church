@@ -53,19 +53,10 @@ class _HomeRouteState extends State<HomeRoute> {
         title: Text(
           '',
         ),
-        leading: Padding(
-          padding: const EdgeInsets.only(top: 15, left: 20),
-          child: Text(
-            'Doitchurch',
-            style: TextStyle(
-              fontSize: 20,
-              color: Color(0xffA5A6F6),
-            ),
-          ),
-        ),
-        leadingWidth: 200,
+        //leading: Icon(Icons.people)
         actions: [
-          TextButton(
+          IconButton(
+            icon: Icon(Icons.add_alert),
               onPressed: () {
                 Navigator.push(
                   context,
@@ -73,11 +64,7 @@ class _HomeRouteState extends State<HomeRoute> {
                 );
                 setState(() {});
               },
-              child: Row(
-                children: [
-                  Text('my'),
-                ],
-              ))
+              )
         ],
       ),
       body: Center(
@@ -254,6 +241,59 @@ class _HomeRouteState extends State<HomeRoute> {
           ],
         ),
       ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            const DrawerHeader(
+              child: Text('Drawer Header'),
+            ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  child: Column(
+                    children: [
+                      ListTile(
+                        title: const Text('MY'),
+                        onTap: () {
+                          Navigator.pop(context);
+                          },
+                      ),
+                      ListTile(
+                        title: const Text('교회학교'),
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  child: Row(
+                    children: [
+                      TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => MypageRoute()),
+                            );
+                            setState(() {});
+                            },
+                          child: Row(
+                            children: [
+                              Text('my'),
+                            ],
+                          )
+                      ),
+                    ],
+                  ),
+                )
+              ],
+            ),
+          ],
+        ),
+      )
     );
   }
 }

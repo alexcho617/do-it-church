@@ -10,7 +10,7 @@ class NoticeStatus extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      padding: EdgeInsets.only(bottom: 15, top: 5),
       child: Row(
         children: [
           Icon(

@@ -23,31 +23,44 @@ class NoticeHeader extends StatelessWidget {
       children: [
         Expanded(
           child: Container(
-            child: ListTile(
-              leading: Icon(
-                Icons.notes_rounded,
-                color: Colors.black,
-              ),
-              trailing: NoticeEditButton(),
-              title: TextButton(
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => NoticeDetail(
-                                noticeId: '$docId',
-                              )));
-                },
-                style: TextButton.styleFrom(alignment: Alignment.centerLeft),
-                child: Text(
-                  '$title',
-                  style: kNoticeTitleTextStyle,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  height: 43,
+                  child: ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    minLeadingWidth: 10,
+                    leading: Icon(
+                      Icons.notes_rounded,
+                      color: Colors.black,
+                    ),
+                    trailing: NoticeEditButton(docId: docId, title: title),
+                    title: TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => NoticeDetail(
+                                      noticeId: '$docId',
+                                    )));
+                      },
+                      style: TextButton.styleFrom(alignment: Alignment.centerLeft, padding: EdgeInsets.zero),
+                      child: Text(
+                        '$title',
+                        style: kNoticeTitleTextStyle,
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-              subtitle: Text(
-                '$writer',
-                style: kNoticeSubTitleTextStyle,
-              ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 40),
+                  child: Text(
+                    '$writer',
+                    style: kNoticeSubTitleTextStyle,
+                  ),
+                )
+              ],
             ),
           ),
         ),
