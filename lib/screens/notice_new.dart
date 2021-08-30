@@ -6,7 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:do_it_church/components/notice.dart';
 import 'package:do_it_church/constants.dart';
 
-void _handleSubmitted(String titleText,String contentText) async {
+void _handleSubmitted(String titleText, String contentText) async {
   print(titleText);
   print(contentText);
   print(notice.writer);
@@ -22,6 +22,7 @@ void _handleSubmitted(String titleText,String contentText) async {
 Notice notice = Notice();
 final _auth = FirebaseAuth.instance;
 final firestore = FirebaseFirestore.instance;
+
 class NoticeAddRoute extends StatefulWidget {
   @override
   _NoticeAddRouteState createState() => _NoticeAddRouteState();
@@ -56,7 +57,6 @@ class _NoticeAddRouteState extends State<NoticeAddRoute> {
   void initState() {
     super.initState();
     assignCurrentWriter();
-
   }
 
   @override
@@ -80,55 +80,54 @@ class _NoticeAddRouteState extends State<NoticeAddRoute> {
           TextButton(
               child: Text('완료'),
               onPressed: () async {
-              if(formKey.currentState!.validate()){
-                _handleSubmitted(titleTextController.text, contentTextController.text);
-                Navigator.pop(context);
-              }
+                if (formKey.currentState!.validate()) {
+                  _handleSubmitted(
+                      titleTextController.text, contentTextController.text);
+                  Navigator.pop(context);
+                }
               }),
         ],
       ),
       body: Form(
         key: formKey,
-        child: Center(
-            child: Column(
-              children: [
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                  child: Column(
-                    children: [
-                      Container(
-                        child: TextFormField(
-                          validator: (value){
-                            if(value == null || value.isEmpty){
-                              return '제목은 필수입니다';
-                            }
-                            return null;
-                          },
-                          controller: titleTextController,
-                          decoration: InputDecoration(
-                              hintText: "제목",
-                              hintStyle: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
-                        ),
-                      ),
-                      Container(
-                        child: TextFormField(
-                          validator: (value){
-                            if(value == null || value.isEmpty){
-                              return '내용은 필수입니다';
-                            }
-                            return null;
-                          },
-                          controller: contentTextController,
-                          decoration: InputDecoration(hintText: "내용을 입력하세요"),
-                          maxLines: 20,
-
-                        ),
-                      ),
-                    ],
+        child: Column(
+          children: [
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              child: Column(
+                children: [
+                  Container(
+                    child: TextFormField(
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return '제목은 필수입니다';
+                        }
+                        return null;
+                      },
+                      controller: titleTextController,
+                      decoration: InputDecoration(
+                          hintText: "제목",
+                          hintStyle: TextStyle(
+                              fontSize: 18.0, fontWeight: FontWeight.bold)),
+                    ),
                   ),
-                ),
-              ],
-            )
+                  Container(
+                    child: TextFormField(
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return '내용은 필수입니다';
+                        }
+                        return null;
+                      },
+                      controller: contentTextController,
+                      decoration: InputDecoration(hintText: "내용을 입력하세요"),
+                      maxLines: 10,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );

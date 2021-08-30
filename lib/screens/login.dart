@@ -162,22 +162,26 @@ class _LoginRouteState extends State<LoginRoute> {
             ),
           ),
           //login button
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: TextButton(
-              style: TextButton.styleFrom(primary: Colors.black54),
-              child: Text('회원가입'),
-              onPressed: () {
-                setState(() {
-                  print('register button pressed');
-                });
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: TextButton(
+                  style: TextButton.styleFrom(primary: Colors.black54),
+                  child: Text('회원가입'),
+                  onPressed: () {
+                    setState(() {
+                      print('register button pressed');
+                    });
 
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => RegisterRoute()),
-                );
-              },
-            ),
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => RegisterRoute()),
+                    );
+                  },
+                ),
+              ),
+            ],
           ),
         ],
       )),
@@ -245,35 +249,45 @@ class _LoginRouteState extends State<LoginRoute> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        key: _scaffoldKey,
-        body: SafeArea(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Hero(
-                tag: 'logo',
-                child: CircleAvatar(
-                  backgroundImage: AssetImage(
-                      'images/logo.png'), //always add images in directory
-                  radius: 75,
+    return GestureDetector(
+      onTap: () {
+        FocusScopeNode currentFocus = FocusScope.of(context);
+
+        if (!currentFocus.hasPrimaryFocus &&
+            currentFocus.focusedChild != null) {
+          FocusManager.instance.primaryFocus!.unfocus();
+        }
+      },
+      child: MaterialApp(
+        home: Scaffold(
+          key: _scaffoldKey,
+          body: SafeArea(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Hero(
+                  tag: 'logo',
+                  child: CircleAvatar(
+                    backgroundImage: AssetImage(
+                        'images/logo.png'), //always add images in directory
+                    radius: 75,
+                  ),
                 ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Container(
-                child: showLoading
-                    ? Center(
-                        child: CircularProgressIndicator(),
-                      )
-                    : currentState ==
-                            MobileVerificationState.SHOW_MOBILE_FORM_STATE
-                        ? getMobileFormWidget(context)
-                        : getOtpFormWidget(context),
-              )
-            ],
+                SizedBox(
+                  height: 20,
+                ),
+                Container(
+                  child: showLoading
+                      ? Center(
+                          child: CircularProgressIndicator(),
+                        )
+                      : currentState ==
+                              MobileVerificationState.SHOW_MOBILE_FORM_STATE
+                          ? getMobileFormWidget(context)
+                          : getOtpFormWidget(context),
+                )
+              ],
+            ),
           ),
         ),
       ),
