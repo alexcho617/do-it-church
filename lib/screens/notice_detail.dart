@@ -1,11 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:do_it_church/components/NoticeDetailHeader.dart';
+import 'package:do_it_church/components/NoticeDetailStatus.dart';
+import 'package:do_it_church/components/NoticeStatus.dart';
 import 'package:do_it_church/components/ScreenDivider.dart';
 import 'package:do_it_church/components/comment.dart';
 import 'package:do_it_church/components/notice.dart';
 import 'package:do_it_church/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:like_button/like_button.dart';
 
 void _handleSubmitted(String commentText, String noticeId) async {
   print(noticeId);
@@ -192,6 +195,7 @@ class NoticeDetailState extends State<NoticeDetail> {
 class NoticeDetailBuilder extends StatelessWidget {
   const NoticeDetailBuilder(
       {this.docId, this.title, this.writer, this.date, this.contents});
+
   final docId;
   final title;
   final writer;
@@ -218,7 +222,8 @@ class NoticeDetailBuilder extends StatelessWidget {
                 ),
               ),
             ),
-          ),
+          ), //댓글읽은사람, 하트
+          NoticeDetailStatus(),
         ],
       ),
     );
