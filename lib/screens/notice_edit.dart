@@ -1,3 +1,4 @@
+import 'package:do_it_church/screens/notice_list.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -23,9 +24,6 @@ class _NoticeEditRouteState extends State<NoticeEditRoute> {
   final formKey = GlobalKey<FormState>();
 
   void _handleSubmitted(String titleText,String contentText) async {
-    print(titleText);
-    print(contentText);
-    print(notice.writer);
     await firestore.collection('Notice').doc(widget.noticeId).update({
       'title': titleText,
       'contents': contentText,
@@ -110,7 +108,7 @@ class _NoticeEditRouteState extends State<NoticeEditRoute> {
               if(formKey.currentState!.validate()){
                 _handleSubmitted(titleTextController.text, contentTextController.text);
                 Navigator.pop(context);
-                //Navigator.push(context, MaterialPageRoute(builder: (context) => NoticeEditRoute(noticeId: docId)),),
+                Navigator.pop(context);
               }
               }),
         ],
