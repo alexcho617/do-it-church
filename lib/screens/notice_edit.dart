@@ -1,3 +1,4 @@
+import 'package:do_it_church/screens/notice_list.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -5,29 +6,56 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:do_it_church/components/notice.dart';
 import 'package:do_it_church/constants.dart';
 
-void _handleSubmitted(String titleText,String contentText) async {
-  await firestore.collection('Notice').add({
-    'title': titleText,
-    'contents': contentText,
-    'writer': notice.writer,
-    //server
-    'date': Timestamp.now(),
-  });
+class NoticeEditRoute extends StatefulWidget {
+  NoticeEditRoute({required this.noticeId});
+  final noticeId;
+
+  @override
+  _NoticeEditRouteState createState() => _NoticeEditRouteState();
 }
 
 Notice notice = Notice();
 final _auth = FirebaseAuth.instance;
 final firestore = FirebaseFirestore.instance;
 
-class NoticeAddRoute extends StatefulWidget {
-  @override
-  _NoticeAddRouteState createState() => _NoticeAddRouteState();
-}
-
-class _NoticeAddRouteState extends State<NoticeAddRoute> {
+class _NoticeEditRouteState extends State<NoticeEditRoute> {
   final contentTextController = TextEditingController();
   final titleTextController = TextEditingController();
   final formKey = GlobalKey<FormState>();
+
+  void _handleSubmitted(String titleText,String contentText) async {
+    await firestore.collection('Notice').doc(widget.noticeId).update({
+      'title': titleText,
+      'contents': contentText,
+      'writer': notice.writer,
+      //server
+      'date': Timestamp.now(),
+    });
+  }
+
+  void getNoticeDetail(Notice notice) async {
+    try {
+      //its missing the await
+      if (widget.noticeId != null) {
+        DocumentReference doc =
+        firestore.collection("Notice").doc(widget.noticeId);
+        await doc.get().then((DocumentSnapshot doc) {
+          setState(() {
+            notice.title = doc.get("title").toString();
+            notice.date = doc.get("date").toString();
+            notice.writer = doc.get("writer").toString();
+            notice.contents = doc.get("contents").toString();
+
+            titleTextController.text = notice.title.toString();
+            contentTextController.text = notice.contents.toString();
+          });
+          return 0;
+        });
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
 
   void assignCurrentWriter() async {
     final user = _auth.currentUser;
@@ -57,6 +85,8 @@ class _NoticeAddRouteState extends State<NoticeAddRoute> {
   void initState() {
     super.initState();
     assignCurrentWriter();
+    getNoticeDetail(notice);
+
   }
 
   @override
@@ -75,11 +105,11 @@ class _NoticeAddRouteState extends State<NoticeAddRoute> {
           TextButton(
               child: Text('완료'),
               onPressed: () async {
-                if (formKey.currentState!.validate()) {
-                  _handleSubmitted(
-                      titleTextController.text, contentTextController.text);
-                  Navigator.pop(context);
-                }
+              if(formKey.currentState!.validate()){
+                _handleSubmitted(titleTextController.text, contentTextController.text);
+                Navigator.pop(context);
+                Navigator.pop(context);
+              }
               }),
         ],
       ),
@@ -99,8 +129,9 @@ class _NoticeAddRouteState extends State<NoticeAddRoute> {
                   },
                   controller: titleTextController,
                   decoration: InputDecoration(
-                      hintText: "제목",
-                      hintStyle: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
+                      hintText: '제목',
+                      hintStyle: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)
+                    ),
                 ),
               ),
               Container(
@@ -111,8 +142,9 @@ class _NoticeAddRouteState extends State<NoticeAddRoute> {
                     }
                     return null;
                   },
+                  //initialValue: notice.contents,
                   controller: contentTextController,
-                  decoration: InputDecoration(hintText: "내용을 입력하세요"),
+                  decoration: InputDecoration(hintText: '내용을 입력하세요.'),
                   maxLines: 20,
                 ),
               ),

@@ -254,6 +254,7 @@ class CommentBubble extends StatelessWidget {
               children: (snapshot.data!).docs.map((DocumentSnapshot document) {
                 Map<String, dynamic> data =
                     document.data()! as Map<String, dynamic>;
+                int commentsCount = data.length;
                 return Column(
                   children: [
                     ListTile(
