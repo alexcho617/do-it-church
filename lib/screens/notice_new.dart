@@ -75,10 +75,11 @@ class _NoticeAddRouteState extends State<NoticeAddRoute> {
           TextButton(
               child: Text('완료'),
               onPressed: () async {
-              if(formKey.currentState!.validate()){
-                _handleSubmitted(titleTextController.text, contentTextController.text);
-                Navigator.pop(context);
-              }
+                if (formKey.currentState!.validate()) {
+                  _handleSubmitted(
+                      titleTextController.text, contentTextController.text);
+                  Navigator.pop(context);
+                }
               }),
         ],
       ),

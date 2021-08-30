@@ -158,8 +158,7 @@ class NoticeDetailState extends State<NoticeDetail> {
                 Container(child: CommentBubble(noticeId: widget.noticeId)),
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 20.0),
-                  child: Row(
-                      children: [
+                  child: Row(children: [
                     Expanded(
                       child: TextField(
                         controller: commentTextController,
@@ -196,6 +195,7 @@ class NoticeDetailState extends State<NoticeDetail> {
 class NoticeDetailBuilder extends StatelessWidget {
   const NoticeDetailBuilder(
       {this.docId, this.title, this.writer, this.date, this.contents});
+
   final docId;
   final title;
   final writer;
@@ -211,26 +211,24 @@ class NoticeDetailBuilder extends StatelessWidget {
         children: [
           NoticeDetailHeader(docId: docId, title: title, writer: writer),
           Expanded(
-              child: SingleChildScrollView(
-                child: Container(
-                  alignment: Alignment.topLeft,
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  child: RichText(
-                    text: TextSpan(
-                        text: '$contents', style: kNoticeContentTextStyle),
-                    overflow: TextOverflow.ellipsis,
-                  ),
+            child: SingleChildScrollView(
+              child: Container(
+                alignment: Alignment.topLeft,
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: RichText(
+                  text: TextSpan(
+                      text: '$contents', style: kNoticeContentTextStyle),
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             ),
-
-          //댓글읽은사람, 하트
+          ), //댓글읽은사람, 하트
           NoticeDetailStatus(),
-          ]
-        ),
-              );
-      }
-    }
+        ],
+      ),
+    );
+  }
+}
 
 class CommentBubble extends StatelessWidget {
   const CommentBubble({this.noticeId});
