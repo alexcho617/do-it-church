@@ -85,50 +85,45 @@ class _NoticeAddRouteState extends State<NoticeAddRoute> {
               }),
         ],
       ),
-      body: GestureDetector(
-        onTap: () {
-          FocusScope.of(context).unfocus();
-        },
-        child: Form(
-          key: formKey,
-          child: Column(
-            children: [
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                child: Column(
-                  children: [
-                    Container(
-                      child: TextFormField(
-                        validator: (value){
-                          if(value == null || value.isEmpty){
-                            return '제목은 필수입니다';
-                          }
-                          return null;
-                        },
-                        controller: titleTextController,
-                        decoration: InputDecoration(
-                            hintText: "제목",
-                            hintStyle: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
-                      ),
+      body: Form(
+        key: formKey,
+        child: Column(
+          children: [
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              child: Column(
+                children: [
+                  Container(
+                    child: TextFormField(
+                      validator: (value){
+                        if(value == null || value.isEmpty){
+                          return '제목은 필수입니다';
+                        }
+                        return null;
+                      },
+                      controller: titleTextController,
+                      decoration: InputDecoration(
+                          hintText: "제목",
+                          hintStyle: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
                     ),
-                    Container(
-                      child: TextFormField(
-                        validator: (value){
-                          if(value == null || value.isEmpty){
-                            return '내용은 필수입니다';
-                          }
-                          return null;
-                        },
-                        controller: contentTextController,
-                        decoration: InputDecoration(hintText: "내용을 입력하세요"),
-                        maxLines: 20,
-                      ),
+                  ),
+                  Container(
+                    child: TextFormField(
+                      validator: (value){
+                        if(value == null || value.isEmpty){
+                          return '내용은 필수입니다';
+                        }
+                        return null;
+                      },
+                      controller: contentTextController,
+                      decoration: InputDecoration(hintText: "내용을 입력하세요"),
+                      maxLines: 20,
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

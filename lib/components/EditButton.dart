@@ -1,5 +1,4 @@
-import 'NoticeHeader.dart';
-
+import 'package:do_it_church/screens/notice_edit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -29,6 +28,8 @@ class NoticeEditButton extends StatelessWidget {
                   ListTile(
                     leading: Icon(Icons.create_rounded),
                     title: Text('수정하기'),
+                    onTap: () =>
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => NoticeEditRoute(noticeId: docId)),),
                   ),
                   ListTile(
                     leading: Icon(Icons.refresh_rounded),

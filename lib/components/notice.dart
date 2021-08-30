@@ -4,13 +4,16 @@ class Notice {
       this.date,
       this.writer,
       this.contents,
-      this.docId}); //constructor
+      this.docId,
+      this.comments,
+        this.likes
+      }); //constructor
   var title;
   var date;
   var writer;
   var contents;
   var docId;
-  //likes
-  //comments
+  var likes;
+  var comments;
 
 }
