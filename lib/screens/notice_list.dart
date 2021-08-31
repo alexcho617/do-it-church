@@ -22,7 +22,6 @@ class NoticeListRoute extends StatefulWidget {
   _NoticeListRouteState createState() => _NoticeListRouteState();
 }
 
-//TODO 4: When going from noticeList to newNotice, all the notice items are printed in console. Only need printing once when noticeList is initiating. Need to fix that. 리스트에서 새로운 공지화면으로 넘어갈때 디비에 있는 공지 리스트 들이 콘솔에 출력되는것 수정해야함
 class _NoticeListRouteState extends State<NoticeListRoute> {
   //User loggedInUser; //getting error
   void getCurrentUser() async {
@@ -37,7 +36,6 @@ class _NoticeListRouteState extends State<NoticeListRoute> {
       print(e);
     }
   }
-
 
   @override
   void initState() {
@@ -69,7 +67,10 @@ class _NoticeListRouteState extends State<NoticeListRoute> {
             MaterialPageRoute(builder: (context) => NoticeAddRoute()),
           );
         },
-        child: Icon(Icons.add, size: 30,),
+        child: Icon(
+          Icons.add,
+          size: 30,
+        ),
         backgroundColor: Color(0xFF89A1F8),
       ),
     );
@@ -145,14 +146,16 @@ class NoticeBuilder extends StatelessWidget {
                       child: SizedBox(
                         height: 27,
                         child: OutlinedButton(
-                          style: OutlinedButton.styleFrom(padding: EdgeInsets.zero),
+                          style: OutlinedButton.styleFrom(
+                              padding: EdgeInsets.zero),
                           onPressed: () async {},
                           child: LikeButton(
                             isLiked: false,
                             likeCount: 5,
                             likeBuilder: (isLiked) {
                               final color = isLiked ? Colors.red : Colors.grey;
-                              return Icon(Icons.favorite, color: color, size: 13);
+                              return Icon(Icons.favorite,
+                                  color: color, size: 13);
                             },
                             likeCountPadding: EdgeInsets.zero,
                             countBuilder: (count, isLiked, text) {
@@ -184,8 +187,8 @@ class NoticeBuilder extends StatelessWidget {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => NoticeDetail(
-                                      noticeId: '$docId',
-                                    )));
+                                          noticeId: '$docId',
+                                        )));
                           },
                           child: Text('댓글쓰기', style: TextStyle(fontSize: 13)),
                         ),

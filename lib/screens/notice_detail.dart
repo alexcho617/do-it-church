@@ -260,10 +260,10 @@ class CommentBubble extends StatelessWidget {
                     ListTile(
                       dense: true,
                       contentPadding: EdgeInsets.symmetric(horizontal: 20),
-                      //TODO: Get Image from server
+                      //TODO 2: Get Image from server
                       leading: CircleAvatar(
                         backgroundImage: AssetImage(
-                            'images/minwoo.jpg'), //always add images in directory
+                            'images/logo.jpg'), //always add images in directory
                         radius: 20,
                       ),
                       title: Text(

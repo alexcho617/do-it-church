@@ -46,7 +46,6 @@ class _LoginRouteState extends State<LoginRoute> {
     } on Exception catch (e) {
       setState(() {
         showLoading = false;
-        //TODO 2:Add some kind of snackbar
         //goes back to phone number entering stage
         print('err from signInWithPhoneAUthCredential function call back');
         currentState = MobileVerificationState.SHOW_MOBILE_FORM_STATE;
