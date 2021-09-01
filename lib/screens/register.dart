@@ -88,11 +88,15 @@ class _RegisterRouteState extends State<RegisterRoute> {
         itemBuilder: (BuildContext context, int index) {
           return DecoratedBox(decoration: BoxDecoration(color: Colors.white));
         });
+
     var spinStartButton = SpinKitThreeBounce(
         size: 15.0,
         itemBuilder: (BuildContext context, int index) {
-          return DecoratedBox(
-              decoration: BoxDecoration(color: Color(0xFF89A1F8)));
+          return Container(
+            width: screenWidth * 0.75,
+            child: DecoratedBox(
+                decoration: BoxDecoration(color: Color(0xFF89A1F8))),
+          );
         });
 
     return GestureDetector(
@@ -154,6 +158,12 @@ class _RegisterRouteState extends State<RegisterRoute> {
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         child: ElevatedButton(
                           onPressed: () {
+                            FocusScopeNode currentFocus =
+                                FocusScope.of(context);
+                            if (!currentFocus.hasPrimaryFocus &&
+                                currentFocus.focusedChild != null) {
+                              FocusManager.instance.primaryFocus!.unfocus();
+                            }
                             showCupertinoModalPopup(
                               context: context,
                               builder: (context) => CupertinoActionSheet(
@@ -225,6 +235,12 @@ class _RegisterRouteState extends State<RegisterRoute> {
                                           BorderRadius.circular(30.0))),
                             ),
                             onPressed: () {
+                              FocusScopeNode currentFocus =
+                                  FocusScope.of(context);
+                              if (!currentFocus.hasPrimaryFocus &&
+                                  currentFocus.focusedChild != null) {
+                                FocusManager.instance.primaryFocus!.unfocus();
+                              }
                               setState(() {
                                 selectedGender = Gender.male;
                                 myUser.gender = 'male';
@@ -277,6 +293,12 @@ class _RegisterRouteState extends State<RegisterRoute> {
                                           BorderRadius.circular(30.0))),
                             ),
                             onPressed: () {
+                              FocusScopeNode currentFocus =
+                                  FocusScope.of(context);
+                              if (!currentFocus.hasPrimaryFocus &&
+                                  currentFocus.focusedChild != null) {
+                                FocusManager.instance.primaryFocus!.unfocus();
+                              }
                               setState(() {
                                 selectedGender = Gender.female;
                                 myUser.gender = 'female';
@@ -350,6 +372,12 @@ class _RegisterRouteState extends State<RegisterRoute> {
                                 Color(0xFF89A1F8)),
                           ),
                           onPressed: () async {
+                            FocusScopeNode currentFocus =
+                                FocusScope.of(context);
+                            if (!currentFocus.hasPrimaryFocus &&
+                                currentFocus.focusedChild != null) {
+                              FocusManager.instance.primaryFocus!.unfocus();
+                            }
                             if (this.phoneNumberKey.currentState!.validate()) {
                               setState(() {
                                 showLoading = true;
@@ -445,6 +473,11 @@ class _RegisterRouteState extends State<RegisterRoute> {
                                 ),
                               ),
                         onPressed: () async {
+                          FocusScopeNode currentFocus = FocusScope.of(context);
+                          if (!currentFocus.hasPrimaryFocus &&
+                              currentFocus.focusedChild != null) {
+                            FocusManager.instance.primaryFocus!.unfocus();
+                          }
                           if (this.formKey.currentState!.validate()) {
                             try {
                               //make credential
