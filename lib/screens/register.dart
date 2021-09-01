@@ -1,15 +1,18 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../components/customUser.dart';
 import 'package:do_it_church/constants.dart';
 import 'landing_route.dart';
+import 'package:intl/intl.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-//TODO 3: handle null value
+enum Gender { male, female }
+
 class RegisterRoute extends StatefulWidget {
   @override
   _RegisterRouteState createState() => _RegisterRouteState();
@@ -25,22 +28,26 @@ class _RegisterRouteState extends State<RegisterRoute> {
   final phoneController = TextEditingController();
   final otpController = TextEditingController();
   String verificationId = '';
-
   bool showLoading = false;
+  bool showStartLoading = false;
+
   CustomUser myUser = CustomUser();
+
   String name = '';
+  DateTime dateTime = DateTime.now();
+  Gender? selectedGender; // since null, gender card starts with inActiveColor.
 
   void signInWithPhoneAuthCredential(
       PhoneAuthCredential phoneAuthCredential) async {
     setState(() {
-      showLoading = true;
+      showStartLoading = true;
     });
 
     try {
       final authCredential =
           await _auth.signInWithCredential(phoneAuthCredential);
       setState(() {
-        showLoading = false;
+        showStartLoading = false;
       });
       if (authCredential.user != null) {
         //add to firestore
@@ -65,15 +72,31 @@ class _RegisterRouteState extends State<RegisterRoute> {
       }
     } on Exception catch (e) {
       print(e);
+      setState(() {
+        showStartLoading = false;
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final spinKit = SpinKitThreeBounce(
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+
+    var spinKit = SpinKitThreeBounce(
         size: 15.0,
         itemBuilder: (BuildContext context, int index) {
           return DecoratedBox(decoration: BoxDecoration(color: Colors.white));
+        });
+
+    var spinStartButton = SpinKitThreeBounce(
+        size: 15.0,
+        itemBuilder: (BuildContext context, int index) {
+          return Container(
+            width: screenWidth * 0.75,
+            child: DecoratedBox(
+                decoration: BoxDecoration(color: Color(0xFF89A1F8))),
+          );
         });
 
     return GestureDetector(
@@ -87,7 +110,7 @@ class _RegisterRouteState extends State<RegisterRoute> {
       },
       child: MaterialApp(
         home: Scaffold(
-          resizeToAvoidBottomInset: false,
+          resizeToAvoidBottomInset: true,
           appBar: AppBar(
             backgroundColor: Colors.white,
             title: Hero(
@@ -106,7 +129,7 @@ class _RegisterRouteState extends State<RegisterRoute> {
                 children: [
                   Flexible(
                     child: Padding(
-                      padding: const EdgeInsets.all(16.0),
+                      padding: EdgeInsets.symmetric(horizontal: 20.0),
                       child: TextFormField(
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -124,9 +147,9 @@ class _RegisterRouteState extends State<RegisterRoute> {
                     children: [
                       Flexible(
                         child: Padding(
-                          padding: const EdgeInsets.all(16.0),
+                          padding: EdgeInsets.symmetric(horizontal: 20.0),
                           child: Text(
-                            '생년월일 : ${myUser.birthdate ?? '1999.01.01'}',
+                            '생년월일 : ${myUser.birthdate ?? '01/01/1991'}',
                             style: kRegularTextStyle,
                           ),
                         ),
@@ -134,7 +157,45 @@ class _RegisterRouteState extends State<RegisterRoute> {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            FocusScopeNode currentFocus =
+                                FocusScope.of(context);
+                            if (!currentFocus.hasPrimaryFocus &&
+                                currentFocus.focusedChild != null) {
+                              FocusManager.instance.primaryFocus!.unfocus();
+                            }
+                            showCupertinoModalPopup(
+                              context: context,
+                              builder: (context) => CupertinoActionSheet(
+                                  actions: [
+                                    SizedBox(
+                                      height: 180,
+                                      child: CupertinoDatePicker(
+                                        minimumYear: 1950,
+                                        maximumYear: DateTime.now().year,
+                                        initialDateTime: dateTime,
+                                        mode: CupertinoDatePickerMode.date,
+                                        onDateTimeChanged: (dateTime) =>
+                                            setState(
+                                                () => this.dateTime = dateTime),
+                                      ),
+                                    ),
+                                  ],
+                                  cancelButton: CupertinoActionSheetAction(
+                                    child: Text('Done'),
+                                    onPressed: () {
+                                      final value = DateFormat('MM/dd/yyyy')
+                                          .format(dateTime);
+                                      setState(() {
+                                        myUser.birthdate = value;
+                                      });
+                                      print(
+                                          'User Birthdate:${myUser.birthdate}');
+                                      Navigator.pop(context);
+                                    },
+                                  )),
+                            );
+                          },
                           child: Icon(Icons.date_range),
                           style: ButtonStyle(
                             shape: MaterialStateProperty.all(
@@ -147,12 +208,134 @@ class _RegisterRouteState extends State<RegisterRoute> {
                       ),
                     ],
                   ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20.0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: ElevatedButton(
+                            style: ButtonStyle(
+                              backgroundColor: selectedGender == Gender.male
+                                  ? MaterialStateProperty.all<Color>(
+                                      Colors.white)
+                                  : MaterialStateProperty.all<Color>(
+                                      Color(0xFF89A1F8)),
+                              side: selectedGender == Gender.male
+                                  ? MaterialStateProperty.all(BorderSide(
+                                      color: Color(0xFF89A1F8),
+                                      width: 2.0,
+                                    ))
+                                  : MaterialStateProperty.all(BorderSide(
+                                      color: Color(0xFF89A1F8),
+                                      width: 2.0,
+                                    )),
+                              shape: MaterialStateProperty.all(
+                                  RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(30.0))),
+                            ),
+                            onPressed: () {
+                              FocusScopeNode currentFocus =
+                                  FocusScope.of(context);
+                              if (!currentFocus.hasPrimaryFocus &&
+                                  currentFocus.focusedChild != null) {
+                                FocusManager.instance.primaryFocus!.unfocus();
+                              }
+                              setState(() {
+                                selectedGender = Gender.male;
+                                myUser.gender = 'male';
+                                print('User Gender: ${myUser.gender}');
+                              });
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text('남자',
+                                    style: TextStyle(
+                                      fontSize: 18.0,
+                                      color: selectedGender == Gender.male
+                                          ? Color(0xFF89A1F8)
+                                          : Colors.white,
+                                    )),
+                                Icon(
+                                  Icons.male,
+                                  color: selectedGender == Gender.male
+                                      ? Color(0xFF89A1F8)
+                                      : Colors.white,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 20.0,
+                        ),
+                        Expanded(
+                          child: ElevatedButton(
+                            style: ButtonStyle(
+                              backgroundColor: selectedGender == Gender.female
+                                  ? MaterialStateProperty.all<Color>(
+                                      Colors.white)
+                                  : MaterialStateProperty.all<Color>(
+                                      Color(0xFF89A1F8)),
+                              side: selectedGender == Gender.female
+                                  ? MaterialStateProperty.all(BorderSide(
+                                      color: Color(0xFF89A1F8),
+                                      width: 2.0,
+                                    ))
+                                  : MaterialStateProperty.all(BorderSide(
+                                      color: Color(0xFF89A1F8),
+                                      width: 2.0,
+                                    )),
+                              shape: MaterialStateProperty.all(
+                                  RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(30.0))),
+                            ),
+                            onPressed: () {
+                              FocusScopeNode currentFocus =
+                                  FocusScope.of(context);
+                              if (!currentFocus.hasPrimaryFocus &&
+                                  currentFocus.focusedChild != null) {
+                                FocusManager.instance.primaryFocus!.unfocus();
+                              }
+                              setState(() {
+                                selectedGender = Gender.female;
+                                myUser.gender = 'female';
+                                print('User Gender: ${myUser.gender}');
+                              });
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  '여자',
+                                  style: TextStyle(
+                                    fontSize: 18.0,
+                                    color: selectedGender == Gender.female
+                                        ? Color(0xFF89A1F8)
+                                        : Colors.white,
+                                  ),
+                                ),
+                                Icon(
+                                  Icons.female,
+                                  color: selectedGender == Gender.female
+                                      ? Color(0xFF89A1F8)
+                                      : Colors.white,
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Flexible(
                         child: Padding(
-                          padding: const EdgeInsets.all(16.0),
+                          padding: EdgeInsets.symmetric(horizontal: 20.0),
                           child: TextFormField(
                             key: phoneNumberKey,
                             keyboardType: TextInputType.phone,
@@ -173,7 +356,7 @@ class _RegisterRouteState extends State<RegisterRoute> {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        padding: EdgeInsets.symmetric(horizontal: 20.0),
                         child: ElevatedButton(
                           child: showLoading
                               ? Center(child: spinKit)
@@ -189,6 +372,12 @@ class _RegisterRouteState extends State<RegisterRoute> {
                                 Color(0xFF89A1F8)),
                           ),
                           onPressed: () async {
+                            FocusScopeNode currentFocus =
+                                FocusScope.of(context);
+                            if (!currentFocus.hasPrimaryFocus &&
+                                currentFocus.focusedChild != null) {
+                              FocusManager.instance.primaryFocus!.unfocus();
+                            }
                             if (this.phoneNumberKey.currentState!.validate()) {
                               setState(() {
                                 showLoading = true;
@@ -238,7 +427,7 @@ class _RegisterRouteState extends State<RegisterRoute> {
                   //authentication code
                   Flexible(
                     child: Padding(
-                      padding: const EdgeInsets.all(16.0),
+                      padding: EdgeInsets.symmetric(horizontal: 20.0),
                       child: TextFormField(
                         keyboardType: TextInputType.phone,
                         validator: (value) {
@@ -255,51 +444,60 @@ class _RegisterRouteState extends State<RegisterRoute> {
                   SizedBox(
                     height: 15.0,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: ElevatedButton(
-                      style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all<Color>(Colors.white),
-                        side: MaterialStateProperty.all(BorderSide(
-                          color: Color(0xFF89A1F8),
-                          width: 2.0,
-                        )),
-                        shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30.0))),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Text(
-                          '두잇처치 시작하기',
-                          style: TextStyle(
-                            fontSize: 18.0,
+                  Container(
+                    width: screenWidth * 0.75,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20.0),
+                      child: ElevatedButton(
+                        style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.all<Color>(Colors.white),
+                          side: MaterialStateProperty.all(BorderSide(
                             color: Color(0xFF89A1F8),
-                          ),
+                            width: 2.0,
+                          )),
+                          shape: MaterialStateProperty.all(
+                              RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30.0))),
                         ),
-                      ),
-                      onPressed: () async {
-                        if (this.formKey.currentState!.validate()) {
-                          try {
-                            //make credential
-                            PhoneAuthCredential phoneAuthCredential =
-                                PhoneAuthProvider.credential(
-                                    verificationId: verificationId,
-                                    smsCode: otpController.text);
-                            //function call
-                            signInWithPhoneAuthCredential(phoneAuthCredential);
-                          } catch (e) {
-                            print(e);
+                        child: showStartLoading
+                            ? Center(child: spinStartButton)
+                            : Padding(
+                                padding: const EdgeInsets.all(4.0),
+                                child: Text(
+                                  '두잇처치 시작하기',
+                                  style: TextStyle(
+                                    fontSize: 18.0,
+                                    color: Color(0xFF89A1F8),
+                                  ),
+                                ),
+                              ),
+                        onPressed: () async {
+                          FocusScopeNode currentFocus = FocusScope.of(context);
+                          if (!currentFocus.hasPrimaryFocus &&
+                              currentFocus.focusedChild != null) {
+                            FocusManager.instance.primaryFocus!.unfocus();
                           }
-                          print(myUser.name);
-                          print(myUser.birthdate);
-                          print(myUser.gender);
-                          print(myUser.phoneNumber);
-                          setState(() {
-                            //To change state here
-                          });
-                        }
-                      },
+                          if (this.formKey.currentState!.validate()) {
+                            try {
+                              //make credential
+                              PhoneAuthCredential phoneAuthCredential =
+                                  PhoneAuthProvider.credential(
+                                      verificationId: verificationId,
+                                      smsCode: otpController.text);
+                              //function call
+                              signInWithPhoneAuthCredential(
+                                  phoneAuthCredential);
+                            } catch (e) {
+                              print(e);
+                            }
+                            print(myUser.name);
+                            print(myUser.birthdate);
+                            print(myUser.gender);
+                            print(myUser.phoneNumber);
+                          }
+                        },
+                      ),
                     ),
                   ),
                 ],
