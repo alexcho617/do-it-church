@@ -1,3 +1,4 @@
+import 'package:do_it_church/components/NoticeSnackBar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -75,11 +76,11 @@ class _NoticeAddRouteState extends State<NoticeAddRoute> {
           TextButton(
               child: Text('완료'),
               onPressed: () async {
-                if (formKey.currentState!.validate()) {
-                  _handleSubmitted(
-                      titleTextController.text, contentTextController.text);
-                  Navigator.pop(context);
-                }
+              if(formKey.currentState!.validate()){
+                _handleSubmitted(titleTextController.text, contentTextController.text);
+                NoticeSnackBar.show(context, '공지 사항이 추가 되었습니다.');
+                Navigator.pop(context);
+              }
               }),
         ],
       ),
