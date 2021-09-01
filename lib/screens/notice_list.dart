@@ -205,6 +205,7 @@ class NoticeBuilder extends StatelessWidget {
         ),
         ScreenDivider(
           color: Color(0xFFE0E0E0),
+          thickness: 2,
         ),
       ],
     );

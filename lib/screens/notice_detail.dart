@@ -1,14 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:do_it_church/components/NoticeDetailHeader.dart';
 import 'package:do_it_church/components/NoticeDetailStatus.dart';
-import 'package:do_it_church/components/NoticeStatus.dart';
 import 'package:do_it_church/components/ScreenDivider.dart';
 import 'package:do_it_church/components/comment.dart';
 import 'package:do_it_church/components/notice.dart';
 import 'package:do_it_church/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:like_button/like_button.dart';
 
 void _handleSubmitted(String commentText, String noticeId) async {
   print(noticeId);
@@ -150,12 +148,16 @@ class NoticeDetailState extends State<NoticeDetail> {
                       title: notice.title,
                       writer: notice.writer,
                       date: notice.date,
-                      contents: notice.contents),
+                      contents: notice.contents
+                  ),
                 ),
                 ScreenDivider(
-                  color: Colors.black,
+                  color: Colors.grey,
+                  thickness: 2.5,
                 ),
-                Container(child: CommentBubble(noticeId: widget.noticeId)),
+                Container(
+                    child: CommentBubble(noticeId: widget.noticeId, commentsCount: notice.comments,)
+                ),
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 20.0),
                   child: Row(children: [
@@ -231,8 +233,10 @@ class NoticeDetailBuilder extends StatelessWidget {
 }
 
 class CommentBubble extends StatelessWidget {
-  const CommentBubble({this.noticeId});
+  const CommentBubble({this.noticeId, this.commentsCount});
   final noticeId;
+  final commentsCount;
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
@@ -254,7 +258,7 @@ class CommentBubble extends StatelessWidget {
               children: (snapshot.data!).docs.map((DocumentSnapshot document) {
                 Map<String, dynamic> data =
                     document.data()! as Map<String, dynamic>;
-                int commentsCount = data.length;
+                //data.length = commentsCount;
                 return Column(
                   children: [
                     ListTile(
@@ -276,7 +280,8 @@ class CommentBubble extends StatelessWidget {
                       ),
                     ),
                     ScreenDivider(
-                      color: Colors.grey,
+                      color: Colors.black12,
+                      thickness: 1,
                     )
                   ],
                 );

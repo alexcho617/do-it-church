@@ -1,3 +1,4 @@
+import 'package:do_it_church/components/NoticeSnackBar.dart';
 import 'package:do_it_church/screens/notice_edit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +15,7 @@ class NoticeEditButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //SnackBar snackBar = SnackBar(content: Text('공지사항이 삭제 되었습니다.'));
     return IconButton(
       padding: EdgeInsets.zero,
       constraints: BoxConstraints(),
@@ -59,6 +61,7 @@ class NoticeEditButton extends StatelessWidget {
                                 .delete()
                                 .then((value) {});
                               Navigator.pop(context);
+                              NoticeSnackBar.show(context, '공지 사항이 삭제 되었습니다.');
                             },
                             child: Text('OK'),
                           ),
