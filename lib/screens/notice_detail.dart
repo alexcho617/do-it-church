@@ -65,6 +65,7 @@ final firestore = FirebaseFirestore.instance;
 
 Notice notice = Notice();
 Comment comment = Comment();
+String commentsCount = '';
 
 double deviceHeight = 0.0;
 double deviceWidth = 0.0;
@@ -156,7 +157,7 @@ class NoticeDetailState extends State<NoticeDetail> {
                   thickness: 2.5,
                 ),
                 Container(
-                    child: CommentBubble(noticeId: widget.noticeId, commentsCount: notice.comments,)
+                    child: CommentBubble(noticeId: widget.noticeId,)
                 ),
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 20.0),
@@ -196,13 +197,13 @@ class NoticeDetailState extends State<NoticeDetail> {
 
 class NoticeDetailBuilder extends StatelessWidget {
   const NoticeDetailBuilder(
-      {this.docId, this.title, this.writer, this.date, this.contents});
-
+      {this.docId, this.title, this.writer, this.date, this.contents, this.commentsCount,});
   final docId;
   final title;
   final writer;
   final date;
   final contents;
+  final commentsCount;
 
   @override
   Widget build(BuildContext context) {
@@ -225,7 +226,7 @@ class NoticeDetailBuilder extends StatelessWidget {
               ),
             ),
           ), //댓글읽은사람, 하트
-          NoticeDetailStatus(),
+          NoticeDetailStatus(noticeId: docId),
         ],
       ),
     );
@@ -233,9 +234,9 @@ class NoticeDetailBuilder extends StatelessWidget {
 }
 
 class CommentBubble extends StatelessWidget {
-  const CommentBubble({this.noticeId, this.commentsCount});
+  const CommentBubble({this.noticeId,});
   final noticeId;
-  final commentsCount;
+
 
   @override
   Widget build(BuildContext context) {
@@ -258,7 +259,7 @@ class CommentBubble extends StatelessWidget {
               children: (snapshot.data!).docs.map((DocumentSnapshot document) {
                 Map<String, dynamic> data =
                     document.data()! as Map<String, dynamic>;
-                //data.length = commentsCount;
+                commentsCount = (snapshot.data!).size.toString();
                 return Column(
                   children: [
                     ListTile(

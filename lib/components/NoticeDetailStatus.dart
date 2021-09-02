@@ -1,12 +1,20 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:do_it_church/screens/notice_detail.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:like_button/like_button.dart';
-
 import '../constants.dart';
+
+
+final _auth = FirebaseAuth.instance;
+final firestore = FirebaseFirestore.instance;
+
 
 class NoticeDetailStatus extends StatelessWidget {
   const NoticeDetailStatus({
-    Key? key,
+    Key? key, this.noticeId,
   }) : super(key: key);
+  final noticeId;
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +42,7 @@ class NoticeDetailStatus extends StatelessWidget {
                 Container(
                   width: 5,
                 ),
-                Text('10', style: kNoticeCountTextStyle)
+                Text(commentsCount, style: kNoticeCountTextStyle)
               ],
             ),
           ),
@@ -49,7 +57,7 @@ class NoticeDetailStatus extends StatelessWidget {
               likeBuilder: (isLiked) {
                 final color = isLiked ? Colors.red : Colors.grey;
                 return Icon(Icons.favorite, color: color, size: 19);
-              },
+                },
               likeCountPadding: EdgeInsets.zero,
               countBuilder: (count, isLiked, text) {
                 final color = isLiked ? Color(0xFF89A1F8) : Colors.grey;
@@ -57,12 +65,12 @@ class NoticeDetailStatus extends StatelessWidget {
                   text,
                   style: TextStyle(fontSize: 13, color: color),
                 );
-              },
+                },
               onTap: (isLiked) async {
                 isLiked = !isLiked;
                 //likeCount += isLiked ? 1 : -1;
                 return isLiked;
-              },
+                },
             ),
           ),
         ),
