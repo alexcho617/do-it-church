@@ -6,13 +6,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:do_it_church/components/notice.dart';
 import 'package:do_it_church/constants.dart';
 
-void _handleSubmitted(String titleText,String contentText) async {
+void _handleSubmitted(String titleText, String contentText) async {
   await firestore.collection('Notice').add({
     'title': titleText,
     'contents': contentText,
     'writer': notice.writer,
     //server
     'date': Timestamp.now(),
+    'commentCount': notice.commentCount ?? 0
   });
 }
 
@@ -76,11 +77,12 @@ class _NoticeAddRouteState extends State<NoticeAddRoute> {
           TextButton(
               child: Text('완료'),
               onPressed: () async {
-              if(formKey.currentState!.validate()){
-                _handleSubmitted(titleTextController.text, contentTextController.text);
-                NoticeSnackBar.show(context, '공지 사항이 추가 되었습니다.');
-                Navigator.pop(context);
-              }
+                if (formKey.currentState!.validate()) {
+                  _handleSubmitted(
+                      titleTextController.text, contentTextController.text);
+                  NoticeSnackBar.show(context, '공지 사항이 추가 되었습니다.');
+                  Navigator.pop(context);
+                }
               }),
         ],
       ),
@@ -92,8 +94,8 @@ class _NoticeAddRouteState extends State<NoticeAddRoute> {
             children: [
               Container(
                 child: TextFormField(
-                  validator: (value){
-                    if(value == null || value.isEmpty){
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
                       return '제목은 필수입니다';
                     }
                     return null;
@@ -101,13 +103,14 @@ class _NoticeAddRouteState extends State<NoticeAddRoute> {
                   controller: titleTextController,
                   decoration: InputDecoration(
                       hintText: "제목",
-                      hintStyle: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
+                      hintStyle: TextStyle(
+                          fontSize: 18.0, fontWeight: FontWeight.bold)),
                 ),
               ),
               Container(
                 child: TextFormField(
-                  validator: (value){
-                    if(value == null || value.isEmpty){
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
                       return '내용은 필수입니다';
                     }
                     return null;

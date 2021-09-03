@@ -91,17 +91,23 @@ class NoticeStream extends StatelessWidget {
 
         List<NoticeBuilder> noticeList = [];
         for (var doc in docs) {
+          DateTime noticeDate =
+              DateTime.parse(doc.get("date").toDate().toString());
+          notice.date =
+              '${noticeDate.year}년 ${noticeDate.month}월 ${noticeDate.day}일';
+
           notice.docId = doc.id;
           notice.title = doc.get("title").toString();
-          notice.date = doc.get("date").toString();
           notice.writer = doc.get("writer").toString();
           notice.contents = doc.get("contents").toString();
+          notice.commentCount = doc.get("commentCount");
           final noticeObject = NoticeBuilder(
             docId: notice.docId,
             title: notice.title,
             date: notice.date,
             writer: notice.writer,
             contents: notice.contents,
+            commentCount: notice.commentCount ?? 0,
           );
           noticeList.add(noticeObject);
         }
@@ -117,12 +123,18 @@ class NoticeStream extends StatelessWidget {
 
 class NoticeBuilder extends StatelessWidget {
   const NoticeBuilder(
-      {this.title, this.date, this.writer, this.contents, this.docId});
+      {this.title,
+      this.date,
+      this.writer,
+      this.contents,
+      this.docId,
+      this.commentCount});
   final title;
   final date;
   final contents;
   final writer;
   final docId;
+  final commentCount;
 
   @override
   Widget build(BuildContext context) {
@@ -134,9 +146,14 @@ class NoticeBuilder extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              NoticeHeader(docId: docId, title: title, writer: writer),
+              NoticeHeader(
+                docId: docId,
+                title: title,
+                writer: writer,
+                date: date,
+              ),
               NoticeListContents(contents: contents),
-              NoticeStatus(),
+              NoticeStatus(commentCounts: commentCount.toString()),
               Container(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,

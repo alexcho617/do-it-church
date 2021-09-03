@@ -10,11 +10,13 @@ class NoticeHeader extends StatelessWidget {
     required this.docId,
     required this.title,
     required this.writer,
+    required this.date,
   }) : super(key: key);
 
   final docId;
   final title;
   final writer;
+  final date;
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +47,9 @@ class NoticeHeader extends StatelessWidget {
                                       noticeId: '$docId',
                                     )));
                       },
-                      style: TextButton.styleFrom(alignment: Alignment.centerLeft, padding: EdgeInsets.zero),
+                      style: TextButton.styleFrom(
+                          alignment: Alignment.centerLeft,
+                          padding: EdgeInsets.zero),
                       child: Text(
                         '$title',
                         style: kNoticeTitleTextStyle,
@@ -55,9 +59,20 @@ class NoticeHeader extends StatelessWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 40),
-                  child: Text(
-                    '$writer',
-                    style: kNoticeSubTitleTextStyle,
+                  child: Row(
+                    children: [
+                      Text(
+                        '$date',
+                        style: kNoticeSubTitleTextStyle,
+                      ),
+                      SizedBox(
+                        width: 10.0,
+                      ),
+                      Text(
+                        '$writer',
+                        style: kNoticeSubTitleTextStyle,
+                      ),
+                    ],
                   ),
                 )
               ],
