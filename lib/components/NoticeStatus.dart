@@ -5,7 +5,9 @@ import '../constants.dart';
 class NoticeStatus extends StatelessWidget {
   const NoticeStatus({
     Key? key,
+    required this.commentCounts,
   }) : super(key: key);
+  final String commentCounts;
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +31,7 @@ class NoticeStatus extends StatelessWidget {
           Container(
             width: 5,
           ),
-          Text('10', style: kNoticeCountTextStyle)
+          Text(commentCounts, style: kNoticeCountTextStyle)
         ],
       ),
     );

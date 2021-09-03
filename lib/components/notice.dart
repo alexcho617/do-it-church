@@ -5,15 +5,13 @@ class Notice {
       this.writer,
       this.contents,
       this.docId,
-      this.comments,
-        this.likes
-      }); //constructor
+      this.commentCount,
+      this.likes}); //constructor
   var title;
   var date;
   var writer;
   var contents;
   var docId;
   var likes;
-  var comments;
-
+  var commentCount;
 }

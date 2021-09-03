@@ -21,6 +21,8 @@ const kNoticeTitleTextStyle =
 const kNoticeSubTitleTextStyle = TextStyle(fontSize: 14, color: Colors.grey);
 
 const kNoticeContentTextStyle = TextStyle(fontSize: 13, color: Colors.black);
+const kNoticeDetailContentTextStyle =
+    TextStyle(fontSize: 16, color: Colors.black);
 
 const kNoticeCountTextStyle = TextStyle(fontSize: 12, color: Colors.grey);
 
