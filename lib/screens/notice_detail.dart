@@ -144,6 +144,14 @@ class _CommentBubbleState extends State<CommentBubble> {
                 return Column(
                   children: [
                     ListTile(
+                      onLongPress: (){
+                      FirebaseFirestore.instance
+                          .collection("Notice")
+                          .doc(widget.noticeId).collection('Comments')
+                          .doc(document.id)
+                          .delete()
+                          .then((value) {});
+                      },
                       dense: true,
                       contentPadding: EdgeInsets.symmetric(horizontal: 20),
                       //TODO 2: Get Image from server
