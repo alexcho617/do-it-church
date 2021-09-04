@@ -90,6 +90,7 @@ class NoticeStream extends StatelessWidget {
         final docs = (snapshot.data!).docs;
 
         List<NoticeBuilder> noticeList = [];
+
         for (var doc in docs) {
           DateTime noticeDate =
               DateTime.parse(doc.get("date").toDate().toString());
@@ -101,6 +102,7 @@ class NoticeStream extends StatelessWidget {
           notice.writer = doc.get("writer").toString();
           notice.contents = doc.get("contents").toString();
           notice.commentCount = doc.get("commentCount");
+
           final noticeObject = NoticeBuilder(
             docId: notice.docId,
             title: notice.title,
@@ -109,6 +111,7 @@ class NoticeStream extends StatelessWidget {
             contents: notice.contents,
             commentCount: notice.commentCount ?? 0,
           );
+
           noticeList.add(noticeObject);
         }
         return Expanded(
@@ -129,6 +132,7 @@ class NoticeBuilder extends StatelessWidget {
       this.contents,
       this.docId,
       this.commentCount});
+
   final title;
   final date;
   final contents;
@@ -159,6 +163,7 @@ class NoticeBuilder extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Expanded(
+                      //likebutton
                       //ElevatedButton, OutlinedButton
                       child: SizedBox(
                         height: 27,
@@ -196,6 +201,7 @@ class NoticeBuilder extends StatelessWidget {
                       width: 10,
                     ),
                     Expanded(
+                      //comment button
                       child: SizedBox(
                         height: 27,
                         child: OutlinedButton(

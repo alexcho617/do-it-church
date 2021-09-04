@@ -74,6 +74,7 @@ class _LoginRouteState extends State<LoginRoute> {
                 if (value == null || value.isEmpty) {
                   return '핸드폰번호를 입력하세요';
                 }
+                //can combine regular expression conditions something like 010[^A-Za-z]*
                 if (value.length != 11 ||
                     value.contains('010') == false ||
                     value.contains(RegExp(r'[A-Z]')) == true ||
