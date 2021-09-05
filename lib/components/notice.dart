@@ -15,5 +15,4 @@ class Notice {
   var docId;
   var likes;
   var comments;
-
 }

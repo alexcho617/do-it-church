@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:like_button/like_button.dart';
 
 import '../constants.dart';
+class NoticeDetailStatus extends StatefulWidget {
+  NoticeDetailStatus({Key? key,}) : super(key: key);
 
-class NoticeDetailStatus extends StatelessWidget {
-  const NoticeDetailStatus({
-    Key? key,
-  }) : super(key: key);
+  @override
+  _NoticeDetailStatusState createState() => _NoticeDetailStatusState();
+}
+
+class _NoticeDetailStatusState extends State<NoticeDetailStatus> {
 
   @override
   Widget build(BuildContext context) {
@@ -20,21 +23,25 @@ class NoticeDetailStatus extends StatelessWidget {
               children: [
                 Icon(
                   Icons.remove_red_eye_outlined,
-                  size: 19,
+                  size: 17,
                   color: Colors.grey,
                 ),
                 Container(
                   width: 5,
                 ),
-                Text('25', style: kNoticeCountTextStyle),
+                Text('23', style: kNoticeCountTextStyle),
                 Container(
                   width: 10,
                 ),
-                Icon(Icons.chat_outlined, size: 19, color: Colors.grey),
+                Icon(Icons.chat_outlined, size: 17, color: Colors.grey),
                 Container(
                   width: 5,
                 ),
-                Text('10', style: kNoticeCountTextStyle)
+                Text('5', style: kNoticeCountTextStyle,overflow: TextOverflow.ellipsis,),
+                //Text('${['comment'].length}', style: kNoticeCountTextStyle,overflow: TextOverflow.ellipsis,),
+                //지워도 되는거... 댓글 수 가져오는거 시도해본거..
+
+
               ],
             ),
           ),

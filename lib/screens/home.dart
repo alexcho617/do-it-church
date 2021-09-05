@@ -1,3 +1,4 @@
+import 'package:do_it_church/screens/member_info.dart';
 import 'package:do_it_church/screens/notice_new.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -73,7 +74,12 @@ class _HomeRouteState extends State<HomeRoute> {
             Row(
               children: [
                 TextButton(onPressed: null, child: Text('출결관리')),
-                TextButton(onPressed: null, child: Text('교적관리'))
+                TextButton(onPressed: (){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => MemberInfoRoute()),
+                  );
+                }, child: Text('교적관리'))
               ],
             ),
             Container(
