@@ -145,12 +145,14 @@ class _CommentBubbleState extends State<CommentBubble> {
                   children: [
                     ListTile(
                       onLongPress: (){
-                      FirebaseFirestore.instance
-                          .collection("Notice")
-                          .doc(widget.noticeId).collection('Comments')
-                          .doc(document.id)
-                          .delete()
-                          .then((value) {});
+                        FirebaseFirestore.instance
+                            .collection("Notice")
+                            .doc(widget.noticeId).collection('Comments')
+                            .doc(document.id)
+                            .delete()
+                            .then((value) {});
+                        globalCommentCount -= 1;
+                        FirebaseFirestore.instance.collection('Notice').doc(widget.noticeId).update({'commentCount': globalCommentCount});
                       },
                       dense: true,
                       contentPadding: EdgeInsets.symmetric(horizontal: 20),
@@ -223,8 +225,7 @@ class NoticeDetailState extends State<NoticeDetail> {
     try {
       //its missing the await
       if (widget.noticeId != null) {
-        DocumentReference doc =
-            firestore.collection("Notice").doc(widget.noticeId);
+        DocumentReference doc = firestore.collection("Notice").doc(widget.noticeId);
         await doc.get().then((DocumentSnapshot doc) {
           setState(() {
             DateTime noticeDate =
@@ -275,7 +276,8 @@ class NoticeDetailState extends State<NoticeDetail> {
                       title: notice.title,
                       writer: notice.writer,
                       date: notice.date,
-                      contents: notice.contents),
+                      contents: notice.contents
+                  ),
                 ),
                 Container(
                   child: NoticeDetailStatus(
