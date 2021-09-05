@@ -120,8 +120,24 @@ class CommentBubble extends StatefulWidget {
 }
 
 class _CommentBubbleState extends State<CommentBubble> {
+  late ScrollController _scrollController;
+
+  _scrollListener() async {
+    if (_scrollController.offset ==
+        _scrollController.position.maxScrollExtent &&
+        !_scrollController.position.outOfRange) {
+      // top
+    } else if (_scrollController.offset <=
+        _scrollController.position.maxScrollExtent &&
+        !_scrollController.position.outOfRange) {
+      // bottom
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    _scrollController = ScrollController();
+    _scrollController.addListener(_scrollListener);
     return StreamBuilder<QuerySnapshot>(
         stream: firestore
             .collection("Notice")
@@ -138,9 +154,16 @@ class _CommentBubbleState extends State<CommentBubble> {
           return SizedBox(
             height: deviceHeight * 0.3,
             child: ListView(
+              controller: _scrollController,
               children: (snapshot.data!).docs.map((DocumentSnapshot document) {
                 Map<String, dynamic> data =
                     document.data()! as Map<String, dynamic>;
+                WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+                  _scrollController.animateTo(
+                      _scrollController.position.maxScrollExtent,
+                      duration: Duration(milliseconds: 200),
+                      curve: Curves.easeInOut);
+                });
                 return Column(
                   children: [
                     ListTile(
@@ -221,6 +244,7 @@ class NoticeDetail extends StatefulWidget {
 
 class NoticeDetailState extends State<NoticeDetail> {
   late TextEditingController commentTextController = TextEditingController();
+
   Future<void> getNoticeDetail(Notice notice) async {
     try {
       //its missing the await
