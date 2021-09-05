@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:do_it_church/components/NoticeDetailHeader.dart';
 import 'package:do_it_church/components/NoticeDetailStatus.dart';
+import 'package:do_it_church/components/NoticeSnackBar.dart';
 import 'package:do_it_church/components/ScreenDivider.dart';
 import 'package:do_it_church/components/comment.dart';
 import 'package:do_it_church/components/notice.dart';
@@ -176,6 +177,7 @@ class _CommentBubbleState extends State<CommentBubble> {
                             .then((value) {});
                         globalCommentCount -= 1;
                         FirebaseFirestore.instance.collection('Notice').doc(widget.noticeId).update({'commentCount': globalCommentCount});
+                        NoticeSnackBar.show(context, '댓글이 삭제 되었습니다.');
                       },
                       dense: true,
                       contentPadding: EdgeInsets.symmetric(horizontal: 20),
