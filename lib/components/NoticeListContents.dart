@@ -13,7 +13,7 @@ class NoticeListContents extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.topLeft,
-      padding: EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+      padding: EdgeInsets.symmetric(vertical: 10),
       child: RichText(
         overflow: TextOverflow.ellipsis,
         maxLines: 3,

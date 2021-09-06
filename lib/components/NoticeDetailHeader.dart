@@ -10,11 +10,13 @@ class NoticeDetailHeader extends StatelessWidget {
     required this.docId,
     required this.title,
     required this.writer,
+    required this.date,
   }) : super(key: key);
 
   final docId;
   final title;
   final writer;
+  final date;
 
   @override
   Widget build(BuildContext context) {
@@ -33,9 +35,20 @@ class NoticeDetailHeader extends StatelessWidget {
                 '$title',
                 style: kNoticeTitleTextStyle,
               ),
-              subtitle: Text(
-                '$writer',
-                style: kNoticeSubTitleTextStyle,
+              subtitle: Row(
+                children: [
+                  Text(
+                    '$date',
+                    style: kNoticeSubTitleTextStyle,
+                  ),
+                  SizedBox(
+                    width: 10.0,
+                  ),
+                  Text(
+                    '$writer',
+                    style: kNoticeSubTitleTextStyle,
+                  ),
+                ],
               ),
             ),
           ),
