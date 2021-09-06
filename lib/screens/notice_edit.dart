@@ -27,9 +27,6 @@ class _NoticeEditRouteState extends State<NoticeEditRoute> {
     await firestore.collection('Notice').doc(widget.noticeId).update({
       'title': titleText,
       'contents': contentText,
-      'writer': notice.writer,
-      //server
-      'date': Timestamp.now(),
     });
   }
 

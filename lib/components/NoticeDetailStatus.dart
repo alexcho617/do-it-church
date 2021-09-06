@@ -20,7 +20,8 @@ class _NoticeDetailStatusState extends State<NoticeDetailStatus> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Row(children: <Widget>[
+      child: Row(
+          children: <Widget>[
         Container(
           padding: EdgeInsets.all(20),
           child: Row(
