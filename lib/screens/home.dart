@@ -89,10 +89,8 @@ class _HomeRouteState extends State<HomeRoute> {
                     }, child: Text('교적관리'))
                   ],
                 ),
-                  ],
-                ),
                 Container(
-                  width: size*0.93,
+                  width: size*0.9,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -249,6 +247,8 @@ class _HomeRouteState extends State<HomeRoute> {
                 Container(height: 20,)
               ],
             ),
+          ],
+        )
       ),
       drawer: Drawer(
         child: ListView(
