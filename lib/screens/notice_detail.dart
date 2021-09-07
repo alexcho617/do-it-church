@@ -26,6 +26,24 @@ void _handleSubmitted(String commentText, String noticeId) async {
       .update({'commentCount': globalCommentCount});
 }
 
+// void getUserCommentCount() async {
+//   bool commented = Comments[comment] == true;
+//   if (commented) {
+//     stream: firestore
+//         .collection("Notice")
+//         .doc(noticeId)
+//         .collection("Comments")
+//         .updateData({"commented.$currentOnlineUserId": true});
+//
+//     setState(() {
+//       //print(commentCount);
+//       commentCount = commentCount + 1;
+//       commented = true;
+//       comments[currentOnlineUserId] = true;
+//     });
+//   }
+// }
+
 void showAlertDialog(BuildContext context) async {
   String result = await showDialog(
     context: context,

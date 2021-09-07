@@ -4,10 +4,12 @@ import 'package:do_it_church/components/NoticeHomeStatus.dart';
 import 'package:do_it_church/components/NoticeListContents.dart';
 import 'package:do_it_church/components/NoticeStatus.dart';
 import 'package:do_it_church/components/notice.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:do_it_church/components/myPage.dart';
 import 'package:like_button/like_button.dart';
+import 'member_info.dart';
 import 'notice_detail.dart';
 import 'notice_list.dart';
 import 'mypage.dart';
@@ -79,7 +81,14 @@ class _HomeRouteState extends State<HomeRoute> {
                 Row(
                   children: [
                     TextButton(onPressed: null, child: Text('출결관리')),
-                    TextButton(onPressed: null, child: Text('교적관리'))
+                    TextButton(onPressed: (){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => MemberInfoRoute()),
+                      );
+                    }, child: Text('교적관리'))
+                  ],
+                ),
                   ],
                 ),
                 Container(
@@ -240,14 +249,12 @@ class _HomeRouteState extends State<HomeRoute> {
                 Container(height: 20,)
               ],
             ),
-          ],
-        ),
       ),
       drawer: Drawer(
         child: ListView(
           children: [
             myPageSlide(),
-          ],
+     ],
         ),
       )
     );

@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:like_button/like_button.dart';
 import '../constants.dart';
 
-final firestore = FirebaseFirestore.instance;
+  final firestore = FirebaseFirestore.instance;
+
 
 class NoticeDetailStatus extends StatefulWidget {
   NoticeDetailStatus({required this.commentCounts});
@@ -15,6 +16,7 @@ class NoticeDetailStatus extends StatefulWidget {
   @override
   _NoticeDetailStatusState createState() => _NoticeDetailStatusState();
 }
+
 
 class _NoticeDetailStatusState extends State<NoticeDetailStatus> {
   @override
@@ -44,6 +46,7 @@ class _NoticeDetailStatusState extends State<NoticeDetailStatus> {
               ),
               Text(widget.commentCounts, style: kNoticeCountTextStyle)
             ],
+
           ),
         ),
         Container(
