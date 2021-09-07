@@ -30,7 +30,7 @@ class myPageSlide extends StatelessWidget {
       child: Column(
         children: [
           DrawerHeader(child: Text('Drawer Header')),
-          Expanded(
+          Container(
             child: Column(
               children: [
                 ListTile(
