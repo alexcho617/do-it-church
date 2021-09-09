@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:do_it_church/constants.dart';
-import 'login.dart';
+import '../View/login.dart';
 
 class FindId extends StatefulWidget {
   @override

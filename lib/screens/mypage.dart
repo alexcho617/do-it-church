@@ -1,7 +1,8 @@
-import 'package:do_it_church/screens/login.dart';
+import 'package:do_it_church/View/login.dart';
 import 'package:flutter/material.dart';
-import 'login.dart';
+import '../View/login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:get/get.dart';
 
 class MypageRoute extends StatefulWidget {
   @override
@@ -82,8 +83,9 @@ class _MypageRouteState extends State<MypageRoute> {
                 Navigator.popUntil(
                     context, (Route<dynamic> route) => route.isFirst);
 
-                Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (context) => LoginRoute()));
+                // Navigator.pushReplacement(context,
+                //     MaterialPageRoute(builder: (context) => LoginRoute()));
+                Get.offAll(LoginRoute());
               },
               child: Text('로그아웃'),
             ),

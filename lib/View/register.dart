@@ -1,14 +1,15 @@
+import 'package:do_it_church/View/login.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../components/customUser.dart';
+import '../Model/customUser.dart';
 import 'package:do_it_church/constants.dart';
-import 'landing_route.dart';
+import '../screens/landing_route.dart';
 import 'package:intl/intl.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
+import 'package:get/get.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 enum Gender { male, female }
@@ -67,8 +68,9 @@ class _RegisterRouteState extends State<RegisterRoute> {
           'phone_num': myUser.phoneNumber,
           'uid': loggedInUser.uid
         });
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => LandingRoute()));
+        // Navigator.pushReplacement(
+        //     context, MaterialPageRoute(builder: (context) => LandingRoute()));
+        Get.off(LandingRoute());
       }
     } on Exception catch (e) {
       print(e);
@@ -191,7 +193,8 @@ class _RegisterRouteState extends State<RegisterRoute> {
                                       });
                                       print(
                                           'User Birthdate:${myUser.birthdate}');
-                                      Navigator.pop(context);
+                                      //Navigator.pop(context);
+                                      Get.off(LoginRoute());
                                     },
                                   )),
                             );

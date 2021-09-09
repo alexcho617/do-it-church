@@ -1,3 +1,4 @@
+import 'package:do_it_church/View/login.dart';
 import 'package:do_it_church/screens/landing_route.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -73,7 +74,7 @@ class _InitializerWidgetState extends State<InitializerWidget> {
       //landingPage로 가게 할
       return LandingRoute();
     } else {
-      return HomeRoute();
+      return LoginRoute();
     }
   }
 }

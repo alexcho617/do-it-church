@@ -1,8 +1,9 @@
 import 'package:do_it_church/screens/landing_route.dart';
 import 'package:flutter/material.dart';
 import 'package:do_it_church/constants.dart';
-import 'package:do_it_church/screens/register.dart';
+import 'package:do_it_church/View/register.dart';
 
+import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 enum MobileVerificationState {
@@ -40,8 +41,9 @@ class _LoginRouteState extends State<LoginRoute> {
         showLoading = false;
       });
       if (authCredential.user != null) {
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => LandingRoute()));
+        // Navigator.pushReplacement(
+        //     context, MaterialPageRoute(builder: (context) => LandingRoute()));
+        Get.off(LandingRoute());
       }
     } on Exception catch (e) {
       setState(() {
@@ -174,10 +176,11 @@ class _LoginRouteState extends State<LoginRoute> {
                       print('register button pressed');
                     });
 
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => RegisterRoute()),
-                    );
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(builder: (context) => RegisterRoute()),
+                    // );
+                    Get.to(RegisterRoute());
                   },
                 ),
               ),
@@ -258,7 +261,7 @@ class _LoginRouteState extends State<LoginRoute> {
           FocusManager.instance.primaryFocus!.unfocus();
         }
       },
-      child: MaterialApp(
+      child: GetMaterialApp(
         home: Scaffold(
           key: _scaffoldKey,
           body: SafeArea(
