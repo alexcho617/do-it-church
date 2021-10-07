@@ -1,0 +1,1 @@
+//circle avatar, name, title, church info...something like that
