@@ -1,9 +1,11 @@
 import 'package:do_it_church/components/MemberCategory.dart';
 import 'package:do_it_church/components/MembersList.dart';
+import 'package:do_it_church/components/MembersListS.dart';
 import 'package:do_it_church/components/NoticeSnackBar.dart';
 import 'package:do_it_church/components/customUser.dart';
 import 'package:do_it_church/screens/notice_detail.dart';
 import 'package:flutter/material.dart';
+import 'package:do_it_church/screens/member_info_detail.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
@@ -44,7 +46,9 @@ class _MemberInfoRouteState extends State<MemberInfoRoute> {
                 contentPadding: EdgeInsets.all(15.0),
                 filled: true,
                 fillColor: Color(0xFFF6F8FE),
-                suffixIcon: IconButton(onPressed: () {}, icon: Icon(Icons.search)),
+                suffixIcon: IconButton(onPressed: () {
+
+                }, icon: Icon(Icons.search)),
 
                 hintText: '이름을 검색하세요.',
                 hintStyle: TextStyle(color: Colors.grey),
@@ -75,6 +79,7 @@ class _MemberInfoRouteState extends State<MemberInfoRoute> {
             child:Column(
               children:[
                 MembersList(),
+                MembersListS()
               ],
           ),
             ),

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:do_it_church/components/MemberProfile.dart';
 import 'package:do_it_church/components/NoticeHomeHeader.dart';
 import 'package:do_it_church/components/NoticeHomeStatus.dart';
 import 'package:do_it_church/components/NoticeListContents.dart';
@@ -78,6 +79,7 @@ class _HomeRouteState extends State<HomeRoute> {
           children: [
             Column(
               children: <Widget>[
+                MemberProfile(),
                 Row(
                   children: [
                     TextButton(onPressed: null, child: Text('출결관리')),
