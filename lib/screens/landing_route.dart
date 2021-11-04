@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:do_it_church/screens/home.dart';
-import 'chat.dart';
+import 'package:do_it_church/screens/chat.dart';
 import 'guide.dart';
 import 'more.dart';
 
