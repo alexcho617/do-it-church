@@ -1,8 +1,25 @@
+import 'package:do_it_church/components/NoticeSnackBar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:do_it_church/components/notice.dart';
+import 'package:do_it_church/constants.dart';
+
+void _handleSubmitted(String titleText, String contentText) async {
+  await firestore.collection('Notice').add({
+    'title': titleText,
+    'contents': contentText,
+    'writer': notice.writer,
+    //server
+    'date': Timestamp.now(),
+    'commentCount': notice.commentCount ?? 0
+  });
+}
+
+Notice notice = Notice();
+final _auth = FirebaseAuth.instance;
+final firestore = FirebaseFirestore.instance;
 
 class NoticeAddRoute extends StatefulWidget {
   @override
@@ -10,137 +27,102 @@ class NoticeAddRoute extends StatefulWidget {
 }
 
 class _NoticeAddRouteState extends State<NoticeAddRoute> {
-  final _auth = FirebaseAuth.instance;
-  final firestore = FirebaseFirestore.instance;
+  final contentTextController = TextEditingController();
+  final titleTextController = TextEditingController();
+  final formKey = GlobalKey<FormState>();
 
-  Notice notice = Notice();
-
-
-  void getCurrentUser() async {
-    try {
-      final user = _auth.currentUser;
-      if (user != null) {
-        User loggedInUser = user;
-        print(
-            'SUCCESS(notice_new_screen): Signed in As:${loggedInUser.phoneNumber}');
+  void assignCurrentWriter() async {
+    final user = _auth.currentUser;
+    if (user != null) {
+      User loggedInUser = user;
+      print(
+          'SUCCESS(notice_new_screen): Signed in As:${loggedInUser.phoneNumber}');
+      notice.writer = loggedInUser.phoneNumber;
+      print('(notice_new_screen): Signed User UID:${loggedInUser.uid}');
+      QuerySnapshot userData = await FirebaseFirestore.instance
+          .collection('Users')
+          .where('uid', isEqualTo: loggedInUser.uid)
+          .get();
+      for (var doc in userData.docs) {
+        if (doc.exists) {
+          //print('Data:${doc.data()}');
+          print('(notice_new_screen): Signed User Name:${doc["name"]}');
+          notice.writer = doc["name"];
+        } else {
+          print('noData');
+        }
       }
-    } catch (e) {
-      print(e);
     }
   }
 
   @override
   void initState() {
     super.initState();
-    getCurrentUser();
+    assignCurrentWriter();
   }
 
   @override
-  //String noticeTitle = '';
-  //String noticeContents = '';
   Widget build(BuildContext context) {
-    // var mediaQuery = MediaQuery.of(context);
-    // final size = mediaQuery.size.width;
-    int screenIndex = 0;
-    List<Widget> screenList = [
-      Text('홈스크린'),
-      Text('채팅'),
-      Text('활동가이드화면'),
-      Text('모아보기화면')
-    ];
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
         centerTitle: true,
-        title: Text(
-          '공지작성',
-          style: TextStyle(
-            fontSize: 15,
-            color: Colors.black,
-          ),
-        ),
+        title: Text('공지작성', style: kAppBarTitleTextStyle),
         leading: IconButton(
-            color: Colors.black54,
             icon: Icon(Icons.cancel_outlined),
             onPressed: () {
               Navigator.pop(context);
-              setState(() {
-                //
-              });
             }),
-        leadingWidth: 20,
         actions: [
           TextButton(
-              child: Text(
-                '완료',
-                style: TextStyle(color: Colors.red),
-              ),
-              onPressed: () {
-                firestore.collection('Notice').add({
-                  'title': notice.title,
-                  'contents': notice.contents,
-                  'writer' : notice.writer,
-                  'date' : Timestamp.now(),
-                });
-                //print('New Notice Title = $noticeTitle');
-                //print('New Notice Contents = $noticeContents');
-                Navigator.pop(context);
+              child: Text('완료'),
+              onPressed: () async {
+                if (formKey.currentState!.validate()) {
+                  _handleSubmitted(
+                      titleTextController.text, contentTextController.text);
+                  NoticeSnackBar.show(context, '공지 사항이 추가 되었습니다.');
+                  Navigator.pop(context);
+                }
               }),
         ],
       ),
-
-
-      body: Center(
+      body: Form(
+        key: formKey,
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           child: Column(
             children: [
               Container(
-                height: 450,
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                child: Column(
-                  children: [
-                    TextField(
-                      autocorrect: true,
-                      onChanged: (value3) => notice.title = value3,
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        hintText: '제목',
-                        hintStyle: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    Divider(),
-                    TextField(
-                      onChanged: (value4) => notice.contents = value4,
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        hintText: '여기 내용을 입력하세요',
-                      ),
-                    ),
-                  ],
+                child: TextFormField(
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return '제목은 필수입니다';
+                    }
+                    return null;
+                  },
+                  controller: titleTextController,
+                  decoration: InputDecoration(
+                      hintText: "제목",
+                      hintStyle: TextStyle(
+                          fontSize: 18.0, fontWeight: FontWeight.bold)),
                 ),
               ),
-                  Divider(
-                    thickness:1.0,
-                    indent: 15,
-                    endIndent: 15,
-                  ),
-
               Container(
-                child:Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    IconButton(
-                        icon: Icon(Icons.add_to_photos),
-                        onPressed: (){
-
-                        }
-                    ),
-                  ],
+                child: TextFormField(
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return '내용은 필수입니다';
+                    }
+                    return null;
+                  },
+                  controller: contentTextController,
+                  decoration: InputDecoration(hintText: "내용을 입력하세요"),
+                  maxLines: 20,
                 ),
               ),
             ],
-          )
+          ),
+        ),
       ),
     );
   }

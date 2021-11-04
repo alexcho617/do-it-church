@@ -1,8 +1,8 @@
 import 'package:do_it_church/screens/landing_route.dart';
 import 'package:flutter/material.dart';
-import 'screens/login.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:do_it_church/screens/home.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -10,7 +10,9 @@ void main() async {
 
   runApp(
     MaterialApp(
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
+        scaffoldBackgroundColor: Colors.white,
         primaryColor: Color(0xFF89A1F8),
         iconTheme: IconThemeData(color: Color(0xFF89A1F8)),
         outlinedButtonTheme: OutlinedButtonThemeData(
@@ -19,7 +21,13 @@ void main() async {
             primary: const Color(0xff89A1F8),
           ),
         ),
+        textButtonTheme: TextButtonThemeData(
+          style: TextButton.styleFrom(
+            primary: Color(0xFF687AB5),
+          ),
+        ),
         appBarTheme: AppBarTheme(
+          iconTheme: IconThemeData(color: Color(0xFF89A1F8)),
           backgroundColor: Colors.white,
         ),
         textTheme: TextTheme(
@@ -53,10 +61,19 @@ class _InitializerWidgetState extends State<InitializerWidget> {
       User loggedInUser = user;
       print(
           'AUTO LOG IN SUCCESS(main.dart): Signed in As:${loggedInUser.phoneNumber}');
+      /*
+      * for auto log in, state management 사용 해야함,, logic  and state is separated
+      * bloc - large scale, heavy ,
+      * provider-hamsung currently using provider - > official doc by flutter
+      * getx- easier to use, state manage and navigator **recommeneded
+      *   official doc,
+      *   youtube codingfactory korean
+      *
+      * */
       //landingPage로 가게 할
       return LandingRoute();
     } else {
-      return LoginRoute();
+      return HomeRoute();
     }
   }
 }

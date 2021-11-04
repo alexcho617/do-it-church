@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 const kTextButtonTextStyle =
     TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold);
 
+const kRegularTextStyle =
+    TextStyle(fontSize: 16.0, fontWeight: FontWeight.normal);
+
 const kLogInButtonTextStyle =
     TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold);
 
@@ -13,21 +16,25 @@ const kStartButtonTextStyle =
     TextStyle(fontSize: 36.0, fontWeight: FontWeight.bold);
 
 const kNoticeTitleTextStyle =
-    TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: Colors.black);
+    TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black);
 
-const kNoticeSubTitleTextStyle =
-    TextStyle(fontSize: 12, color: Colors.grey);
+const kNoticeSubTitleTextStyle = TextStyle(fontSize: 14, color: Colors.grey);
 
-const kNoticeContentTextStyle =
-    TextStyle(fontSize: 12, color: Colors.black);
 
-const kNoticeCountTextStyle =
-    TextStyle(fontSize: 12, color: Colors.grey);
+const kNoticeContentTextStyle = TextStyle(fontSize: 13, color: Colors.black);
+const kNoticeDetailContentTextStyle =
+    TextStyle(fontSize: 16, color: Colors.black);
 
-// constant로 정의가 안되긴 하지만 일단 여기에 써 놓음, ElevatedButton 모양, 색 처리 할 때 사용.
-var kRoundBorderButtonStyle = ButtonStyle(
-  backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
-  side: MaterialStateProperty.all(BorderSide(color: Color(0xFF89A1F8))),
-  shape: MaterialStateProperty.all(
-      RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0))),
-);
+
+const kNoticeCountTextStyle = TextStyle(fontSize: 12, color: Colors.grey);
+
+const kListTileTitleTextStyle = TextStyle(fontSize: 16, color: Colors.black);
+
+const kListTileSubtitleTextStyle =
+    TextStyle(fontSize: 14, color: Colors.black45);
+
+const kAppBarTitleTextStyle =
+    TextStyle(fontSize: 18.0, color: Colors.black, fontWeight: FontWeight.bold);
+
+const kMemberInfoTextStyle =
+TextStyle(fontSize: 15.0, color: Colors.black38, fontWeight: FontWeight.bold);

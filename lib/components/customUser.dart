@@ -1,7 +1,13 @@
 class CustomUser {
-  CustomUser({this.name, this.email, this.password, this.phoneNumber});
+  CustomUser(
+      {this.name,
+      this.password,
+      this.phoneNumber,
+      this.birthdate,
+      this.gender});
   var name;
   var phoneNumber;
-  var email;
   var password;
+  var birthdate;
+  var gender;
 }
