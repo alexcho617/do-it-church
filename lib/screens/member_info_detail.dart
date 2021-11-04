@@ -9,9 +9,12 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-
 import '../constants.dart';
 import 'landing_route.dart';
+
+//TEACHER IMPORTS
+import '../components/teacherRepository.dart';
+import 'package:do_it_church/components/teacher.dart';
 
 class MemberInfoDetailRoute extends StatefulWidget {
   const MemberInfoDetailRoute({Key? key}) : super(key: key);
@@ -22,19 +25,22 @@ class MemberInfoDetailRoute extends StatefulWidget {
 class _MemberInfoDetailRouteState extends State<MemberInfoDetailRoute> {
   int selectedIndex = 0;
   final List<String> categories = ['전체보기', '교사', '학생'];
+  // final List<Teacher> allTeacherInformation = allTeachers;
 
-
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   print(allTeacherInformation[0]);
+  // }
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         centerTitle: true,
         title: Text('교적관리정보', style: kAppBarTitleTextStyle),
       ),
-
       body: ListView(
         children: [
           Column(
@@ -53,11 +59,8 @@ class _MemberInfoDetailRouteState extends State<MemberInfoDetailRoute> {
                 height: 30,
               ),
               Container(
-                decoration: BoxDecoration(
-                    border: Border.all(
-                        color: Color(0xFFD7D7D7)
-                    )
-                ),
+                decoration:
+                    BoxDecoration(border: Border.all(color: Color(0xFFD7D7D7))),
                 height: 40,
                 width: 350,
                 child: Row(
@@ -73,7 +76,10 @@ class _MemberInfoDetailRouteState extends State<MemberInfoDetailRoute> {
                         ],
                       ),
                     ),
-                    Text(' 1988.07.01', style: TextStyle(color: Colors.black),)
+                    Text(
+                      ' 1988.07.01',
+                      style: TextStyle(color: Colors.black),
+                    )
                   ],
                 ),
               ),
@@ -81,11 +87,8 @@ class _MemberInfoDetailRouteState extends State<MemberInfoDetailRoute> {
                 height: 20,
               ),
               Container(
-                decoration: BoxDecoration(
-                    border: Border.all(
-                        color: Color(0xFFD7D7D7)
-                    )
-                ),
+                decoration:
+                    BoxDecoration(border: Border.all(color: Color(0xFFD7D7D7))),
                 height: 40,
                 width: 350,
                 child: Row(
@@ -101,7 +104,10 @@ class _MemberInfoDetailRouteState extends State<MemberInfoDetailRoute> {
                         ],
                       ),
                     ),
-                    Text(' 2018.05.18', style: TextStyle(color: Colors.black),)
+                    Text(
+                      ' 2018.05.18',
+                      style: TextStyle(color: Colors.black),
+                    )
                   ],
                 ),
               ),
@@ -109,11 +115,8 @@ class _MemberInfoDetailRouteState extends State<MemberInfoDetailRoute> {
                 height: 20,
               ),
               Container(
-                decoration: BoxDecoration(
-                    border: Border.all(
-                        color: Color(0xFFD7D7D7)
-                    )
-                ),
+                decoration:
+                    BoxDecoration(border: Border.all(color: Color(0xFFD7D7D7))),
                 height: 40,
                 width: 350,
                 child: Row(
@@ -129,7 +132,10 @@ class _MemberInfoDetailRouteState extends State<MemberInfoDetailRoute> {
                         ],
                       ),
                     ),
-                    Text(' 사랑반', style: TextStyle(color: Colors.black),)
+                    Text(
+                      ' 사랑반',
+                      style: TextStyle(color: Colors.black),
+                    )
                   ],
                 ),
               ),
@@ -158,17 +164,15 @@ class _MemberInfoDetailRouteState extends State<MemberInfoDetailRoute> {
                     height: 40,
                     width: 350,
                     decoration: BoxDecoration(
-                        border: Border.all(
-                            color: Color(0xFFD7D7D7)
-                        )
-                    ),
+                        border: Border.all(color: Color(0xFFD7D7D7))),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(' 경기도 수원시 권선구', style: TextStyle(
-                            color: Colors.black
-                        ),),
+                        Text(
+                          ' 경기도 수원시 권선구',
+                          style: TextStyle(color: Colors.black),
+                        ),
                       ],
                     ),
                   )
@@ -195,17 +199,15 @@ class _MemberInfoDetailRouteState extends State<MemberInfoDetailRoute> {
                     height: 40,
                     width: 350,
                     decoration: BoxDecoration(
-                        border: Border.all(
-                            color: Color(0xFFD7D7D7)
-                        )
-                    ),
+                        border: Border.all(color: Color(0xFFD7D7D7))),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(' 배우지: 박서준 집사 / 자녀: 박아람, 박사랑', style: TextStyle(
-                            color: Colors.black
-                        ),),
+                        Text(
+                          ' 배우지: 박서준 집사 / 자녀: 박아람, 박사랑',
+                          style: TextStyle(color: Colors.black),
+                        ),
                       ],
                     ),
                   )
@@ -232,17 +234,15 @@ class _MemberInfoDetailRouteState extends State<MemberInfoDetailRoute> {
                     height: 40,
                     width: 350,
                     decoration: BoxDecoration(
-                        border: Border.all(
-                            color: Color(0xFFD7D7D7)
-                        )
-                    ),
+                        border: Border.all(color: Color(0xFFD7D7D7))),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(' 제 1교구 기쁨셀 / 집사', style: TextStyle(
-                            color: Colors.black
-                        ),),
+                        Text(
+                          ' 제 1교구 기쁨셀 / 집사',
+                          style: TextStyle(color: Colors.black),
+                        ),
                       ],
                     ),
                   )
