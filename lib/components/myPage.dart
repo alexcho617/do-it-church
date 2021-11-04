@@ -1,6 +1,7 @@
 import 'package:do_it_church/screens/login.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/rendering.dart';
 
 
 class myPageSlide extends StatelessWidget {
@@ -28,12 +29,28 @@ class myPageSlide extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(15),
       child: Column(
+        // Drawer(
+        //   child: ListView(
+        //     padding: EdgeInsets.zero,
+        //     children: <Widget>[
+        //       UserAccountsDrawerHeader(
+        //           currentAccountPicture:CircleAvatar(
+        //           backgroundImage: AssetImage('images/pro3.jpg'),
+        //           backgroundColor: Colors.white,
+        //           ),
+        //           accountName: Text('고은미 전도사'),
+        //           accountEmail: Text('010-9182-9182'),
+        //       )
+        //     ],
+        //   ),
+        // )
         children: [
           DrawerHeader(child: Text('Drawer Header')),
+
           Container(
             child: Column(
               children: [
-                ListTile(
+              ListTile(
                   title: const Text('MY'),
                   onTap: () {
                     Navigator.pop(context);

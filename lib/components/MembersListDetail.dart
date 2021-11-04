@@ -1,20 +1,18 @@
 import 'package:do_it_church/components/customUser.dart';
-import 'package:do_it_church/screens/member_info_detail.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 
 import 'ScreenDivider.dart';
 
 
-class MembersList extends StatelessWidget {
+class MembersListDetail extends StatelessWidget {
   // const MembersList(this._customUser);
   // final CustomUser _customUser;
   Map<String, dynamic> data =
   {
     "image": "images/pro.jpg",
-    "name": "고은미",
-    "categories": "교사",
+    "name": "고은미 교사",
+    "categories": "010-1234-5678",
   };
 
 
@@ -35,12 +33,16 @@ class MembersList extends StatelessWidget {
       //subtitle: Text("${_customUser.birthdate}"),
       subtitle:Text(
           data["categories"]),
-      trailing: IconButton(onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => MemberInfoDetailRoute()),
-        );
-      }, icon: Icon(Icons.arrow_forward_ios)),
+      trailing: SizedBox(
+        height: 27,
+        width: 80,
+        child: OutlinedButton(
+          onPressed: () {
+
+          },
+          child: Text('수정하기', style: TextStyle(fontSize: 13)),
+        ),
+      ),
     );
 
   }

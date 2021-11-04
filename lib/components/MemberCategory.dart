@@ -12,7 +12,7 @@ class _CategorySelectorState extends State<CategorySelector> {
   @override
   Widget build(BuildContext context) {
     return Container(
-       padding: EdgeInsets.only(left:10.0),
+        padding: EdgeInsets.only(left:10.0),
       height: 40.0,
       color: Colors.white,
       child: ListView.builder(
