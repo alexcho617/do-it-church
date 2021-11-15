@@ -6,9 +6,10 @@ class NoticeHomeStatus extends StatelessWidget {
   const NoticeHomeStatus({
     Key? key,
     required this.commentCounts,
+    required this.likeCount
   }) : super(key: key);
   final String commentCounts;
-
+  final String likeCount;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -35,11 +36,12 @@ class NoticeHomeStatus extends StatelessWidget {
                 Container(
                   width: 5,
                 ),
-                Text('5', style: kNoticeCountTextStyle)
+                Text(likeCount, style: kNoticeCountTextStyle)
               ],
             ),
           ),
-          Container(child: Row(
+          Container(
+              child: Row(
             children: [
               Icon(Icons.chat_outlined, size: 12, color: Colors.grey),
               Container(

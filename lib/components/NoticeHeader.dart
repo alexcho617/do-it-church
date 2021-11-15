@@ -40,6 +40,7 @@ class NoticeHeader extends StatelessWidget {
                     trailing: NoticeEditButton(docId: docId, title: title),
                     title: TextButton(
                       onPressed: () {
+                        print('NoticeHeader.dart $docId');
                         Navigator.push(
                             context,
                             MaterialPageRoute(
