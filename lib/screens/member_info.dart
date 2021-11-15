@@ -11,7 +11,7 @@ import 'package:do_it_church/screens/member_info_detail.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-
+import 'teacher.dart';
 import '../constants.dart';
 import 'landing_route.dart';
 
