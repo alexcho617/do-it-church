@@ -26,24 +26,6 @@ void _handleSubmitted(String commentText, String noticeId) async {
       .update({'commentCount': globalCommentCount});
 }
 
-// void getUserCommentCount() async {
-//   bool commented = Comments[comment] == true;
-//   if (commented) {
-//     stream: firestore
-//         .collection("Notice")
-//         .doc(noticeId)
-//         .collection("Comments")
-//         .updateData({"commented.$currentOnlineUserId": true});
-//
-//     setState(() {
-//       //print(commentCount);
-//       commentCount = commentCount + 1;
-//       commented = true;
-//       comments[currentOnlineUserId] = true;
-//     });
-//   }
-// }
-
 void showAlertDialog(BuildContext context) async {
   String result = await showDialog(
     context: context,
@@ -143,11 +125,11 @@ class _CommentBubbleState extends State<CommentBubble> {
 
   _scrollListener() async {
     if (_scrollController.offset ==
-        _scrollController.position.maxScrollExtent &&
+            _scrollController.position.maxScrollExtent &&
         !_scrollController.position.outOfRange) {
       // top
     } else if (_scrollController.offset <=
-        _scrollController.position.maxScrollExtent &&
+            _scrollController.position.maxScrollExtent &&
         !_scrollController.position.outOfRange) {
       // bottom
     }
@@ -186,15 +168,19 @@ class _CommentBubbleState extends State<CommentBubble> {
                 return Column(
                   children: [
                     ListTile(
-                      onLongPress: (){
+                      onLongPress: () {
                         FirebaseFirestore.instance
                             .collection("Notice")
-                            .doc(widget.noticeId).collection('Comments')
+                            .doc(widget.noticeId)
+                            .collection('Comments')
                             .doc(document.id)
                             .delete()
                             .then((value) {});
                         globalCommentCount -= 1;
-                        FirebaseFirestore.instance.collection('Notice').doc(widget.noticeId).update({'commentCount': globalCommentCount});
+                        FirebaseFirestore.instance
+                            .collection('Notice')
+                            .doc(widget.noticeId)
+                            .update({'commentCount': globalCommentCount});
                         NoticeSnackBar.show(context, '댓글이 삭제 되었습니다.');
                       },
                       dense: true,
@@ -253,6 +239,7 @@ Comment comment = Comment();
 int globalCommentCount = 0;
 double deviceHeight = 0.0;
 double deviceWidth = 0.0;
+dynamic isLiked;
 
 class NoticeDetail extends StatefulWidget {
   NoticeDetail({required this.noticeId});
@@ -267,9 +254,12 @@ class NoticeDetailState extends State<NoticeDetail> {
 
   Future<void> getNoticeDetail(Notice notice) async {
     try {
+      print(
+          'notice_detail.dart, getNoticeDetail: widget.noticeId:${widget.noticeId}');
       //its missing the await
       if (widget.noticeId != null) {
-        DocumentReference doc = firestore.collection("Notice").doc(widget.noticeId);
+        DocumentReference doc =
+            firestore.collection("Notice").doc(widget.noticeId);
         await doc.get().then((DocumentSnapshot doc) {
           setState(() {
             DateTime noticeDate =
@@ -282,6 +272,15 @@ class NoticeDetailState extends State<NoticeDetail> {
             notice.contents = doc.get("contents").toString();
             notice.commentCount = doc.get("commentCount");
             globalCommentCount = notice.commentCount;
+            notice.likedUsers = doc.get("likedUsers");
+            //notice.likeCount = notice.likedUsers.length();
+            List userList = notice.likedUsers;
+            notice.likeCount = userList.length;
+            if (userList.contains(_auth.currentUser!.uid) == true) {
+              isLiked = true;
+            } else {
+              isLiked = false;
+            }
           });
           return 0;
         });
@@ -320,13 +319,16 @@ class NoticeDetailState extends State<NoticeDetail> {
                       title: notice.title,
                       writer: notice.writer,
                       date: notice.date,
-                      contents: notice.contents
-                  ),
+                      contents: notice.contents),
                 ),
                 Container(
                   child: NoticeDetailStatus(
+                    isLiked: isLiked ?? false,
+                    docId: widget.noticeId,
+                    //TODO
+                    //likes: notice.likes,
+                    likeCounts: notice.likeCount.toString(),
                     commentCounts: globalCommentCount.toString(),
-                    //commentCounts: globalCommentsCount.toString(),
                   ),
                 ),
                 ScreenDivider(

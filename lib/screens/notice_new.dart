@@ -13,13 +13,16 @@ void _handleSubmitted(String titleText, String contentText) async {
     'writer': notice.writer,
     //server
     'date': Timestamp.now(),
-    'commentCount': notice.commentCount ?? 0
+    'commentCount': notice.commentCount ?? 0,
+    'likeCount': notice.likeCount ?? 0,
+    'likedUsers': initialList,
   });
 }
 
 Notice notice = Notice();
 final _auth = FirebaseAuth.instance;
 final firestore = FirebaseFirestore.instance;
+List<dynamic> initialList = [];
 
 class NoticeAddRoute extends StatefulWidget {
   @override

@@ -7,6 +7,7 @@ import 'package:do_it_church/components/notice.dart';
 import 'package:do_it_church/screens/notice_detail.dart';
 import 'package:do_it_church/constants.dart';
 import 'package:do_it_church/screens/notice_new.dart';
+import 'package:do_it_church/services/myfire.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'notice_new.dart';
@@ -16,6 +17,7 @@ import 'package:like_button/like_button.dart';
 final _auth = FirebaseAuth.instance;
 final firestore = FirebaseFirestore.instance;
 Notice notice = Notice();
+final user = _auth.currentUser;
 
 class NoticeListRoute extends StatefulWidget {
   @override
@@ -101,6 +103,9 @@ class NoticeStream extends StatelessWidget {
           notice.writer = doc.get("writer").toString();
           notice.contents = doc.get("contents").toString();
           notice.commentCount = doc.get("commentCount");
+          notice.likeCount = doc.get("likeCount");
+          notice.likedUsers = doc.get("likedUsers");
+          print(notice.likedUsers);
           final noticeObject = NoticeBuilder(
             docId: notice.docId,
             title: notice.title,
@@ -108,6 +113,8 @@ class NoticeStream extends StatelessWidget {
             writer: notice.writer,
             contents: notice.contents,
             commentCount: notice.commentCount ?? 0,
+            likeCount: notice.likedUsers.length ?? 0,
+            isLiked: notice.likedUsers.contains(user!.uid),
           );
           noticeList.add(noticeObject);
         }
@@ -121,20 +128,39 @@ class NoticeStream extends StatelessWidget {
   }
 }
 
-class NoticeBuilder extends StatelessWidget {
-  const NoticeBuilder(
+class NoticeBuilder extends StatefulWidget {
+  NoticeBuilder(
       {this.title,
       this.date,
       this.writer,
       this.contents,
       this.docId,
-      this.commentCount});
+      this.commentCount,
+      this.likeCount,
+      required this.isLiked});
   final title;
   final date;
   final contents;
   final writer;
   final docId;
   final commentCount;
+  dynamic likeCount;
+  bool isLiked;
+
+  @override
+  State<NoticeBuilder> createState() => _NoticeBuilderState();
+}
+
+class _NoticeBuilderState extends State<NoticeBuilder> {
+  final user = _auth.currentUser;
+  late dynamic likeCount;
+  late bool isLiked;
+  @override
+  void initState() {
+    super.initState();
+    likeCount = widget.likeCount;
+    isLiked = widget.isLiked;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -147,13 +173,16 @@ class NoticeBuilder extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               NoticeHeader(
-                docId: docId,
-                title: title,
-                writer: writer,
-                date: date,
+                docId: widget.docId,
+                title: widget.title,
+                writer: widget.writer,
+                date: widget.date,
               ),
-              NoticeListContents(contents: contents),
-              NoticeStatus(commentCounts: commentCount.toString()),
+              NoticeListContents(contents: widget.contents),
+              NoticeStatus(
+                commentCounts: widget.commentCount.toString(),
+                likeCount: widget.likeCount.toString(),
+              ),
               Container(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -167,8 +196,9 @@ class NoticeBuilder extends StatelessWidget {
                               padding: EdgeInsets.zero),
                           onPressed: () async {},
                           child: LikeButton(
-                            isLiked: false,
-                            likeCount: 5,
+                            //TODO INITLA LIKE STATE
+                            isLiked: isLiked,
+                            likeCount: likeCount,
                             likeBuilder: (isLiked) {
                               final color = isLiked ? Colors.red : Colors.grey;
                               return Icon(Icons.favorite,
@@ -184,9 +214,25 @@ class NoticeBuilder extends StatelessWidget {
                               );
                             },
                             onTap: (isLiked) async {
-                              isLiked = !isLiked;
-                              //likeCount += isLiked ? 1 : -1;
-                              return isLiked;
+                              print('onTap$isLiked');
+
+                              setState(() {
+                                if (isLiked == false) {
+                                  isLiked = true;
+                                  // likeCount++;
+
+                                  addLikedList(
+                                      _auth.currentUser!.uid, widget.docId);
+                                } else {
+                                  //already liked
+                                  //FUNCTION DISABLED FOR EXAM
+                                  isLiked = false;
+                                  // likeCount--;
+                                  removeLikedList(
+                                      _auth.currentUser!.uid, widget.docId);
+                                }
+                                print('onTap$isLiked');
+                              });
                             },
                           ),
                         ),
@@ -204,7 +250,7 @@ class NoticeBuilder extends StatelessWidget {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => NoticeDetail(
-                                          noticeId: '$docId',
+                                          noticeId: '${widget.docId}',
                                         )));
                           },
                           child: Text('댓글쓰기', style: TextStyle(fontSize: 13)),
