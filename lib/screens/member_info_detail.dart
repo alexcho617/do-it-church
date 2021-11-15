@@ -8,9 +8,9 @@ import 'package:do_it_church/screens/notice_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+
 import '../constants.dart';
-import 'landing_route.dart';
+
 
 //TEACHER IMPORTS
 import '../components/teacherRepository.dart';
@@ -25,13 +25,13 @@ class MemberInfoDetailRoute extends StatefulWidget {
 class _MemberInfoDetailRouteState extends State<MemberInfoDetailRoute> {
   int selectedIndex = 0;
   final List<String> categories = ['전체보기', '교사', '학생'];
-  // final List<Teacher> allTeacherInformation = allTeachers;
+   final List<Teacher> allTeacherInformation = allTeachers;
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   print(allTeacherInformation[0]);
-  // }
+   @override
+   void initState() {
+     super.initState();
+     print(allTeacherInformation[0]);
+   }
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +77,7 @@ class _MemberInfoDetailRouteState extends State<MemberInfoDetailRoute> {
                       ),
                     ),
                     Text(
-                      ' 1988.07.01',
+                        '${allTeacherInformation[0].birthdate}',
                       style: TextStyle(color: Colors.black),
                     )
                   ],

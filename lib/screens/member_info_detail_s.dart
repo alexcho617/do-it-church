@@ -126,7 +126,7 @@ class _MemberInfoDetailSRouteState extends State<MemberInfoDetailSRoute> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Center(child: Text('담당반')),
+                          Center(child: Text('소속반')),
                         ],
                       ),
                     ),
