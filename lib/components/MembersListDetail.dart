@@ -1,4 +1,6 @@
 import 'package:do_it_church/components/customUser.dart';
+import 'package:do_it_church/components/teacher.dart';
+import 'package:do_it_church/components/teacherRepository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -15,7 +17,7 @@ class MembersListDetail extends StatelessWidget {
     "categories": "010-1234-5678",
   };
 
-
+  final List<Teacher> allTeacherInformation = allTeachers;
 
 
   @override
@@ -24,15 +26,15 @@ class MembersListDetail extends StatelessWidget {
       //contentPadding: EdgeInsets.symmetric(horizontal: 20),
       leading: CircleAvatar(
         backgroundImage: AssetImage(
-            data["image"]), //always add images in directory
+            "images/pro.jpg"), //always add images in directory
         radius: 20,
       ),
       title: Text(
-        data["name"],style: TextStyle(fontWeight: FontWeight.bold),),
+        '${allTeacherInformation[0].name}${allTeacherInformation[0].role}',style: TextStyle(fontWeight: FontWeight.bold),),
       //title: Text(_customUser.name),
       //subtitle: Text("${_customUser.birthdate}"),
       subtitle:Text(
-          data["categories"]),
+          '${allTeacherInformation[0].phoneNumber}'),
       trailing: SizedBox(
         height: 27,
         width: 80,
