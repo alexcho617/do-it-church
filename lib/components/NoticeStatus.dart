@@ -6,9 +6,10 @@ class NoticeStatus extends StatelessWidget {
   const NoticeStatus({
     Key? key,
     required this.commentCounts,
+    required this.likeCount,
   }) : super(key: key);
   final String commentCounts;
-
+  final String likeCount;
   @override
   Widget build(BuildContext context) {
     return Container(
