@@ -1,4 +1,5 @@
 class Teacher {
+
   Teacher(
       {required this.address,
       required this.birthdate,
@@ -7,7 +8,9 @@ class Teacher {
       required this.name,
       required this.phoneNumber,
       required this.registrationDate,
-      required this.role});
+      required this.role,
+      required this.churchClass,
+      });
 
   final String address;
   final String birthdate;
@@ -17,4 +20,5 @@ class Teacher {
   final String phoneNumber;
   final String registrationDate;
   final String role;
+  final String churchClass;
 }

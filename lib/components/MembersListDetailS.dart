@@ -1,4 +1,6 @@
 import 'package:do_it_church/components/customUser.dart';
+import 'package:do_it_church/components/student.dart';
+import 'package:do_it_church/components/studentRepository.dart';
 import 'package:do_it_church/screens/member_info_detail_list.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,14 +9,7 @@ import 'ScreenDivider.dart';
 
 
 class MembersListDetailS extends StatelessWidget {
-  // const MembersList(this._customUser);
-  // final CustomUser _customUser;
-  Map<String, dynamic> data =
-  {
-    "image": "images/kid.jpg",
-    "name": "강지담 학생",
-    "categories": "010-1122-3344",
-  };
+  final List<Student> allStudentInformation = allStudents;
 
 
 
@@ -25,15 +20,16 @@ class MembersListDetailS extends StatelessWidget {
       //contentPadding: EdgeInsets.symmetric(horizontal: 20),
       leading: CircleAvatar(
         backgroundImage: AssetImage(
-            data["image"]), //always add images in directory
+            "images/kid.jpg"), //always add images in directory
         radius: 20,
       ),
       title: Text(
-        data["name"],style: TextStyle(fontWeight: FontWeight.bold),),
+          '${allStudentInformation[0].name}${allStudentInformation[0].role}',style: TextStyle(fontWeight: FontWeight.bold),
+      ),
       //title: Text(_customUser.name),
       //subtitle: Text("${_customUser.birthdate}"),
       subtitle:Text(
-          data["categories"]),
+        '${allStudentInformation[0].phoneNumber}'),
       trailing:Column(
         children: [
           SizedBox(

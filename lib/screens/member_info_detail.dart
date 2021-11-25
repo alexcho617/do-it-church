@@ -105,7 +105,7 @@ class _MemberInfoDetailRouteState extends State<MemberInfoDetailRoute> {
                       ),
                     ),
                     Text(
-                      ' 2018.05.18',
+                      '${allTeacherInformation[0].registrationDate}',
                       style: TextStyle(color: Colors.black),
                     )
                   ],
@@ -133,7 +133,7 @@ class _MemberInfoDetailRouteState extends State<MemberInfoDetailRoute> {
                       ),
                     ),
                     Text(
-                      ' 사랑반',
+                      '사랑반',
                       style: TextStyle(color: Colors.black),
                     )
                   ],
@@ -170,7 +170,7 @@ class _MemberInfoDetailRouteState extends State<MemberInfoDetailRoute> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          ' 경기도 수원시 권선구',
+                          '${allTeacherInformation[0].address}',
                           style: TextStyle(color: Colors.black),
                         ),
                       ],
@@ -205,7 +205,7 @@ class _MemberInfoDetailRouteState extends State<MemberInfoDetailRoute> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          ' 배우지: 박서준 집사 / 자녀: 박아람, 박사랑',
+                          '${allTeacherInformation[0].familyInformation}',
                           style: TextStyle(color: Colors.black),
                         ),
                       ],
@@ -240,7 +240,7 @@ class _MemberInfoDetailRouteState extends State<MemberInfoDetailRoute> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          ' 제 1교구 기쁨셀 / 집사',
+                          '${allTeacherInformation[0].department}',
                           style: TextStyle(color: Colors.black),
                         ),
                       ],

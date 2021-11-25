@@ -5,8 +5,18 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:do_it_church/components/notice.dart';
 import 'package:do_it_church/constants.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 void _handleSubmitted(String titleText, String contentText) async {
+  final firebaseStorageRef = FirebaseStorage.instance
+      .ref()
+      .child('notice')
+      .child('${titleText.toString()}.png');
+  final uploadTask = firebaseStorageRef.putFile(File(imageURI!.path));
+  await uploadTask.whenComplete(() => null);
+  final downloadUrl = await firebaseStorageRef.getDownloadURL();
   await firestore.collection('Notice').add({
     'title': titleText,
     'contents': contentText,
@@ -16,6 +26,7 @@ void _handleSubmitted(String titleText, String contentText) async {
     'commentCount': notice.commentCount ?? 0,
     'likeCount': notice.likeCount ?? 0,
     'likedUsers': initialList,
+    'imageUrl': downloadUrl,
   });
 }
 
@@ -23,6 +34,8 @@ Notice notice = Notice();
 final _auth = FirebaseAuth.instance;
 final firestore = FirebaseFirestore.instance;
 List<dynamic> initialList = [];
+XFile? imageURI;
+final ImagePicker _picker = ImagePicker();
 
 class NoticeAddRoute extends StatefulWidget {
   @override
@@ -33,6 +46,13 @@ class _NoticeAddRouteState extends State<NoticeAddRoute> {
   final contentTextController = TextEditingController();
   final titleTextController = TextEditingController();
   final formKey = GlobalKey<FormState>();
+
+  Future getImage() async {
+    XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    setState(() {
+      imageURI = image;
+    });
+  }
 
   void assignCurrentWriter() async {
     final user = _auth.currentUser;
@@ -123,6 +143,12 @@ class _NoticeAddRouteState extends State<NoticeAddRoute> {
                   maxLines: 20,
                 ),
               ),
+              IconButton(
+                icon: Icon(Icons.file_upload),
+                onPressed: () {
+                  getImage();
+                },
+              )
             ],
           ),
         ),

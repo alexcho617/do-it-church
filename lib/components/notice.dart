@@ -1,13 +1,14 @@
 class Notice {
   Notice(
       {this.title,
-      this.date,
-      this.writer,
-      this.contents,
-      this.docId,
-      this.commentCount,
-      this.likedUsers,
-      this.likeCount}); //constructor
+        this.date,
+        this.writer,
+        this.contents,
+        this.docId,
+        this.commentCount,
+        this.likedUsers,
+        this.likeCount,
+        this.imageUrl}); //constructor
   var title;
   var date;
   var writer;
@@ -16,4 +17,5 @@ class Notice {
   var likeCount;
   var commentCount;
   dynamic likedUsers;
+  var imageUrl;
 }

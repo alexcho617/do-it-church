@@ -49,7 +49,7 @@ class MembersList extends StatelessWidget {
                     builder: (context) => MemberInfoDetailRoute()),
               );
             },
-            icon: Icon(Icons.arrow_forward_ios)),
+              icon: Icon(Icons.arrow_forward_ios)),
       );
     }
   }

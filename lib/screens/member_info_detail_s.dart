@@ -5,6 +5,8 @@ import 'package:do_it_church/components/MembersListDetailS.dart';
 import 'package:do_it_church/components/NoticeSnackBar.dart';
 import 'package:do_it_church/components/ScreenDivider.dart';
 import 'package:do_it_church/components/customUser.dart';
+import 'package:do_it_church/components/student.dart';
+import 'package:do_it_church/components/studentRepository.dart';
 import 'package:do_it_church/screens/notice_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -23,6 +25,7 @@ class MemberInfoDetailSRoute extends StatefulWidget {
 class _MemberInfoDetailSRouteState extends State<MemberInfoDetailSRoute> {
   int selectedIndex = 0;
   final List<String> categories = ['전체보기', '교사', '학생'];
+  final List<Student> allStudentInformation = allStudents;
 
 
 
@@ -74,7 +77,9 @@ class _MemberInfoDetailSRouteState extends State<MemberInfoDetailSRoute> {
                         ],
                       ),
                     ),
-                    Text(' 2012.12.24', style: TextStyle(color: Colors.black),)
+                    Text('${allStudentInformation[0].birthdate}',
+                      style: TextStyle(color: Colors.black),
+                    )
                   ],
                 ),
               ),
@@ -102,7 +107,7 @@ class _MemberInfoDetailSRouteState extends State<MemberInfoDetailSRoute> {
                         ],
                       ),
                     ),
-                    Text(' 2019.09.13', style: TextStyle(color: Colors.black),)
+                    Text('${allStudentInformation[0].registrationDate}', style: TextStyle(color: Colors.black),)
                   ],
                 ),
               ),
@@ -130,7 +135,7 @@ class _MemberInfoDetailSRouteState extends State<MemberInfoDetailSRoute> {
                         ],
                       ),
                     ),
-                    Text(' 사랑반', style: TextStyle(color: Colors.black),)
+                    Text('${allStudentInformation[0].department}', style: TextStyle(color: Colors.black),)
                   ],
                 ),
               ),
@@ -167,7 +172,7 @@ class _MemberInfoDetailSRouteState extends State<MemberInfoDetailSRoute> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(' 경기도 수원시 팔달구', style: TextStyle(
+                        Text('${allStudentInformation[0].address}', style: TextStyle(
                             color: Colors.black
                         ),),
                       ],
@@ -203,7 +208,7 @@ class _MemberInfoDetailSRouteState extends State<MemberInfoDetailSRoute> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(' 부: 강시온 집사 / 모: 박하윤 집사 / 형제관계: 외동', style: TextStyle(
+                        Text('${allStudentInformation[0].familyInformation}', style: TextStyle(
                             color: Colors.black
                         ),),
                       ],
@@ -239,7 +244,7 @@ class _MemberInfoDetailSRouteState extends State<MemberInfoDetailSRoute> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(' 천식을 앓고 있음', style: TextStyle(
+                        Text('${allStudentInformation[0].etc}', style: TextStyle(
                             color: Colors.black
                         ),),
                       ],
