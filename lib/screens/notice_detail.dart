@@ -70,12 +70,14 @@ class NoticeDetailBuilder extends StatelessWidget {
     this.writer,
     this.date,
     this.contents,
+    this.image,
   });
   final docId;
   final title;
   final writer;
   final date;
   final contents;
+  final image;
 
   @override
   Widget build(BuildContext context) {
@@ -95,11 +97,19 @@ class NoticeDetailBuilder extends StatelessWidget {
               child: Container(
                 alignment: Alignment.topLeft,
                 padding: EdgeInsets.symmetric(horizontal: 20),
-                child: RichText(
-                  maxLines: 6,
-                  text: TextSpan(
-                      text: '$contents', style: kNoticeDetailContentTextStyle),
-                  overflow: TextOverflow.ellipsis,
+                child: Column(
+                  children: [
+                    RichText(
+                      maxLines: 6,
+                      text: TextSpan(
+                          text: '$contents',
+                          style: kNoticeDetailContentTextStyle),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    Container(
+                      child: Image.network(image),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -125,11 +135,11 @@ class _CommentBubbleState extends State<CommentBubble> {
 
   _scrollListener() async {
     if (_scrollController.offset ==
-            _scrollController.position.maxScrollExtent &&
+        _scrollController.position.maxScrollExtent &&
         !_scrollController.position.outOfRange) {
       // top
     } else if (_scrollController.offset <=
-            _scrollController.position.maxScrollExtent &&
+        _scrollController.position.maxScrollExtent &&
         !_scrollController.position.outOfRange) {
       // bottom
     }
@@ -145,8 +155,8 @@ class _CommentBubbleState extends State<CommentBubble> {
             .doc(widget.noticeId)
             .collection("Comments")
             .orderBy(
-              "date",
-            )
+          "date",
+        )
             .snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
@@ -158,7 +168,7 @@ class _CommentBubbleState extends State<CommentBubble> {
               controller: _scrollController,
               children: (snapshot.data!).docs.map((DocumentSnapshot document) {
                 Map<String, dynamic> data =
-                    document.data()! as Map<String, dynamic>;
+                document.data()! as Map<String, dynamic>;
                 WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
                   _scrollController.animateTo(
                       _scrollController.position.maxScrollExtent,
@@ -259,13 +269,13 @@ class NoticeDetailState extends State<NoticeDetail> {
       //its missing the await
       if (widget.noticeId != null) {
         DocumentReference doc =
-            firestore.collection("Notice").doc(widget.noticeId);
+        firestore.collection("Notice").doc(widget.noticeId);
         await doc.get().then((DocumentSnapshot doc) {
           setState(() {
             DateTime noticeDate =
-                DateTime.parse(doc.get("date").toDate().toString());
+            DateTime.parse(doc.get("date").toDate().toString());
             notice.date =
-                '${noticeDate.year}년 ${noticeDate.month}월 ${noticeDate.day}일';
+            '${noticeDate.year}년 ${noticeDate.month}월 ${noticeDate.day}일';
 
             notice.title = doc.get("title").toString();
             notice.writer = doc.get("writer").toString();
@@ -273,6 +283,7 @@ class NoticeDetailState extends State<NoticeDetail> {
             notice.commentCount = doc.get("commentCount");
             globalCommentCount = notice.commentCount;
             notice.likedUsers = doc.get("likedUsers");
+            notice.imageUrl = doc.get("imageUrl");
             //notice.likeCount = notice.likedUsers.length();
             List userList = notice.likedUsers;
             notice.likeCount = userList.length;
@@ -315,11 +326,13 @@ class NoticeDetailState extends State<NoticeDetail> {
               children: [
                 Container(
                   child: NoticeDetailBuilder(
-                      docId: widget.noticeId,
-                      title: notice.title,
-                      writer: notice.writer,
-                      date: notice.date,
-                      contents: notice.contents),
+                    docId: widget.noticeId,
+                    title: notice.title,
+                    writer: notice.writer,
+                    date: notice.date,
+                    contents: notice.contents,
+                    image: notice.imageUrl,
+                  ),
                 ),
                 Container(
                   child: NoticeDetailStatus(
@@ -337,8 +350,8 @@ class NoticeDetailState extends State<NoticeDetail> {
                 ),
                 Container(
                     child: CommentBubble(
-                  noticeId: widget.noticeId,
-                )),
+                      noticeId: widget.noticeId,
+                    )),
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 20.0),
                   child: Row(children: [

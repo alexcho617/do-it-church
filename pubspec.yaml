@@ -19,6 +19,9 @@ dependencies:
   like_button: ^2.0.2
   flutter_spinkit: ^5.0.0
   flutter_speed_dial: ^4.3.0
+  firebase_storage: ^10.1.0
+  image_picker: ^0.8.4+1
+
 
 dev_dependencies:
   flutter_test:
