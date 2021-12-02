@@ -3,7 +3,7 @@ import 'package:do_it_church/screens/member_info_detail_list.dart';
 import 'package:flutter/material.dart';
 
 import '../constants.dart';
-import 'EditButton.dart';
+import 'Counselling_EditButton.dart';
 
 class CounsellingHeader extends StatelessWidget {
   const CounsellingHeader({
@@ -38,7 +38,7 @@ class CounsellingHeader extends StatelessWidget {
                       Icons.assignment,
                       color: Colors.black,
                     ),
-                    trailing: NoticeEditButton(docId: docId, title: title),
+                    trailing: CounsellingEditButton(docId: docId, title: title),
                     title: TextButton(
                       onPressed: () {
                         Navigator.push(
