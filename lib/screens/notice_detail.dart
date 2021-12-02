@@ -107,7 +107,9 @@ class NoticeDetailBuilder extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                     Container(
-                      child: Image.network(image),
+                      child: image == null
+                          ? Center(child: Text(' '))
+                          : Image.network(image),
                     ),
                   ],
                 ),
@@ -135,11 +137,11 @@ class _CommentBubbleState extends State<CommentBubble> {
 
   _scrollListener() async {
     if (_scrollController.offset ==
-        _scrollController.position.maxScrollExtent &&
+            _scrollController.position.maxScrollExtent &&
         !_scrollController.position.outOfRange) {
       // top
     } else if (_scrollController.offset <=
-        _scrollController.position.maxScrollExtent &&
+            _scrollController.position.maxScrollExtent &&
         !_scrollController.position.outOfRange) {
       // bottom
     }
@@ -155,8 +157,8 @@ class _CommentBubbleState extends State<CommentBubble> {
             .doc(widget.noticeId)
             .collection("Comments")
             .orderBy(
-          "date",
-        )
+              "date",
+            )
             .snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
@@ -168,7 +170,7 @@ class _CommentBubbleState extends State<CommentBubble> {
               controller: _scrollController,
               children: (snapshot.data!).docs.map((DocumentSnapshot document) {
                 Map<String, dynamic> data =
-                document.data()! as Map<String, dynamic>;
+                    document.data()! as Map<String, dynamic>;
                 WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
                   _scrollController.animateTo(
                       _scrollController.position.maxScrollExtent,
@@ -269,13 +271,13 @@ class NoticeDetailState extends State<NoticeDetail> {
       //its missing the await
       if (widget.noticeId != null) {
         DocumentReference doc =
-        firestore.collection("Notice").doc(widget.noticeId);
+            firestore.collection("Notice").doc(widget.noticeId);
         await doc.get().then((DocumentSnapshot doc) {
           setState(() {
             DateTime noticeDate =
-            DateTime.parse(doc.get("date").toDate().toString());
+                DateTime.parse(doc.get("date").toDate().toString());
             notice.date =
-            '${noticeDate.year}년 ${noticeDate.month}월 ${noticeDate.day}일';
+                '${noticeDate.year}년 ${noticeDate.month}월 ${noticeDate.day}일';
 
             notice.title = doc.get("title").toString();
             notice.writer = doc.get("writer").toString();
@@ -350,8 +352,8 @@ class NoticeDetailState extends State<NoticeDetail> {
                 ),
                 Container(
                     child: CommentBubble(
-                      noticeId: widget.noticeId,
-                    )),
+                  noticeId: widget.noticeId,
+                )),
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 20.0),
                   child: Row(children: [
