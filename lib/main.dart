@@ -1,15 +1,19 @@
+import 'package:do_it_church/screens/church.dart';
 import 'package:do_it_church/screens/landing_route.dart';
+import 'package:do_it_church/screens/login.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:do_it_church/screens/home.dart';
+import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
   runApp(
-    MaterialApp(
+    GetMaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         scaffoldBackgroundColor: Colors.white,
@@ -53,27 +57,23 @@ class InitializerWidget extends StatefulWidget {
 }
 
 class _InitializerWidgetState extends State<InitializerWidget> {
+
   @override
   Widget build(BuildContext context) {
     FirebaseAuth _auth = FirebaseAuth.instance;
     final user = _auth.currentUser;
     if (user != null) {
       User loggedInUser = user;
+      //1
       print(
           'AUTO LOG IN SUCCESS(main.dart): Signed in As:${loggedInUser.phoneNumber}');
-      /*
-      * for auto log in, state management 사용 해야함,, logic  and state is separated
-      * bloc - large scale, heavy ,
-      * provider-hamsung currently using provider - > official doc by flutter
-      * getx- easier to use, state manage and navigator **recommeneded
-      *   official doc,
-      *   youtube codingfactory korean
-      *
-      * */
-      //landingPage로 가게 할
-      return LandingRoute();
+      //2
+      return LandingRoute(
+        
+      );
+      // return HomeRoute();
     } else {
-      return HomeRoute();
+      return LoginRoute();
     }
   }
 }

@@ -1,9 +1,11 @@
+import 'package:do_it_church/screens/church.dart';
 import 'package:do_it_church/screens/landing_route.dart';
 import 'package:flutter/material.dart';
 import 'package:do_it_church/constants.dart';
 import 'package:do_it_church/screens/register.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 enum MobileVerificationState {
   SHOW_MOBILE_FORM_STATE,
@@ -23,6 +25,8 @@ class _LoginRouteState extends State<LoginRoute> {
       MobileVerificationState.SHOW_MOBILE_FORM_STATE;
 
   FirebaseAuth _auth = FirebaseAuth.instance;
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  String churchId = '';
 
   String verificationId = '';
   bool showLoading = false;
@@ -40,8 +44,17 @@ class _LoginRouteState extends State<LoginRoute> {
         showLoading = false;
       });
       if (authCredential.user != null) {
+        //get churchname from shared prefrence
+        final SharedPreferences prefs = await _prefs;
+        setState(() {
+          churchId = prefs.getString('churchName') ?? '';
+        });
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => LandingRoute()));
+            context,
+            MaterialPageRoute(
+                builder: (context) => LandingRoute(
+                     
+                    )));
       }
     } on Exception catch (e) {
       setState(() {
@@ -176,6 +189,7 @@ class _LoginRouteState extends State<LoginRoute> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => RegisterRoute()),
+                      // MaterialPageRoute(builder: (context) => ChurchRoute()),
                     );
                   },
                 ),

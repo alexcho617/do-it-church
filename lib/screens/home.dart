@@ -10,6 +10,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:do_it_church/components/myPage.dart';
 import 'package:like_button/like_button.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'member_info.dart';
 import 'notice_detail.dart';
 import 'notice_list.dart';
@@ -21,11 +22,23 @@ final firestore = FirebaseFirestore.instance;
 Notice notice = Notice();
 
 class HomeRoute extends StatefulWidget {
+  static String currentChurchId = '';
+
   @override
   _HomeRouteState createState() => _HomeRouteState();
 }
 
 class _HomeRouteState extends State<HomeRoute> {
+  Future<void> _setHomeRouteChurchId() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String _churchId;
+    _churchId = prefs.getString('churchName') ?? 'churchName_empty';
+    print('setHomRouteChurchId:$_churchId');
+    setState(() {
+      HomeRoute.currentChurchId = _churchId;
+    });
+  }
+
   void getCurrentUser() async {
     try {
       final user = _auth.currentUser;
@@ -43,6 +56,8 @@ class _HomeRouteState extends State<HomeRoute> {
   void initState() {
     super.initState();
     getCurrentUser();
+    _setHomeRouteChurchId();
+    print('home route init:${HomeRoute.currentChurchId}');
   }
 
   @override
@@ -281,6 +296,8 @@ class NoticeHomeStream extends StatelessWidget {
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
       stream: firestore
+          .collection('Church')
+          .doc(HomeRoute.currentChurchId)
           .collection('Notice')
           .orderBy("date", descending: true)
           .snapshots(),

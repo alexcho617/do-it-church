@@ -9,15 +9,22 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
+import 'home.dart';
+
 void _handleSubmitted(String titleText, String contentText) async {
   final firebaseStorageRef = FirebaseStorage.instance
       .ref()
+      .child(HomeRoute.currentChurchId)
       .child('notice')
       .child('${titleText.toString()}.png');
   final uploadTask = firebaseStorageRef.putFile(File(imageURI!.path));
   await uploadTask.whenComplete(() => null);
   final downloadUrl = await firebaseStorageRef.getDownloadURL();
-  await firestore.collection('Notice').add({
+  await firestore
+      .collection('Church')
+      .doc(HomeRoute.currentChurchId)
+      .collection('Notice')
+      .add({
     'title': titleText,
     'contents': contentText,
     'writer': notice.writer,
@@ -63,7 +70,9 @@ class _NoticeAddRouteState extends State<NoticeAddRoute> {
       notice.writer = loggedInUser.phoneNumber;
       print('(notice_new_screen): Signed User UID:${loggedInUser.uid}');
       QuerySnapshot userData = await FirebaseFirestore.instance
-          .collection('Users')
+          .collection('Church')
+          .doc(HomeRoute.currentChurchId)
+          .collection('User')
           .where('uid', isEqualTo: loggedInUser.uid)
           .get();
       for (var doc in userData.docs) {
