@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:do_it_church/components/colors.dart' as color;
 
+import 'activity_detail.dart';
+
 class GuideRoute extends StatefulWidget {
   @override
   _GuideRouteState createState() => _GuideRouteState();
@@ -57,7 +59,7 @@ class _GuideRouteState extends State<GuideRoute> {
                           Icon(Icons.apps,
                               size: 20,
                               color: color.AppColor.homePageSubtitle),
-                          TextButton(onPressed: (){}, child: Text("카테고리",
+                          TextButton(onPressed: (){}, child: Text("저장함",
                               style: TextStyle(
                                   color: color.AppColor.homePageTitle,
                                   fontWeight: FontWeight.w700
@@ -96,6 +98,7 @@ class _GuideRouteState extends State<GuideRoute> {
                             ),
                             SizedBox(height: 20,),
                             Container(
+
                               width: MediaQuery.of(context).size.width,
                               height: 180,
                               decoration: BoxDecoration(
@@ -121,7 +124,9 @@ class _GuideRouteState extends State<GuideRoute> {
                                       color: color.AppColor.gradientSecond.withOpacity(0.2),
                                     )
                                   ]
+
                               ),
+
 
                         //하루양육루틴
 
@@ -174,20 +179,27 @@ class _GuideRouteState extends State<GuideRoute> {
                                         ],
                                       ),
                                       Expanded(child: Container()),
-                                      Container(
-                                        decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(60),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                  color: color.AppColor.gradientFirst,
-                                                  blurRadius: 10,
-                                                  offset: Offset(4, 8)
-                                              )
-                                            ]
-                                        ),
-                                        child: Icon(
-                                          Icons.play_circle_fill,
-                                          color: Colors.white, size:40,
+                                      GestureDetector(
+                                        onTap: (){
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(builder: (context) => ActivityDetailRoute())
+                                          );},
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(60),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                    color: color.AppColor.gradientFirst,
+                                                    blurRadius: 10,
+                                                    offset: Offset(4, 8)
+                                                )
+                                              ]
+                                          ),
+                                          child: Icon(
+                                            Icons.play_circle_fill,
+                                            color: Colors.white, size:40,
+                                          ),
                                         ),
                                       ),
                                     ],
@@ -252,6 +264,8 @@ class _GuideRouteState extends State<GuideRoute> {
 
                                       ),
                                     ),
+
+
                                   Container(
                                     width: double.maxFinite,
                                     height: 100,
