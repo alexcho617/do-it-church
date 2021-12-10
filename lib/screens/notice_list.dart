@@ -4,6 +4,7 @@ import 'package:do_it_church/components/NoticeListContents.dart';
 import 'package:do_it_church/components/NoticeStatus.dart';
 import 'package:do_it_church/components/ScreenDivider.dart';
 import 'package:do_it_church/components/notice.dart';
+import 'package:do_it_church/screens/home.dart';
 import 'package:do_it_church/screens/notice_detail.dart';
 import 'package:do_it_church/constants.dart';
 import 'package:do_it_church/screens/notice_new.dart';
@@ -84,6 +85,8 @@ class NoticeStream extends StatelessWidget {
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
       stream: firestore
+          .collection('Church')
+          .doc(HomeRoute.currentChurchId)
           .collection('Notice')
           .orderBy("date", descending: true)
           .snapshots(),

@@ -1,3 +1,5 @@
+import 'package:do_it_church/screens/church.dart';
+import 'package:do_it_church/screens/home.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -10,12 +12,16 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:get/get.dart';
 
 enum Gender { male, female }
 
 class RegisterRoute extends StatefulWidget {
+  RegisterRoute({this.churchId});
+
   @override
   _RegisterRouteState createState() => _RegisterRouteState();
+  var churchId;
 }
 
 class _RegisterRouteState extends State<RegisterRoute> {
@@ -59,16 +65,33 @@ class _RegisterRouteState extends State<RegisterRoute> {
             .set({
           'phoneNumber': loggedInUser.phoneNumber,
         });
+//this part should be delegated to church.dart
+        // await _firestore
+        //     .collection('Church')
+        //     .doc(HomeRoute.currentChurchId)
+        //     // .doc('gG1rW7bUraMtRdJTUnFr')
+        //     .collection('User')
+        //     .doc(loggedInUser.uid)
+        //     .set({
+        //   'birthdate': myUser.birthdate,
+        //   'gender': myUser.gender,
+        //   'name': myUser.name,
+        //   'phone_num': myUser.phoneNumber,
+        //   'uid': loggedInUser.uid
+        // });
+        print('register user info');
+        print(myUser.name);
+        print(myUser.birthdate);
+        print(myUser.phoneNumber);
+        print('----------------');
 
-        await _firestore.collection('Users').doc(loggedInUser.uid).set({
-          'birthdate': myUser.birthdate,
-          'gender': myUser.gender,
-          'name': myUser.name,
-          'phone_num': myUser.phoneNumber,
-          'uid': loggedInUser.uid
-        });
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => LandingRoute()));
+        Get.off(ChurchRoute(newUser: myUser),arguments: myUser);
+        // Navigator.pushReplacement(
+        //     context,
+        //     MaterialPageRoute(
+        //         builder: (context) => ChurchRoute(
+        //               newUser: myUser,
+        //             )));
       }
     } on Exception catch (e) {
       print(e);

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:do_it_church/screens/home.dart';
 import 'package:do_it_church/screens/chat.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'guide.dart';
 import 'more.dart';
 
@@ -11,6 +12,12 @@ class LandingRoute extends StatefulWidget {
 }
 
 class _LandingRouteState extends State<LandingRoute> {
+  @override
+  void initState() {
+    super.initState();
+
+  }
+
   int screenIndex = 0;
   final List<Widget> screenList = [
     HomeRoute(),
@@ -58,4 +65,6 @@ class _LandingRouteState extends State<LandingRoute> {
       ),
     );
   }
+
+  
 }
