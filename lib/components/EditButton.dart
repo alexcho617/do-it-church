@@ -1,4 +1,5 @@
 import 'package:do_it_church/components/NoticeSnackBar.dart';
+import 'package:do_it_church/screens/home.dart';
 import 'package:do_it_church/screens/notice_edit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -30,8 +31,12 @@ class NoticeEditButton extends StatelessWidget {
                   ListTile(
                     leading: Icon(Icons.create_rounded),
                     title: Text('수정하기'),
-                    onTap: () =>
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => NoticeEditRoute(noticeId: docId)),),
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              NoticeEditRoute(noticeId: docId)),
+                    ),
                   ),
                   ListTile(
                     leading: Icon(Icons.refresh_rounded),
@@ -41,33 +46,36 @@ class NoticeEditButton extends StatelessWidget {
                     leading: Icon(Icons.delete),
                     title: Text('삭제하기'),
                     onTap: () => showDialog(
-                      context: context,
-                      builder: (BuildContext context) => AlertDialog(
-                        title: Text("공지 삭제 안내 창"),
-                        content: Text('정말로 "$title" 공지를 삭제하시겠습니까?'),
-                        actions: [
-                          TextButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            child: Text('Cancel'),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.pop(context, 'OK');
-                              FirebaseFirestore.instance
-                                .collection("Notice")
-                                .doc(docId)
-                                .delete()
-                                .then((value) {});
-                              Navigator.pop(context);
-                              NoticeSnackBar.show(context, '공지 사항이 삭제 되었습니다.');
-                            },
-                            child: Text('OK'),
-                          ),
-                        ],
-                      )),
-                    ),
+                        context: context,
+                        builder: (BuildContext context) => AlertDialog(
+                              title: Text("공지 삭제 안내 창"),
+                              content: Text('정말로 "$title" 공지를 삭제하시겠습니까?'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text('Cancel'),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context, 'OK');
+                                    FirebaseFirestore.instance
+                                        .collection('Church')
+                                        .doc(HomeRoute.currentChurchId)
+                                        .collection("Notice")
+                                        .doc(docId)
+                                        .delete()
+                                        .then((value) {});
+                                    Navigator.pop(context);
+                                    NoticeSnackBar.show(
+                                        context, '공지 사항이 삭제 되었습니다.');
+                                  },
+                                  child: Text('OK'),
+                                ),
+                              ],
+                            )),
+                  ),
                 ],
               );
             });

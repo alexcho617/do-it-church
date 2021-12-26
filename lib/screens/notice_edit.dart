@@ -1,4 +1,6 @@
 import 'package:do_it_church/components/NoticeSnackBar.dart';
+import 'package:do_it_church/screens/home.dart';
+import 'package:do_it_church/screens/notice_list.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -23,8 +25,13 @@ class _NoticeEditRouteState extends State<NoticeEditRoute> {
   final titleTextController = TextEditingController();
   final formKey = GlobalKey<FormState>();
 
-  void _handleSubmitted(String titleText,String contentText) async {
-    await firestore.collection('Notice').doc(widget.noticeId).update({
+  void _handleSubmitted(String titleText, String contentText) async {
+    await firestore
+        .collection('Church')
+        .doc(HomeRoute.currentChurchId)
+        .collection('Notice')
+        .doc(widget.noticeId)
+        .update({
       'title': titleText,
       'contents': contentText,
     });
@@ -34,8 +41,11 @@ class _NoticeEditRouteState extends State<NoticeEditRoute> {
     try {
       //its missing the await
       if (widget.noticeId != null) {
-        DocumentReference doc =
-        firestore.collection("Notice").doc(widget.noticeId);
+        DocumentReference doc = firestore
+            .collection('Church')
+            .doc(HomeRoute.currentChurchId)
+            .collection("Notice")
+            .doc(widget.noticeId);
         await doc.get().then((DocumentSnapshot doc) {
           setState(() {
             notice.title = doc.get("title").toString();
@@ -83,7 +93,6 @@ class _NoticeEditRouteState extends State<NoticeEditRoute> {
     super.initState();
     assignCurrentWriter();
     getNoticeDetail(notice);
-
   }
 
   @override
@@ -102,12 +111,16 @@ class _NoticeEditRouteState extends State<NoticeEditRoute> {
           TextButton(
               child: Text('완료'),
               onPressed: () async {
-                if(formKey.currentState!.validate()){
-                  _handleSubmitted(titleTextController.text, contentTextController.text
-                  );
+                if (formKey.currentState!.validate()) {
+                  _handleSubmitted(
+                      titleTextController.text, contentTextController.text);
                   NoticeSnackBar.show(context, '공지 사항이 수정 되었습니다.');
-                  Navigator.pop(context);
-                  Navigator.pop(context);
+                  Navigator.of(context).popUntil((route) => route.isFirst);
+
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => NoticeListRoute()));
                 }
               }),
         ],
@@ -120,8 +133,8 @@ class _NoticeEditRouteState extends State<NoticeEditRoute> {
             children: [
               Container(
                 child: TextFormField(
-                  validator: (value){
-                    if(value == null || value.isEmpty){
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
                       return '제목은 필수입니다';
                     }
                     return null;
@@ -129,14 +142,14 @@ class _NoticeEditRouteState extends State<NoticeEditRoute> {
                   controller: titleTextController,
                   decoration: InputDecoration(
                       hintText: '제목',
-                      hintStyle: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)
-                  ),
+                      hintStyle: TextStyle(
+                          fontSize: 18.0, fontWeight: FontWeight.bold)),
                 ),
               ),
               Container(
                 child: TextFormField(
-                  validator: (value){
-                    if(value == null || value.isEmpty){
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
                       return '내용은 필수입니다';
                     }
                     return null;

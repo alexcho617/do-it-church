@@ -28,6 +28,7 @@ class NoticeDetailStatus extends StatefulWidget {
 class _NoticeDetailStatusState extends State<NoticeDetailStatus> {
   late String uid;
   late String likes;
+  late var likeCounts;
   void getCurretnUser() async {
     final user = _auth.currentUser;
     if (user != null) {
@@ -44,6 +45,7 @@ class _NoticeDetailStatusState extends State<NoticeDetailStatus> {
     getCurretnUser();
     // getLikeCount();
     isLiked = widget.isLiked;
+    likeCounts = int.tryParse(widget.likeCounts);
   }
 
   @override
@@ -77,7 +79,8 @@ class _NoticeDetailStatusState extends State<NoticeDetailStatus> {
         Container(
           child: LikeButton(
             isLiked: isLiked,
-            likeCount: int.parse(widget.likeCounts),
+            likeCount: likeCounts,
+            // likeCount: int.parse(widget.likeCounts),
             likeBuilder: (isLiked) {
               final color = isLiked ? Colors.red : Colors.grey;
               return Icon(Icons.favorite, color: color, size: 19);

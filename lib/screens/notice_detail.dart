@@ -6,6 +6,7 @@ import 'package:do_it_church/components/ScreenDivider.dart';
 import 'package:do_it_church/components/comment.dart';
 import 'package:do_it_church/components/notice.dart';
 import 'package:do_it_church/constants.dart';
+import 'package:do_it_church/screens/home.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -14,13 +15,21 @@ void _handleSubmitted(String commentText, String noticeId) async {
   print('COMMENT TEXT:$commentText');
   print('COMMENT WRITER:$comment.writer');
   //add comment to notice
-  firestore.collection('Notice').doc(noticeId).collection('Comments').add({
+  firestore
+      .collection('Church')
+      .doc(HomeRoute.currentChurchId)
+      .collection('Notice')
+      .doc(noticeId)
+      .collection('Comments')
+      .add({
     'comment': commentText,
     'writer': comment.writer,
     'date': Timestamp.now()
   });
   //update commentcount
   firestore
+      .collection('Church')
+      .doc(HomeRoute.currentChurchId)
       .collection('Notice')
       .doc(noticeId)
       .update({'commentCount': globalCommentCount});
@@ -107,7 +116,9 @@ class NoticeDetailBuilder extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                     Container(
-                      child: Image.network(image),
+                      child: image == null
+                          ? Center(child: Text(' '))
+                          : Image.network(image),
                     ),
                   ],
                 ),
@@ -135,11 +146,11 @@ class _CommentBubbleState extends State<CommentBubble> {
 
   _scrollListener() async {
     if (_scrollController.offset ==
-        _scrollController.position.maxScrollExtent &&
+            _scrollController.position.maxScrollExtent &&
         !_scrollController.position.outOfRange) {
       // top
     } else if (_scrollController.offset <=
-        _scrollController.position.maxScrollExtent &&
+            _scrollController.position.maxScrollExtent &&
         !_scrollController.position.outOfRange) {
       // bottom
     }
@@ -151,12 +162,14 @@ class _CommentBubbleState extends State<CommentBubble> {
     _scrollController.addListener(_scrollListener);
     return StreamBuilder<QuerySnapshot>(
         stream: firestore
+            .collection('Church')
+            .doc(HomeRoute.currentChurchId)
             .collection("Notice")
             .doc(widget.noticeId)
             .collection("Comments")
             .orderBy(
-          "date",
-        )
+              "date",
+            )
             .snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
@@ -168,7 +181,7 @@ class _CommentBubbleState extends State<CommentBubble> {
               controller: _scrollController,
               children: (snapshot.data!).docs.map((DocumentSnapshot document) {
                 Map<String, dynamic> data =
-                document.data()! as Map<String, dynamic>;
+                    document.data()! as Map<String, dynamic>;
                 WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
                   _scrollController.animateTo(
                       _scrollController.position.maxScrollExtent,
@@ -180,6 +193,8 @@ class _CommentBubbleState extends State<CommentBubble> {
                     ListTile(
                       onLongPress: () {
                         FirebaseFirestore.instance
+                            .collection('Church')
+                            .doc(HomeRoute.currentChurchId)
                             .collection("Notice")
                             .doc(widget.noticeId)
                             .collection('Comments')
@@ -188,6 +203,8 @@ class _CommentBubbleState extends State<CommentBubble> {
                             .then((value) {});
                         globalCommentCount -= 1;
                         FirebaseFirestore.instance
+                            .collection('Church')
+                            .doc(HomeRoute.currentChurchId)
                             .collection('Notice')
                             .doc(widget.noticeId)
                             .update({'commentCount': globalCommentCount});
@@ -228,7 +245,9 @@ void assignCommentWriter() async {
   if (user != null) {
     User loggedInUser = user;
     QuerySnapshot userData = await FirebaseFirestore.instance
-        .collection('Users')
+        .collection('Church')
+        .doc(HomeRoute.currentChurchId)
+        .collection('User')
         .where('uid', isEqualTo: loggedInUser.uid)
         .get();
     for (var doc in userData.docs) {
@@ -268,14 +287,17 @@ class NoticeDetailState extends State<NoticeDetail> {
           'notice_detail.dart, getNoticeDetail: widget.noticeId:${widget.noticeId}');
       //its missing the await
       if (widget.noticeId != null) {
-        DocumentReference doc =
-        firestore.collection("Notice").doc(widget.noticeId);
+        DocumentReference doc = firestore
+            .collection('Church')
+            .doc(HomeRoute.currentChurchId)
+            .collection("Notice")
+            .doc(widget.noticeId);
         await doc.get().then((DocumentSnapshot doc) {
           setState(() {
             DateTime noticeDate =
-            DateTime.parse(doc.get("date").toDate().toString());
+                DateTime.parse(doc.get("date").toDate().toString());
             notice.date =
-            '${noticeDate.year}년 ${noticeDate.month}월 ${noticeDate.day}일';
+                '${noticeDate.year}년 ${noticeDate.month}월 ${noticeDate.day}일';
 
             notice.title = doc.get("title").toString();
             notice.writer = doc.get("writer").toString();
@@ -350,8 +372,8 @@ class NoticeDetailState extends State<NoticeDetail> {
                 ),
                 Container(
                     child: CommentBubble(
-                      noticeId: widget.noticeId,
-                    )),
+                  noticeId: widget.noticeId,
+                )),
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 20.0),
                   child: Row(children: [
